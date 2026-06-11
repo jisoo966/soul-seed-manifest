@@ -502,16 +502,46 @@ function ProgressArc({ progress, signs }: { progress: number; signs: number }) {
   );
 }
 
-function ProgressBar({ progress, label }: { progress: number; label: string }) {
+function Timeline({ m, onOpen }: { m: Manifestation; onOpen: (s: Sign) => void }) {
+  const progress = Math.min(1, m.startedDaysAgo / m.totalDays);
+  const dayOfSign = (i: number) =>
+    m.signs.length > 0 ? Math.round(((i + 0.5) / m.signs.length) * m.startedDaysAgo) : 0;
   return (
-    <div>
-      <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: "oklch(0.78 0.08 25 / 0.2)" }}>
-        <div className="h-full" style={{ width: `${progress * 100}%`, backgroundColor: "var(--color-burgundy)" }} />
+    <div className="mt-3">
+      <div className="relative h-9">
+        <div className="absolute left-0 right-0 top-1/2 h-px" style={{ backgroundColor: "oklch(0.55 0.03 70 / 0.4)" }} />
+        <div
+          className="absolute left-0 top-1/2 h-px"
+          style={{ width: `${progress * 100}%`, backgroundColor: "var(--color-burgundy)", transform: "translateY(-0.5px)" }}
+        />
+        <div
+          className="absolute top-0 bottom-0 flex flex-col items-center"
+          style={{ left: `${progress * 100}%`, transform: "translateX(-50%)" }}
+        >
+          <span className="w-0.5 h-full" style={{ backgroundColor: "var(--color-burgundy)" }} />
+          <span className="absolute -bottom-4 text-[9px] serif italic" style={{ color: "var(--color-burgundy)" }}>today</span>
+        </div>
+        {m.signs.map((s, i) => {
+          const left = (dayOfSign(i) / m.totalDays) * 100;
+          return (
+            <button
+              key={s.id}
+              onClick={() => onOpen(s)}
+              className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full hover:scale-150 transition"
+              style={{ left: `${left}%`, width: 8, height: 8, backgroundColor: "var(--color-mustard)", boxShadow: "0 0 6px oklch(0.88 0.09 85 / 0.8)" }}
+              aria-label={s.title}
+            />
+          );
+        })}
       </div>
-      <p className="mt-1.5 text-[11px] serif italic text-sepia">{label}</p>
+      <div className="mt-5 flex justify-between text-[10px] serif italic text-sepia">
+        <span>started · {m.startedDaysAgo}d ago</span>
+        <span>{m.totalDays - m.startedDaysAgo} days left · {m.signs.length} signs</span>
+      </div>
     </div>
   );
 }
+
 
 function remainingLabel(m: Manifestation) {
   if (m.horizon === "someday") return "no horizon · open to the universe";
