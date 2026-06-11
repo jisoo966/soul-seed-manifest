@@ -287,6 +287,37 @@ function Constellations() {
           )}
         </div>
 
+        {/* falling new star — sits above the camera so it lands in board coords */}
+        {phase === "falling" && (
+          <span
+            className="absolute text-2xl pointer-events-none z-30"
+            style={{
+              left: "50%", top: "-8%",
+              color: "var(--color-mustard)",
+              textShadow: "0 0 14px oklch(0.88 0.09 85 / 0.9)",
+              animation: "starFall 1.4s cubic-bezier(.55,.05,.3,1) forwards",
+              ["--tx" as any]: `${suggested.cx - 50}%`,
+              ["--ty" as any]: `${suggested.cy + 8}%`,
+            }}
+          >
+            ✦
+          </span>
+        )}
+        {(phase === "landed" || phase === "suggesting") && (
+          <span
+            className="absolute text-xl pointer-events-none z-30"
+            style={{
+              left: `${suggested.cx}%`, top: `${suggested.cy}%`,
+              transform: "translate(-50%,-50%)",
+              color: "var(--color-mustard)",
+              textShadow: "0 0 18px oklch(0.88 0.09 85 / 0.9)",
+              animation: "starTwinkle 1.6s ease-out 2",
+            }}
+          >
+            ✦
+          </span>
+        )}
+
         {/* dim overlay click-out for cluster mode */}
         {active && (
           <button
@@ -298,9 +329,48 @@ function Constellations() {
         )}
       </div>
 
-      <p className="mt-3 text-center text-[11px] serif italic text-sepia">
-        {active ? "tap a card · tap empty space to pull back" : "your sky is still forming · little by little"}
-      </p>
+      {/* sisi suggestion after landing */}
+      {phase === "suggesting" && (
+        <div
+          className="paper-card rounded-xl mt-4 px-4 py-3"
+          style={{ animation: "fade-in 0.4s ease-out", borderColor: "var(--color-burgundy)" }}
+        >
+          <p className="small-caps mb-1 flex items-center gap-1.5" style={{ color: "var(--color-burgundy)" }}>
+            <Sparkles className="h-3 w-3" strokeWidth={1.5} /> sisi noticed
+          </p>
+          {search.title && (
+            <p className="serif italic text-[14px] text-ink leading-snug">
+              &ldquo;{search.title}&rdquo;
+            </p>
+          )}
+          <p className="mt-2 serif text-[13px] text-ink/85">
+            This feels like it belongs with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{suggested.label}</em>.
+          </p>
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => dismissLanding(true)}
+              className="flex-1 py-2 rounded-lg serif italic text-[13px]"
+              style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}
+            >
+              Add to {suggested.label}
+            </button>
+            <button
+              onClick={() => dismissLanding(false)}
+              className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border"
+              style={{ borderColor: "var(--color-burgundy)" }}
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!phase && (
+        <p className="mt-3 text-center text-[11px] serif italic text-sepia">
+          {active ? "tap a card · tap empty space to pull back" : "your sky is still forming · little by little"}
+        </p>
+      )}
+
 
       {/* zoom-in modal */}
       {open && (
