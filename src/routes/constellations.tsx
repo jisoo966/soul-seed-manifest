@@ -7,12 +7,13 @@ export const Route = createFileRoute("/constellations")({
   head: () => ({
     meta: [
       { title: "Constellations — Sisi" },
-      { name: "description", content: "A scrapbook board of everything you've pressed in." },
+      { name: "description", content: "Your inner sky. Zoom in to read the stars." },
     ],
   }),
   component: Constellations,
 });
 
+// ---------- data ----------
 type Shape = "polaroid" | "torn" | "cloud" | "ribbon" | "ticket" | "pennant";
 type Tone = "paper" | "moss" | "sky" | "mustard" | "burgundy";
 
@@ -22,131 +23,245 @@ type Card = {
   title: string;
   note: string;
   date: string;
+  daysAgo: number; // for spiral order (0 = most recent → center)
   shape: Shape;
   tone: Tone;
-  x: number; // %
-  y: number; // %
-  rot: number; // deg
-  w: number; // %
 };
 
-const boards = ["Relationship", "Career", "Self"] as const;
+type Cluster = {
+  id: string;
+  label: string;
+  cx: number; // % on the sky
+  cy: number;
+  nebula: string; // oklch color
+  glyph: string;
+  cards: Card[];
+};
 
-const cards: Card[] = [
-  { id: "1", kind: "Sign", title: "white feather", note: "Saw a white feather on my way to work.", date: "Jun 10", shape: "pennant", tone: "mustard", x: 22, y: 12, rot: -6, w: 42 },
-  { id: "2", kind: "Dream", title: "the open door", note: "I dreamt the door was already open. I just had to walk.", date: "Jun 08", shape: "cloud", tone: "sky", x: 68, y: 16, rot: 5, w: 44 },
-  { id: "3", kind: "Memory", title: "morning light", note: "The cafe by the river. We sat without speaking for an hour.", date: "Jun 05", shape: "polaroid", tone: "paper", x: 18, y: 42, rot: 4, w: 40 },
-  { id: "4", kind: "Wish", title: "to feel chosen", note: "You said you wanted to feel chosen. I want to remember this.", date: "Jun 02", shape: "ribbon", tone: "burgundy", x: 62, y: 48, rot: -4, w: 48 },
-  { id: "5", kind: "Thought", title: "slow arrival", note: "Some things arrive slowly. That isn't the same as never.", date: "May 30", shape: "torn", tone: "moss", x: 26, y: 72, rot: -3, w: 46 },
-  { id: "6", kind: "Sync", title: "the song", note: "The song I'd been thinking of, on the radio. Twice.", date: "May 27", shape: "ticket", tone: "paper", x: 70, y: 78, rot: 6, w: 40 },
+const clusters: Cluster[] = [
+  {
+    id: "relationship",
+    label: "relationship",
+    cx: 32, cy: 30,
+    nebula: "oklch(0.78 0.08 25 / 0.18)",
+    glyph: "❦",
+    cards: [
+      { id: "r1", kind: "Wish", title: "to feel chosen", note: "You said you wanted to feel chosen. I want to remember this.", date: "Jun 02", daysAgo: 0, shape: "ribbon", tone: "burgundy" },
+      { id: "r2", kind: "Memory", title: "morning light", note: "The cafe by the river. We sat without speaking for an hour.", date: "May 28", daysAgo: 1, shape: "polaroid", tone: "paper" },
+      { id: "r3", kind: "Thought", title: "slow arrival", note: "Some things arrive slowly. That isn't the same as never.", date: "May 20", daysAgo: 2, shape: "torn", tone: "moss" },
+      { id: "r4", kind: "Sign", title: "white feather", note: "Saw a white feather on my way to work.", date: "May 14", daysAgo: 3, shape: "pennant", tone: "mustard" },
+    ],
+  },
+  {
+    id: "work",
+    label: "the work",
+    cx: 72, cy: 48,
+    nebula: "oklch(0.84 0.04 240 / 0.18)",
+    glyph: "✦",
+    cards: [
+      { id: "w1", kind: "Manifestation", title: "the interview", note: "It went better than I expected. I almost felt held.", date: "Jun 01", daysAgo: 0, shape: "polaroid", tone: "paper" },
+      { id: "w2", kind: "Dream", title: "open door", note: "I dreamt the door was already open. I just had to walk.", date: "May 25", daysAgo: 1, shape: "cloud", tone: "sky" },
+      { id: "w3", kind: "Sync", title: "the song", note: "The song I'd been thinking of, on the radio. Twice.", date: "May 18", daysAgo: 2, shape: "ticket", tone: "paper" },
+    ],
+  },
+  {
+    id: "self",
+    label: "becoming",
+    cx: 38, cy: 74,
+    nebula: "oklch(0.86 0.05 145 / 0.16)",
+    glyph: "✿",
+    cards: [
+      { id: "s1", kind: "Thought", title: "softer mornings", note: "I'm beginning to like the mornings again.", date: "May 30", daysAgo: 0, shape: "torn", tone: "moss" },
+      { id: "s2", kind: "Wish", title: "patience", note: "Less rushing. Less reaching. More noticing.", date: "May 22", daysAgo: 1, shape: "ribbon", tone: "burgundy" },
+    ],
+  },
 ];
 
-// edges between cards that share a "thread"
-const threads: Array<[string, string]> = [
-  ["1", "2"],
-  ["3", "4"],
-  ["4", "5"],
-  ["2", "6"],
-];
-
-function toneVar(t: Tone) {
-  return {
-    paper: "var(--color-paper)",
-    moss: "oklch(0.86 0.05 145)",
-    sky: "oklch(0.84 0.04 240)",
-    mustard: "oklch(0.88 0.09 85)",
-    burgundy: "oklch(0.78 0.08 25)",
-  }[t];
+// ---------- spiral layout helpers ----------
+// most recent at center; older spirals outward
+const GOLDEN_ANGLE = 137.5;
+function spiralPos(i: number, total: number) {
+  const angle = (i * GOLDEN_ANGLE) * (Math.PI / 180);
+  // tighter spiral; radius in % of cluster viewport (we render in a 200x200 box)
+  const radius = 8 + i * 16;
+  const x = 50 + Math.cos(angle) * radius;
+  const y = 50 + Math.sin(angle) * radius;
+  const rot = (i % 2 === 0 ? -1 : 1) * (3 + i * 1.5);
+  const scale = 1 - i * 0.06;
+  return { x, y, rot, scale };
 }
 
+// ---------- component ----------
 function Constellations() {
-  const [board, setBoard] = useState<typeof boards[number]>("Relationship");
+  const [zoomed, setZoomed] = useState<string | null>(null);
   const [open, setOpen] = useState<Card | null>(null);
 
-  const byId = Object.fromEntries(cards.map((c) => [c.id, c]));
+  const active = clusters.find((c) => c.id === zoomed);
+  // camera transform: when zoomed, scale 2.4 around cluster center
+  const scale = active ? 2.4 : 1;
+  const tx = active ? 50 - active.cx : 0;
+  const ty = active ? 50 - active.cy : 0;
 
   return (
     <PhoneFrame>
       <header className="pt-4 flex items-center justify-between">
-        <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
-        <h1 className="text-lg serif text-ink">Constellations</h1>
+        {zoomed ? (
+          <button onClick={() => setZoomed(null)} className="p-1">
+            <ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} />
+          </button>
+        ) : (
+          <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
+        )}
+        <h1 className="text-lg serif text-ink">
+          {active ? <em className="italic">{active.label}</em> : "Your sky"}
+        </h1>
         <button className="p-1"><Plus className="h-5 w-5 text-ink" strokeWidth={1.4} /></button>
       </header>
 
-      <p className="small-caps text-center mt-5" style={{ color: "var(--color-burgundy)" }}>
-        scrapbook · vol. iv
-      </p>
-      <p className="text-center mt-1 serif italic text-[15px] text-ink">
-        Everything you've pressed about <em>{board.toLowerCase()}</em>.
+      <p className="small-caps text-center mt-4" style={{ color: "var(--color-burgundy)" }}>
+        {active ? `${active.cards.length} entries · most recent at center` : "tap a constellation to enter it"}
       </p>
 
-      {/* board switch chips */}
-      <div className="mt-4 flex gap-2 justify-center">
-        {boards.map((b) => {
-          const active = b === board;
-          return (
-            <button
-              key={b}
-              onClick={() => setBoard(b)}
-              className="px-3 py-1 rounded-full serif text-[12px] transition"
+      {/* the sky */}
+      <div
+        className="celestial relative mt-4 rounded-2xl aspect-[3/4] overflow-hidden border"
+        style={{ borderColor: "var(--color-burgundy)" }}
+      >
+        {/* camera */}
+        <div
+          className="absolute inset-0"
+          style={{
+            transform: `scale(${scale}) translate(${tx}%, ${ty}%)`,
+            transformOrigin: "50% 50%",
+            transition: "transform 700ms cubic-bezier(.6,.05,.2,1)",
+          }}
+        >
+          {/* nebulas */}
+          {clusters.map((c) => (
+            <div
+              key={c.id + "neb"}
+              className="absolute rounded-full"
               style={{
-                backgroundColor: active ? "var(--color-burgundy)" : "transparent",
-                color: active ? "var(--color-paper)" : "var(--color-ink)",
-                border: `1px solid var(--color-burgundy)`,
-                opacity: active ? 1 : 0.6,
+                left: `${c.cx}%`, top: `${c.cy}%`,
+                width: "44%", height: "44%",
+                transform: "translate(-50%,-50%)",
+                background: `radial-gradient(circle, ${c.nebula} 0%, transparent 70%)`,
+                filter: zoomed && zoomed !== c.id ? "blur(2px)" : "none",
+                opacity: zoomed && zoomed !== c.id ? 0.35 : 1,
+                transition: "opacity 500ms, filter 500ms",
+              }}
+            />
+          ))}
+
+          {/* constellation lines (sky view) */}
+          {!active && (
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+              {clusters.flatMap((c) =>
+                c.cards.slice(0, -1).map((_, i) => {
+                  const p1 = starPos(c, i, c.cards.length);
+                  const p2 = starPos(c, i + 1, c.cards.length);
+                  return (
+                    <line
+                      key={`${c.id}-l-${i}`}
+                      x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+                      stroke="oklch(0.88 0.09 85)"
+                      strokeOpacity={0.35}
+                      strokeWidth={0.25}
+                      strokeDasharray="0.6 0.8"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  );
+                })
+              )}
+            </svg>
+          )}
+
+          {/* sky view: clusters as breathing stars */}
+          {!active && clusters.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setZoomed(c.id)}
+              className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group"
+              style={{ left: `${c.cx}%`, top: `${c.cy}%` }}
+            >
+              {c.cards.map((_, i) => {
+                const p = starPos(c, i, c.cards.length);
+                const dx = p.x - c.cx;
+                const dy = p.y - c.cy;
+                return (
+                  <span
+                    key={i}
+                    className="absolute text-[10px] breathe"
+                    style={{
+                      left: `${dx * 4}px`,
+                      top: `${dy * 4}px`,
+                      color: "var(--color-mustard)",
+                      animationDelay: `${i * 0.4}s`,
+                      textShadow: "0 0 6px oklch(0.88 0.09 85 / 0.6)",
+                    }}
+                  >
+                    ✦
+                  </span>
+                );
+              })}
+              <span
+                className="serif italic text-[11px] mt-10 px-2 py-0.5 rounded-full"
+                style={{
+                  color: "var(--color-paper)",
+                  backgroundColor: "oklch(0.2 0.02 60 / 0.5)",
+                }}
+              >
+                {c.label} · {c.cards.length}
+              </span>
+            </button>
+          ))}
+
+          {/* cluster view: spiral of cards */}
+          {active && (
+            <div
+              className="absolute"
+              style={{
+                left: `${active.cx}%`, top: `${active.cy}%`,
+                width: "200px", height: "200px",
+                transform: "translate(-50%,-50%)",
               }}
             >
-              {b}
-            </button>
-          );
-        })}
-      </div>
+              {active.cards.map((card, i) => {
+                const p = spiralPos(i, active.cards.length);
+                return (
+                  <button
+                    key={card.id}
+                    onClick={() => setOpen(card)}
+                    className="absolute"
+                    style={{
+                      left: `${p.x}%`, top: `${p.y}%`,
+                      width: "70px",
+                      transform: `translate(-50%,-50%) rotate(${p.rot}deg) scale(${p.scale})`,
+                      filter: "drop-shadow(0 4px 8px oklch(0 0 0 / 0.45))",
+                      animation: `bloom 500ms cubic-bezier(.2,.9,.3,1.2) ${i * 80}ms both`,
+                    }}
+                  >
+                    <Sticker card={card} mini />
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
-      {/* the board */}
-      <div className="celestial relative mt-5 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)" }}>
-        {/* threads between cards */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-          {threads.map(([a, b], i) => {
-            const A = byId[a], B = byId[b];
-            return (
-              <line
-                key={i}
-                x1={A.x} y1={A.y} x2={B.x} y2={B.y}
-                stroke="oklch(0.78 0.08 25)"
-                strokeOpacity={0.45}
-                strokeWidth={0.4}
-                strokeDasharray="0.8 1.2"
-                vectorEffect="non-scaling-stroke"
-              />
-            );
-          })}
-        </svg>
-
-        {cards.map((c) => (
+        {/* dim overlay click-out for cluster mode */}
+        {active && (
           <button
-            key={c.id}
-            onClick={() => setOpen(c)}
-            className="absolute -translate-x-1/2 -translate-y-1/2 transition hover:scale-[1.04] hover:z-20"
-            style={{
-              left: `${c.x}%`,
-              top: `${c.y}%`,
-              width: `${c.w}%`,
-              transform: `translate(-50%,-50%) rotate(${c.rot}deg)`,
-              filter: "drop-shadow(0 6px 10px oklch(0 0 0 / 0.35))",
-            }}
-          >
-            <Sticker card={c} />
-          </button>
-        ))}
-
-        {/* tiny stars */}
-        <span className="absolute top-3 left-4 text-[10px]" style={{ color: "var(--color-mustard)", opacity: 0.6 }}>✦</span>
-        <span className="absolute bottom-4 right-5 text-[10px]" style={{ color: "var(--color-mustard)", opacity: 0.6 }}>✦</span>
-        <span className="absolute top-1/2 right-3 text-[8px]" style={{ color: "var(--color-paper)", opacity: 0.4 }}>·</span>
+            onClick={() => setZoomed(null)}
+            className="absolute inset-0"
+            aria-label="zoom out"
+            style={{ background: "transparent" }}
+          />
+        )}
       </div>
 
       <p className="mt-3 text-center text-[11px] serif italic text-sepia">
-        tap a card to look closer
+        {active ? "tap a card · tap empty space to pull back" : "your sky is still forming · little by little"}
       </p>
 
       {/* zoom-in modal */}
@@ -164,11 +279,11 @@ function Constellations() {
             <X className="h-4 w-4" strokeWidth={1.5} />
           </button>
           <div
-            className="w-full max-w-[320px]"
+            className="w-full max-w-[300px]"
             style={{ animation: "stickerIn 380ms cubic-bezier(.2,.9,.3,1.2)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <Sticker card={{ ...open, w: 100 }} expanded />
+            <Sticker card={open} />
             <div className="mt-4 text-center">
               <p className="small-caps" style={{ color: "var(--color-mustard)" }}>{open.kind} · {open.date}</p>
               <p className="mt-2 serif italic text-[15px]" style={{ color: "var(--color-paper)" }}>
@@ -182,71 +297,92 @@ function Constellations() {
   );
 }
 
-function Sticker({ card, expanded = false }: { card: Card; expanded?: boolean }) {
+// for sky-view constellation lines: same spiral, projected to global %
+function starPos(c: Cluster, i: number, _total: number) {
+  const p = spiralPos(i, _total);
+  // cluster local 0-100 → global %, scaling by ~12% of board width
+  return {
+    x: c.cx + (p.x - 50) * 0.12,
+    y: c.cy + (p.y - 50) * 0.12,
+  };
+}
+
+// ---------- sticker shapes (compact) ----------
+function toneVar(t: Tone) {
+  return {
+    paper: "var(--color-paper)",
+    moss: "oklch(0.86 0.05 145)",
+    sky: "oklch(0.84 0.04 240)",
+    mustard: "oklch(0.88 0.09 85)",
+    burgundy: "oklch(0.78 0.08 25)",
+  }[t];
+}
+
+function Sticker({ card, mini = false }: { card: Card; mini?: boolean }) {
   const bg = toneVar(card.tone);
   const ink = "var(--color-ink)";
-  const titleClass = expanded ? "text-[16px]" : "text-[11px]";
-  const base = "relative serif text-center px-3 py-3 leading-tight";
+  const t = mini ? "text-[8px] leading-tight" : "text-[15px] leading-snug";
+  const pad = mini ? "px-1.5 py-1.5" : "px-3 py-3";
 
   switch (card.shape) {
     case "polaroid":
       return (
-        <div className="paper-card rounded-sm p-1.5 pb-5" style={{ backgroundColor: bg }}>
+        <div className="paper-card rounded-sm p-1 pb-2" style={{ backgroundColor: bg }}>
           <div className="aspect-[5/4] rounded-sm flex items-center justify-center" style={{ backgroundColor: "oklch(0.88 0.03 70)" }}>
-            <span className="text-2xl" style={{ color: "var(--color-moss)" }}>❦</span>
+            <span className={mini ? "text-xs" : "text-2xl"} style={{ color: "var(--color-moss)" }}>❦</span>
           </div>
-          <p className={`mt-2 italic ${titleClass}`} style={{ color: ink }}>{card.title}</p>
+          <p className={`mt-0.5 italic serif text-center ${t}`} style={{ color: ink }}>{card.title}</p>
         </div>
       );
     case "torn":
       return (
-        <div className={`torn-note ${base}`} style={{ backgroundColor: bg }}>
-          <p className={`italic ${titleClass}`} style={{ color: ink }}>{card.title}</p>
+        <div className={`torn-note serif text-center ${pad}`} style={{ backgroundColor: bg }}>
+          <p className={`italic ${t}`} style={{ color: ink }}>{card.title}</p>
         </div>
       );
     case "cloud":
       return (
         <div
-          className={base}
+          className={`serif text-center ${pad}`}
           style={{
             backgroundColor: bg,
             borderRadius: "50% 45% 55% 50% / 60% 55% 50% 50%",
             border: "1px solid oklch(0.55 0.03 70 / 0.4)",
           }}
         >
-          <p className={`italic ${titleClass}`} style={{ color: ink }}>{card.title}</p>
+          <p className={`italic ${t}`} style={{ color: ink }}>{card.title}</p>
         </div>
       );
     case "ribbon":
       return (
-        <div className="relative px-4 py-3" style={{ backgroundColor: bg }}>
-          <span className="absolute left-0 top-0 h-full w-2" style={{ backgroundColor: "var(--color-burgundy)" }} />
-          <p className={`italic serif ${titleClass}`} style={{ color: ink }}>{card.title}</p>
+        <div className={`relative serif ${pad}`} style={{ backgroundColor: bg }}>
+          <span className="absolute left-0 top-0 h-full" style={{ width: mini ? "3px" : "8px", backgroundColor: "var(--color-burgundy)" }} />
+          <p className={`italic ${t} pl-1`} style={{ color: ink }}>{card.title}</p>
         </div>
       );
     case "ticket":
       return (
         <div
-          className={base}
+          className={`serif text-center ${pad}`}
           style={{
             backgroundColor: bg,
             borderTop: "1px dashed var(--color-burgundy)",
             borderBottom: "1px dashed var(--color-burgundy)",
           }}
         >
-          <p className={`italic ${titleClass}`} style={{ color: ink }}>{card.title}</p>
+          <p className={`italic ${t}`} style={{ color: ink }}>{card.title}</p>
         </div>
       );
     case "pennant":
       return (
         <div
-          className="px-4 py-3 serif text-center"
+          className={`serif text-center ${pad}`}
           style={{
             backgroundColor: bg,
             clipPath: "polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%, 8% 50%)",
           }}
         >
-          <p className={`italic ${titleClass}`} style={{ color: ink }}>{card.title}</p>
+          <p className={`italic ${t}`} style={{ color: ink }}>{card.title}</p>
         </div>
       );
   }
