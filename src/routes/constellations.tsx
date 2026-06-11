@@ -1,7 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Plus, X, Sparkles } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+
+type Search = { landing?: "1"; title?: string; kind?: string };
 
 export const Route = createFileRoute("/constellations")({
   head: () => ({
@@ -10,8 +12,14 @@ export const Route = createFileRoute("/constellations")({
       { name: "description", content: "Your inner sky. Zoom in to read the stars." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    landing: s.landing === "1" ? "1" : undefined,
+    title: typeof s.title === "string" ? s.title : undefined,
+    kind: typeof s.kind === "string" ? s.kind : undefined,
+  }),
   component: Constellations,
 });
+
 
 // ---------- data ----------
 type Shape = "polaroid" | "torn" | "cloud" | "ribbon" | "ticket" | "pennant";
