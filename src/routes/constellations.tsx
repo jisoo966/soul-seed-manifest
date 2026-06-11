@@ -8,8 +8,8 @@ type Search = { landing?: "1"; title?: string; kind?: string };
 export const Route = createFileRoute("/constellations")({
   head: () => ({
     meta: [
-      { title: "Constellations — Sisi" },
-      { name: "description", content: "Your inner sky. Zoom in to read the stars." },
+      { title: "Sky — Sisi" },
+      { name: "description", content: "Your manifestations in motion." },
     ],
   }),
   validateSearch: (s: Record<string, unknown>): Search => ({
@@ -17,108 +17,97 @@ export const Route = createFileRoute("/constellations")({
     title: typeof s.title === "string" ? s.title : undefined,
     kind: typeof s.kind === "string" ? s.kind : undefined,
   }),
-  component: Constellations,
+  component: Sky,
 });
 
-
 // ---------- data ----------
+type Horizon = "thisMonth" | "thisSeason" | "thisYear" | "someday";
 type Shape = "polaroid" | "torn" | "cloud" | "ribbon" | "ticket" | "pennant";
 type Tone = "paper" | "moss" | "sky" | "mustard" | "burgundy";
 
-type Card = {
+type Sign = {
+  id: string; kind: string; title: string; note: string; date: string;
+  shape: Shape; tone: Tone;
+};
+
+type Manifestation = {
   id: string;
-  kind: string;
   title: string;
-  note: string;
-  date: string;
-  daysAgo: number; // for spiral order (0 = most recent → center)
-  shape: Shape;
-  tone: Tone;
+  horizon: Horizon;
+  startedDaysAgo: number;
+  totalDays: number;       // window length
+  x: number;               // % within sky band
+  signs: Sign[];
 };
 
-type Cluster = {
-  id: string;
-  label: string;
-  cx: number; // % on the sky
-  cy: number;
-  nebula: string; // oklch color
-  glyph: string;
-  cards: Card[];
+const HORIZONS: Record<Horizon, { label: string; y: number; size: number; glow: number }> = {
+  someday:    { label: "someday",      y: 14, size: 9,  glow: 0.4 },
+  thisYear:   { label: "this year",    y: 36, size: 12, glow: 0.6 },
+  thisSeason: { label: "this season",  y: 60, size: 15, glow: 0.8 },
+  thisMonth:  { label: "this month",   y: 84, size: 19, glow: 1.0 },
 };
 
-const clusters: Cluster[] = [
+const manifestations: Manifestation[] = [
   {
-    id: "relationship",
-    label: "relationship",
-    cx: 32, cy: 30,
-    nebula: "oklch(0.78 0.08 25 / 0.18)",
-    glyph: "❦",
-    cards: [
-      { id: "r1", kind: "Wish", title: "to feel chosen", note: "You said you wanted to feel chosen. I want to remember this.", date: "Jun 02", daysAgo: 0, shape: "ribbon", tone: "burgundy" },
-      { id: "r2", kind: "Memory", title: "morning light", note: "The cafe by the river. We sat without speaking for an hour.", date: "May 28", daysAgo: 1, shape: "polaroid", tone: "paper" },
-      { id: "r3", kind: "Thought", title: "slow arrival", note: "Some things arrive slowly. That isn't the same as never.", date: "May 20", daysAgo: 2, shape: "torn", tone: "moss" },
-      { id: "r4", kind: "Sign", title: "white feather", note: "Saw a white feather on my way to work.", date: "May 14", daysAgo: 3, shape: "pennant", tone: "mustard" },
+    id: "studio",
+    title: "Land the role at the studio I've been watching",
+    horizon: "thisYear", startedDaysAgo: 38, totalDays: 220, x: 30,
+    signs: [
+      { id: "s1", kind: "Sync", title: "the senior reached out", note: "She replied to my email — within an hour.", date: "May 28", shape: "ticket", tone: "paper" },
+      { id: "s2", kind: "Sign", title: "their job page changed", note: "A new opening appeared, almost written for me.", date: "May 20", shape: "pennant", tone: "mustard" },
+      { id: "s3", kind: "Thought", title: "I belong in that room", note: "I felt it for a second, and I want to feel it again.", date: "May 12", shape: "torn", tone: "moss" },
     ],
   },
   {
-    id: "work",
-    label: "the work",
-    cx: 72, cy: 48,
-    nebula: "oklch(0.84 0.04 240 / 0.18)",
-    glyph: "✦",
-    cards: [
-      { id: "w1", kind: "Manifestation", title: "the interview", note: "It went better than I expected. I almost felt held.", date: "Jun 01", daysAgo: 0, shape: "polaroid", tone: "paper" },
-      { id: "w2", kind: "Dream", title: "open door", note: "I dreamt the door was already open. I just had to walk.", date: "May 25", daysAgo: 1, shape: "cloud", tone: "sky" },
-      { id: "w3", kind: "Sync", title: "the song", note: "The song I'd been thinking of, on the radio. Twice.", date: "May 18", daysAgo: 2, shape: "ticket", tone: "paper" },
+    id: "body",
+    title: "Reach 65kg with strength, not punishment",
+    horizon: "thisMonth", startedDaysAgo: 18, totalDays: 30, x: 70,
+    signs: [
+      { id: "b1", kind: "Manifestation", title: "first 5km without stopping", note: "I didn't even mean to. The body just kept going.", date: "Jun 03", shape: "polaroid", tone: "paper" },
+      { id: "b2", kind: "Sign", title: "the mirror moment", note: "The shirt sat differently. Quietly different.", date: "May 30", shape: "ribbon", tone: "burgundy" },
     ],
   },
   {
-    id: "self",
-    label: "becoming",
-    cx: 38, cy: 74,
-    nebula: "oklch(0.86 0.05 145 / 0.16)",
-    glyph: "✿",
-    cards: [
-      { id: "s1", kind: "Thought", title: "softer mornings", note: "I'm beginning to like the mornings again.", date: "May 30", daysAgo: 0, shape: "torn", tone: "moss" },
-      { id: "s2", kind: "Wish", title: "patience", note: "Less rushing. Less reaching. More noticing.", date: "May 22", daysAgo: 1, shape: "ribbon", tone: "burgundy" },
+    id: "draft",
+    title: "Finish the first draft",
+    horizon: "thisSeason", startedDaysAgo: 22, totalDays: 90, x: 32,
+    signs: [
+      { id: "d1", kind: "Dream", title: "the open door", note: "I dreamt the door was already open. I just had to walk.", date: "May 25", shape: "cloud", tone: "sky" },
     ],
+  },
+  {
+    id: "home",
+    title: "Find a home that feels like mine",
+    horizon: "someday", startedDaysAgo: 0, totalDays: 0, x: 65,
+    signs: [],
   },
 ];
 
-// ---------- spiral layout helpers ----------
-// most recent at center; older spirals outward
+// ---------- spiral for zoomed signs ----------
 const GOLDEN_ANGLE = 137.5;
-function spiralPos(i: number, total: number) {
+function spiralPos(i: number) {
   const angle = (i * GOLDEN_ANGLE) * (Math.PI / 180);
-  // tighter spiral; radius in % of cluster viewport (we render in a 200x200 box)
   const radius = 8 + i * 16;
-  const x = 50 + Math.cos(angle) * radius;
-  const y = 50 + Math.sin(angle) * radius;
-  const rot = (i % 2 === 0 ? -1 : 1) * (3 + i * 1.5);
-  const scale = 1 - i * 0.06;
-  return { x, y, rot, scale };
+  return {
+    x: 50 + Math.cos(angle) * radius,
+    y: 50 + Math.sin(angle) * radius,
+    rot: (i % 2 === 0 ? -1 : 1) * (3 + i * 1.5),
+    scale: 1 - i * 0.06,
+  };
 }
 
 // ---------- component ----------
-function kindToCluster(kind?: string) {
-  if (!kind) return "relationship";
-  if (["Wish", "Memory"].includes(kind)) return "relationship";
-  if (["Sign", "Sync", "Dream", "Manifestation"].includes(kind)) return "work";
-  return "self";
-}
-
-function Constellations() {
+function Sky() {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const [zoomed, setZoomed] = useState<string | null>(null);
-  const [open, setOpen] = useState<Card | null>(null);
+  const [open, setOpen] = useState<Sign | null>(null);
 
-  // landing animation: 'falling' → 'landed' → 'suggesting' → null
   const [phase, setPhase] = useState<"falling" | "landed" | "suggesting" | null>(
     search.landing === "1" ? "falling" : null
   );
-  const suggestedId = kindToCluster(search.kind);
-  const suggested = clusters.find((c) => c.id === suggestedId)!;
+  // suggest first active manifestation (could be smarter)
+  const suggested = manifestations[0];
 
   useEffect(() => {
     if (phase !== "falling") return;
@@ -130,15 +119,13 @@ function Constellations() {
   function dismissLanding(zoomInto: boolean) {
     setPhase(null);
     navigate({ to: "/constellations", search: {}, replace: true });
-    if (zoomInto) setZoomed(suggestedId);
+    if (zoomInto) setZoomed(suggested.id);
   }
 
-  const active = clusters.find((c) => c.id === zoomed);
-  // camera transform: when zoomed, scale 2.4 around cluster center
+  const active = manifestations.find((m) => m.id === zoomed);
   const scale = active ? 2.4 : 1;
-  const tx = active ? 50 - active.cx : 0;
-  const ty = active ? 50 - active.cy : 0;
-
+  const tx = active ? 50 - active.x : 0;
+  const ty = active ? 50 - HORIZONS[active.horizon].y : 0;
 
   return (
     <PhoneFrame>
@@ -151,20 +138,36 @@ function Constellations() {
           <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
         )}
         <h1 className="text-lg serif text-ink">
-          {active ? <em className="italic">{active.label}</em> : "Your sky"}
+          {active ? <em className="italic">your manifestation</em> : "Your sky"}
         </h1>
         <button className="p-1"><Plus className="h-5 w-5 text-ink" strokeWidth={1.4} /></button>
       </header>
 
       <p className="small-caps text-center mt-4" style={{ color: "var(--color-burgundy)" }}>
-        {active ? `${active.cards.length} entries · most recent at center` : "tap a constellation to enter it"}
+        {active
+          ? `${active.signs.length} signs · ${remainingLabel(active)}`
+          : "near sky · this month  ·  far sky · someday"}
       </p>
 
       {/* the sky */}
-      <div
-        className="celestial relative mt-4 rounded-2xl aspect-[3/4] overflow-hidden border"
-        style={{ borderColor: "var(--color-burgundy)" }}
-      >
+      <div className="celestial relative mt-4 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)" }}>
+        {/* horizon bands — only on sky view */}
+        {!active && (
+          <>
+            {(Object.keys(HORIZONS) as Horizon[]).map((h) => {
+              const band = HORIZONS[h];
+              return (
+                <div key={h} className="absolute left-0 right-0 pointer-events-none" style={{ top: `${band.y}%` }}>
+                  <div className="border-t border-dashed" style={{ borderColor: "oklch(0.88 0.09 85 / 0.18)" }} />
+                  <span className="absolute left-3 -top-2 small-caps text-[9px]" style={{ color: "oklch(0.85 0.06 85 / 0.6)" }}>
+                    {band.label}
+                  </span>
+                </div>
+              );
+            })}
+          </>
+        )}
+
         {/* camera */}
         <div
           className="absolute inset-0"
@@ -174,102 +177,60 @@ function Constellations() {
             transition: "transform 700ms cubic-bezier(.6,.05,.2,1)",
           }}
         >
-          {/* nebulas */}
-          {clusters.map((c) => (
-            <div
-              key={c.id + "neb"}
-              className="absolute rounded-full"
-              style={{
-                left: `${c.cx}%`, top: `${c.cy}%`,
-                width: "44%", height: "44%",
-                transform: "translate(-50%,-50%)",
-                background: `radial-gradient(circle, ${c.nebula} 0%, transparent 70%)`,
-                filter: zoomed && zoomed !== c.id ? "blur(2px)" : "none",
-                opacity: zoomed && zoomed !== c.id ? 0.35 : 1,
-                transition: "opacity 500ms, filter 500ms",
-              }}
-            />
-          ))}
-
-          {/* constellation lines (sky view) */}
-          {!active && (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-              {clusters.flatMap((c) =>
-                c.cards.slice(0, -1).map((_, i) => {
-                  const p1 = starPos(c, i, c.cards.length);
-                  const p2 = starPos(c, i + 1, c.cards.length);
-                  return (
-                    <line
-                      key={`${c.id}-l-${i}`}
-                      x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
-                      stroke="oklch(0.88 0.09 85)"
-                      strokeOpacity={0.35}
-                      strokeWidth={0.25}
-                      strokeDasharray="0.6 0.8"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  );
-                })
-              )}
-            </svg>
-          )}
-
-          {/* sky view: clusters as breathing stars */}
-          {!active && clusters.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setZoomed(c.id)}
-              className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group"
-              style={{ left: `${c.cx}%`, top: `${c.cy}%` }}
-            >
-              {c.cards.map((_, i) => {
-                const p = starPos(c, i, c.cards.length);
-                const dx = p.x - c.cx;
-                const dy = p.y - c.cy;
-                return (
-                  <span
-                    key={i}
-                    className="absolute text-[10px] breathe"
-                    style={{
-                      left: `${dx * 4}px`,
-                      top: `${dy * 4}px`,
-                      color: "var(--color-mustard)",
-                      animationDelay: `${i * 0.4}s`,
-                      textShadow: "0 0 6px oklch(0.88 0.09 85 / 0.6)",
-                    }}
-                  >
-                    ✦
-                  </span>
-                );
-              })}
-              <span
-                className="serif italic text-[11px] mt-10 px-2 py-0.5 rounded-full"
-                style={{
-                  color: "var(--color-paper)",
-                  backgroundColor: "oklch(0.2 0.02 60 / 0.5)",
-                }}
+          {/* sky view: manifestations as stars in their bands */}
+          {!active && manifestations.map((m) => {
+            const band = HORIZONS[m.horizon];
+            const progress = m.totalDays > 0 ? Math.min(1, m.startedDaysAgo / m.totalDays) : 0;
+            return (
+              <button
+                key={m.id}
+                onClick={() => setZoomed(m.id)}
+                className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+                style={{ left: `${m.x}%`, top: `${band.y}%`, width: "44%" }}
               >
-                {c.label} · {c.cards.length}
-              </span>
-            </button>
-          ))}
+                <span
+                  className="breathe"
+                  style={{
+                    fontSize: `${band.size}px`,
+                    color: "var(--color-mustard)",
+                    textShadow: `0 0 ${10 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow})`,
+                  }}
+                >
+                  ✦
+                </span>
+                <span
+                  className="serif italic text-[10px] mt-1.5 px-2 py-0.5 rounded-full text-center leading-tight"
+                  style={{
+                    color: "var(--color-paper)",
+                    backgroundColor: "oklch(0.2 0.02 60 / 0.55)",
+                    maxWidth: "100%",
+                  }}
+                >
+                  {short(m.title)}
+                </span>
+                {m.totalDays > 0 && (
+                  <ProgressArc progress={progress} signs={m.signs.length} />
+                )}
+              </button>
+            );
+          })}
 
-          {/* cluster view: spiral of cards */}
+          {/* cluster view: spiral of signs for this manifestation */}
           {active && (
             <div
               className="absolute"
               style={{
-                left: `${active.cx}%`, top: `${active.cy}%`,
-                width: "200px", height: "200px",
+                left: `${active.x}%`, top: `${HORIZONS[active.horizon].y}%`,
+                width: "180px", height: "180px",
                 transform: "translate(-50%,-50%)",
               }}
             >
-              {active.cards.map((card, i) => {
-                const p = spiralPos(i, active.cards.length);
+              {active.signs.map((sign, i) => {
+                const p = spiralPos(i);
                 return (
                   <button
-                    key={card.id}
-                    onClick={() => setOpen(card)}
+                    key={sign.id}
+                    onClick={() => setOpen(sign)}
                     className="absolute"
                     style={{
                       left: `${p.x}%`, top: `${p.y}%`,
@@ -279,15 +240,20 @@ function Constellations() {
                       animation: `bloom 500ms cubic-bezier(.2,.9,.3,1.2) ${i * 80}ms both`,
                     }}
                   >
-                    <Sticker card={card} mini />
+                    <Sticker sign={sign} mini />
                   </button>
                 );
               })}
+              {active.signs.length === 0 && (
+                <p className="absolute inset-0 flex items-center justify-center text-center serif italic text-[11px] px-6" style={{ color: "var(--color-paper)" }}>
+                  no signs yet · the sky is still listening
+                </p>
+              )}
             </div>
           )}
         </div>
 
-        {/* falling new star — sits above the camera so it lands in board coords */}
+        {/* falling new star */}
         {phase === "falling" && (
           <span
             className="absolute text-2xl pointer-events-none z-30"
@@ -296,8 +262,8 @@ function Constellations() {
               color: "var(--color-mustard)",
               textShadow: "0 0 14px oklch(0.88 0.09 85 / 0.9)",
               animation: "starFall 1.4s cubic-bezier(.55,.05,.3,1) forwards",
-              ["--tx" as any]: `${suggested.cx - 50}%`,
-              ["--ty" as any]: `${suggested.cy + 8}%`,
+              ["--tx" as any]: `${suggested.x - 50}%`,
+              ["--ty" as any]: `${HORIZONS[suggested.horizon].y + 8}%`,
             }}
           >
             ✦
@@ -307,7 +273,7 @@ function Constellations() {
           <span
             className="absolute text-xl pointer-events-none z-30"
             style={{
-              left: `${suggested.cx}%`, top: `${suggested.cy}%`,
+              left: `${suggested.x}%`, top: `${HORIZONS[suggested.horizon].y}%`,
               transform: "translate(-50%,-50%)",
               color: "var(--color-mustard)",
               textShadow: "0 0 18px oklch(0.88 0.09 85 / 0.9)",
@@ -318,7 +284,6 @@ function Constellations() {
           </span>
         )}
 
-        {/* dim overlay click-out for cluster mode */}
         {active && (
           <button
             onClick={() => setZoomed(null)}
@@ -329,74 +294,57 @@ function Constellations() {
         )}
       </div>
 
-      {/* sisi suggestion after landing */}
+      {/* zoomed manifestation header (below board) */}
+      {active && (
+        <div className="paper-card rounded-lg mt-3 px-4 py-3">
+          <p className="serif italic text-[14px] text-ink leading-snug">{active.title}</p>
+          <div className="mt-2">
+            <ProgressBar
+              progress={active.totalDays > 0 ? Math.min(1, active.startedDaysAgo / active.totalDays) : 0}
+              label={remainingLabel(active)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* sisi suggestion */}
       {phase === "suggesting" && (
-        <div
-          className="paper-card rounded-xl mt-4 px-4 py-3"
-          style={{ animation: "fade-in 0.4s ease-out", borderColor: "var(--color-burgundy)" }}
-        >
+        <div className="paper-card rounded-xl mt-4 px-4 py-3" style={{ animation: "fade-in 0.4s ease-out", borderColor: "var(--color-burgundy)" }}>
           <p className="small-caps mb-1 flex items-center gap-1.5" style={{ color: "var(--color-burgundy)" }}>
             <Sparkles className="h-3 w-3" strokeWidth={1.5} /> sisi noticed
           </p>
-          {search.title && (
-            <p className="serif italic text-[14px] text-ink leading-snug">
-              &ldquo;{search.title}&rdquo;
-            </p>
-          )}
+          {search.title && <p className="serif italic text-[14px] text-ink leading-snug">&ldquo;{search.title}&rdquo;</p>}
           <p className="mt-2 serif text-[13px] text-ink/85">
-            This feels like it belongs with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{suggested.label}</em>.
+            This feels like a sign for <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
           </p>
           <div className="mt-3 flex gap-2">
-            <button
-              onClick={() => dismissLanding(true)}
-              className="flex-1 py-2 rounded-lg serif italic text-[13px]"
-              style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}
-            >
-              Add to {suggested.label}
+            <button onClick={() => dismissLanding(true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
+              Add this sign
             </button>
-            <button
-              onClick={() => dismissLanding(false)}
-              className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border"
-              style={{ borderColor: "var(--color-burgundy)" }}
-            >
+            <button onClick={() => dismissLanding(false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
               Not now
             </button>
           </div>
         </div>
       )}
 
-      {!phase && (
+      {!phase && !active && (
         <p className="mt-3 text-center text-[11px] serif italic text-sepia">
-          {active ? "tap a card · tap empty space to pull back" : "your sky is still forming · little by little"}
+          tap a star to enter its story
         </p>
       )}
 
-
-      {/* zoom-in modal */}
+      {/* sign modal */}
       {open && (
-        <div
-          onClick={() => setOpen(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center px-6"
-          style={{ backgroundColor: "oklch(0.15 0.02 60 / 0.85)", backdropFilter: "blur(4px)" }}
-        >
-          <button
-            onClick={() => setOpen(null)}
-            className="absolute top-6 right-6 p-2 rounded-full"
-            style={{ backgroundColor: "var(--color-paper)", color: "var(--color-ink)" }}
-          >
+        <div onClick={() => setOpen(null)} className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ backgroundColor: "oklch(0.15 0.02 60 / 0.85)", backdropFilter: "blur(4px)" }}>
+          <button onClick={() => setOpen(null)} className="absolute top-6 right-6 p-2 rounded-full" style={{ backgroundColor: "var(--color-paper)", color: "var(--color-ink)" }}>
             <X className="h-4 w-4" strokeWidth={1.5} />
           </button>
-          <div
-            className="w-full max-w-[300px]"
-            style={{ animation: "stickerIn 380ms cubic-bezier(.2,.9,.3,1.2)" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Sticker card={open} />
+          <div className="w-full max-w-[300px]" style={{ animation: "stickerIn 380ms cubic-bezier(.2,.9,.3,1.2)" }} onClick={(e) => e.stopPropagation()}>
+            <Sticker sign={open} />
             <div className="mt-4 text-center">
               <p className="small-caps" style={{ color: "var(--color-mustard)" }}>{open.kind} · {open.date}</p>
-              <p className="mt-2 serif italic text-[15px]" style={{ color: "var(--color-paper)" }}>
-                "{open.note}"
-              </p>
+              <p className="mt-2 serif italic text-[15px]" style={{ color: "var(--color-paper)" }}>&ldquo;{open.note}&rdquo;</p>
             </div>
           </div>
         </div>
@@ -405,93 +353,90 @@ function Constellations() {
   );
 }
 
-// for sky-view constellation lines: same spiral, projected to global %
-function starPos(c: Cluster, i: number, _total: number) {
-  const p = spiralPos(i, _total);
-  // cluster local 0-100 → global %, scaling by ~12% of board width
-  return {
-    x: c.cx + (p.x - 50) * 0.12,
-    y: c.cy + (p.y - 50) * 0.12,
-  };
+// ---------- subcomponents ----------
+function ProgressArc({ progress, signs }: { progress: number; signs: number }) {
+  // small horizon arc beneath the star
+  const r = 24;
+  const start = Math.PI; // left
+  const end = 0;         // right (top semicircle)
+  const angle = start + (end - start) * progress;
+  const px = 30 + r * Math.cos(angle);
+  const py = 28 - r * Math.sin(angle);
+  return (
+    <div className="mt-1 flex items-center gap-1.5">
+      <svg width="60" height="18" viewBox="0 0 60 30">
+        <path d="M 6 28 A 24 24 0 0 1 54 28" fill="none" stroke="oklch(0.88 0.09 85 / 0.25)" strokeWidth="1.2" strokeDasharray="2 2" />
+        <path d={`M 6 28 A 24 24 0 0 1 ${px} ${py}`} fill="none" stroke="oklch(0.88 0.09 85 / 0.9)" strokeWidth="1.4" strokeLinecap="round" />
+        <circle cx={px} cy={py} r="2" fill="oklch(0.88 0.09 85)" />
+      </svg>
+      <span className="text-[9px] serif italic" style={{ color: "oklch(0.85 0.05 85 / 0.8)" }}>{signs}</span>
+    </div>
+  );
 }
 
-// ---------- sticker shapes (compact) ----------
+function ProgressBar({ progress, label }: { progress: number; label: string }) {
+  return (
+    <div>
+      <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: "oklch(0.78 0.08 25 / 0.2)" }}>
+        <div className="h-full" style={{ width: `${progress * 100}%`, backgroundColor: "var(--color-burgundy)" }} />
+      </div>
+      <p className="mt-1.5 text-[11px] serif italic text-sepia">{label}</p>
+    </div>
+  );
+}
+
+function remainingLabel(m: Manifestation) {
+  if (m.horizon === "someday") return "no horizon · open to the universe";
+  const left = m.totalDays - m.startedDaysAgo;
+  if (m.horizon === "thisMonth") return `${left} days left · ${m.signs.length} signs`;
+  if (m.horizon === "thisSeason") {
+    const weeks = Math.round(left / 7);
+    return `${weeks} weeks left · ${m.signs.length} signs`;
+  }
+  const moons = Math.round(left / 30);
+  return `${moons} more moons · ${m.signs.length} signs`;
+}
+
+function short(t: string) {
+  return t.length > 28 ? t.slice(0, 28) + "…" : t;
+}
+
+// ---------- sticker shapes ----------
 function toneVar(t: Tone) {
-  return {
+  return ({
     paper: "var(--color-paper)",
     moss: "oklch(0.86 0.05 145)",
     sky: "oklch(0.84 0.04 240)",
     mustard: "oklch(0.88 0.09 85)",
     burgundy: "oklch(0.78 0.08 25)",
-  }[t];
+  } as const)[t];
 }
 
-function Sticker({ card, mini = false }: { card: Card; mini?: boolean }) {
-  const bg = toneVar(card.tone);
+function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
+  const bg = toneVar(sign.tone);
   const ink = "var(--color-ink)";
   const t = mini ? "text-[8px] leading-tight" : "text-[15px] leading-snug";
   const pad = mini ? "px-1.5 py-1.5" : "px-3 py-3";
 
-  switch (card.shape) {
+  switch (sign.shape) {
     case "polaroid":
       return (
         <div className="paper-card rounded-sm p-1 pb-2" style={{ backgroundColor: bg }}>
           <div className="aspect-[5/4] rounded-sm flex items-center justify-center" style={{ backgroundColor: "oklch(0.88 0.03 70)" }}>
             <span className={mini ? "text-xs" : "text-2xl"} style={{ color: "var(--color-moss)" }}>❦</span>
           </div>
-          <p className={`mt-0.5 italic serif text-center ${t}`} style={{ color: ink }}>{card.title}</p>
+          <p className={`mt-0.5 italic serif text-center ${t}`} style={{ color: ink }}>{sign.title}</p>
         </div>
       );
     case "torn":
-      return (
-        <div className={`torn-note serif text-center ${pad}`} style={{ backgroundColor: bg }}>
-          <p className={`italic ${t}`} style={{ color: ink }}>{card.title}</p>
-        </div>
-      );
+      return <div className={`torn-note serif text-center ${pad}`} style={{ backgroundColor: bg }}><p className={`italic ${t}`} style={{ color: ink }}>{sign.title}</p></div>;
     case "cloud":
-      return (
-        <div
-          className={`serif text-center ${pad}`}
-          style={{
-            backgroundColor: bg,
-            borderRadius: "50% 45% 55% 50% / 60% 55% 50% 50%",
-            border: "1px solid oklch(0.55 0.03 70 / 0.4)",
-          }}
-        >
-          <p className={`italic ${t}`} style={{ color: ink }}>{card.title}</p>
-        </div>
-      );
+      return <div className={`serif text-center ${pad}`} style={{ backgroundColor: bg, borderRadius: "50% 45% 55% 50% / 60% 55% 50% 50%", border: "1px solid oklch(0.55 0.03 70 / 0.4)" }}><p className={`italic ${t}`} style={{ color: ink }}>{sign.title}</p></div>;
     case "ribbon":
-      return (
-        <div className={`relative serif ${pad}`} style={{ backgroundColor: bg }}>
-          <span className="absolute left-0 top-0 h-full" style={{ width: mini ? "3px" : "8px", backgroundColor: "var(--color-burgundy)" }} />
-          <p className={`italic ${t} pl-1`} style={{ color: ink }}>{card.title}</p>
-        </div>
-      );
+      return <div className={`relative serif ${pad}`} style={{ backgroundColor: bg }}><span className="absolute left-0 top-0 h-full" style={{ width: mini ? "3px" : "8px", backgroundColor: "var(--color-burgundy)" }} /><p className={`italic ${t} pl-1`} style={{ color: ink }}>{sign.title}</p></div>;
     case "ticket":
-      return (
-        <div
-          className={`serif text-center ${pad}`}
-          style={{
-            backgroundColor: bg,
-            borderTop: "1px dashed var(--color-burgundy)",
-            borderBottom: "1px dashed var(--color-burgundy)",
-          }}
-        >
-          <p className={`italic ${t}`} style={{ color: ink }}>{card.title}</p>
-        </div>
-      );
+      return <div className={`serif text-center ${pad}`} style={{ backgroundColor: bg, borderTop: "1px dashed var(--color-burgundy)", borderBottom: "1px dashed var(--color-burgundy)" }}><p className={`italic ${t}`} style={{ color: ink }}>{sign.title}</p></div>;
     case "pennant":
-      return (
-        <div
-          className={`serif text-center ${pad}`}
-          style={{
-            backgroundColor: bg,
-            clipPath: "polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%, 8% 50%)",
-          }}
-        >
-          <p className={`italic ${t}`} style={{ color: ink }}>{card.title}</p>
-        </div>
-      );
+      return <div className={`serif text-center ${pad}`} style={{ backgroundColor: bg, clipPath: "polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%, 8% 50%)" }}><p className={`italic ${t}`} style={{ color: ink }}>{sign.title}</p></div>;
   }
 }
