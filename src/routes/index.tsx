@@ -28,9 +28,26 @@ function Home() {
         </p>
       </header>
 
-      {/* burgundy cartouche — the museum sticker */}
-      <div className="mt-7 text-center">
-        <span className="cartouche text-[13px]">
+      {/* primary CTA — the one clear action */}
+      <Link
+        to="/collect"
+        className="mt-7 block rounded-xl px-5 py-4 text-center serif transition hover:opacity-95"
+        style={{
+          backgroundColor: "var(--color-burgundy)",
+          color: "var(--color-paper)",
+          boxShadow: "0 6px 18px -10px var(--color-burgundy)",
+        }}
+      >
+        <span className="small-caps block text-[10px] mb-1" style={{ color: "var(--color-mustard)", letterSpacing: "0.3em" }}>
+          today's ritual
+        </span>
+        <span className="text-[17px] italic">
+          Press today's moment into the book →
+        </span>
+      </Link>
+
+      <div className="mt-3 text-center">
+        <span className="cartouche text-[11px]">
           a museum of everything you've ever loved
         </span>
       </div>
