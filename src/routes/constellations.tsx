@@ -116,6 +116,10 @@ function Sky() {
   const [phase, setPhase] = useState<"falling" | "landed" | "suggesting" | null>(
     search.landing === "1" ? "falling" : null
   );
+  // manifested ritual phase
+  const [ritual, setRitual] = useState<"descending" | "celebrating" | null>(null);
+  const [manifestedIds, setManifestedIds] = useState<Set<string>>(new Set());
+
   // suggest first active manifestation (could be smarter)
   const suggested = manifestations[0];
 
@@ -126,16 +130,33 @@ function Sky() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [phase]);
 
-  function dismissLanding(zoomInto: boolean) {
+  useEffect(() => {
+    if (ritual !== "descending") return;
+    const t = setTimeout(() => setRitual("celebrating"), 1800);
+    return () => clearTimeout(t);
+  }, [ritual]);
+
+  function dismissLanding(addAsFloating: boolean, attachToManifestation: boolean) {
     setPhase(null);
     navigate({ to: "/constellations", search: {}, replace: true });
-    if (zoomInto) setZoomed(suggested.id);
+    if (attachToManifestation) setZoomed(suggested.id);
+    // (addAsFloating is the default behavior — sign stays in sky)
+    void addAsFloating;
+  }
+
+  function completeRitual() {
+    if (active) {
+      setManifestedIds((s) => new Set(s).add(active.id));
+    }
+    setRitual(null);
+    setZoomed(null);
   }
 
   const active = manifestations.find((m) => m.id === zoomed);
   const scale = active ? 2.4 : 1;
   const tx = active ? 50 - active.x : 0;
   const ty = active ? 50 - HORIZONS[active.horizon].y : 0;
+
 
   return (
     <PhoneFrame>
