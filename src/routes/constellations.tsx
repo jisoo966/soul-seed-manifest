@@ -100,15 +100,45 @@ function spiralPos(i: number, total: number) {
 }
 
 // ---------- component ----------
+function kindToCluster(kind?: string) {
+  if (!kind) return "relationship";
+  if (["Wish", "Memory"].includes(kind)) return "relationship";
+  if (["Sign", "Sync", "Dream", "Manifestation"].includes(kind)) return "work";
+  return "self";
+}
+
 function Constellations() {
+  const navigate = useNavigate();
+  const search = Route.useSearch();
   const [zoomed, setZoomed] = useState<string | null>(null);
   const [open, setOpen] = useState<Card | null>(null);
+
+  // landing animation: 'falling' → 'landed' → 'suggesting' → null
+  const [phase, setPhase] = useState<"falling" | "landed" | "suggesting" | null>(
+    search.landing === "1" ? "falling" : null
+  );
+  const suggestedId = kindToCluster(search.kind);
+  const suggested = clusters.find((c) => c.id === suggestedId)!;
+
+  useEffect(() => {
+    if (phase !== "falling") return;
+    const t1 = setTimeout(() => setPhase("landed"), 1400);
+    const t2 = setTimeout(() => setPhase("suggesting"), 2100);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [phase]);
+
+  function dismissLanding(zoomInto: boolean) {
+    setPhase(null);
+    navigate({ to: "/constellations", search: {}, replace: true });
+    if (zoomInto) setZoomed(suggestedId);
+  }
 
   const active = clusters.find((c) => c.id === zoomed);
   // camera transform: when zoomed, scale 2.4 around cluster center
   const scale = active ? 2.4 : 1;
   const tx = active ? 50 - active.cx : 0;
   const ty = active ? 50 - active.cy : 0;
+
 
   return (
     <PhoneFrame>
