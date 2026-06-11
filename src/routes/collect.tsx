@@ -87,8 +87,12 @@ function Collect() {
       <button
         disabled={!canSubmit}
         onClick={() => {
+          const title = text.trim().slice(0, 60);
           setText("");
-          navigate({ to: "/" });
+          navigate({
+            to: "/constellations",
+            search: { landing: "1", title, kind: kind ?? "Sign" },
+          });
         }}
         className="mt-6 w-full rounded-xl py-4 serif text-[16px] italic transition disabled:opacity-40"
         style={{
@@ -98,6 +102,7 @@ function Collect() {
         }}
       >
         ❦  Press it into the book
+
       </button>
 
       <h2 className="small-caps mt-9 mb-3">Pressed earlier</h2>
