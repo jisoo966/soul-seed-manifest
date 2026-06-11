@@ -83,6 +83,15 @@ const manifestations: Manifestation[] = [
   },
 ];
 
+// floating signs — unattached to any manifestation. drift in the upper sky.
+type FloatingSign = Sign & { x: number; y: number; drift: number };
+const floatingSigns: FloatingSign[] = [
+  { id: "f1", kind: "Sync", title: "the song on the radio", note: "The song I'd been thinking of. Twice in one day.", date: "Jun 04", shape: "ticket", tone: "paper", x: 18, y: 6, drift: 0 },
+  { id: "f2", kind: "Sign", title: "white feather", note: "Saw a white feather on my way to work.", date: "Jun 02", shape: "pennant", tone: "mustard", x: 52, y: 4, drift: 1.2 },
+  { id: "f3", kind: "Thought", title: "less rushing", note: "Less rushing. More noticing.", date: "May 30", shape: "torn", tone: "moss", x: 82, y: 8, drift: 2.4 },
+  { id: "f4", kind: "Sync", title: "11:11 again", note: "Looked up at 11:11. Smiled.", date: "May 27", shape: "ticket", tone: "paper", x: 90, y: 24, drift: 0.6 },
+];
+
 // ---------- spiral for zoomed signs ----------
 const GOLDEN_ANGLE = 137.5;
 function spiralPos(i: number) {
@@ -95,6 +104,7 @@ function spiralPos(i: number) {
     scale: 1 - i * 0.06,
   };
 }
+
 
 // ---------- component ----------
 function Sky() {
