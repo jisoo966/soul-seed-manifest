@@ -83,6 +83,15 @@ const manifestations: Manifestation[] = [
   },
 ];
 
+// floating signs — unattached to any manifestation. drift in the upper sky.
+type FloatingSign = Sign & { x: number; y: number; drift: number };
+const floatingSigns: FloatingSign[] = [
+  { id: "f1", kind: "Sync", title: "the song on the radio", note: "The song I'd been thinking of. Twice in one day.", date: "Jun 04", shape: "ticket", tone: "paper", x: 18, y: 6, drift: 0 },
+  { id: "f2", kind: "Sign", title: "white feather", note: "Saw a white feather on my way to work.", date: "Jun 02", shape: "pennant", tone: "mustard", x: 52, y: 4, drift: 1.2 },
+  { id: "f3", kind: "Thought", title: "less rushing", note: "Less rushing. More noticing.", date: "May 30", shape: "torn", tone: "moss", x: 82, y: 8, drift: 2.4 },
+  { id: "f4", kind: "Sync", title: "11:11 again", note: "Looked up at 11:11. Smiled.", date: "May 27", shape: "ticket", tone: "paper", x: 90, y: 24, drift: 0.6 },
+];
+
 // ---------- spiral for zoomed signs ----------
 const GOLDEN_ANGLE = 137.5;
 function spiralPos(i: number) {
@@ -96,6 +105,7 @@ function spiralPos(i: number) {
   };
 }
 
+
 // ---------- component ----------
 function Sky() {
   const navigate = useNavigate();
@@ -106,6 +116,10 @@ function Sky() {
   const [phase, setPhase] = useState<"falling" | "landed" | "suggesting" | null>(
     search.landing === "1" ? "falling" : null
   );
+  // manifested ritual phase
+  const [ritual, setRitual] = useState<"descending" | "celebrating" | null>(null);
+  const [manifestedIds, setManifestedIds] = useState<Set<string>>(new Set());
+
   // suggest first active manifestation (could be smarter)
   const suggested = manifestations[0];
 
@@ -116,16 +130,33 @@ function Sky() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [phase]);
 
-  function dismissLanding(zoomInto: boolean) {
+  useEffect(() => {
+    if (ritual !== "descending") return;
+    const t = setTimeout(() => setRitual("celebrating"), 1800);
+    return () => clearTimeout(t);
+  }, [ritual]);
+
+  function dismissLanding(addAsFloating: boolean, attachToManifestation: boolean) {
     setPhase(null);
     navigate({ to: "/constellations", search: {}, replace: true });
-    if (zoomInto) setZoomed(suggested.id);
+    if (attachToManifestation) setZoomed(suggested.id);
+    // (addAsFloating is the default behavior — sign stays in sky)
+    void addAsFloating;
+  }
+
+  function completeRitual() {
+    if (active) {
+      setManifestedIds((s) => new Set(s).add(active.id));
+    }
+    setRitual(null);
+    setZoomed(null);
   }
 
   const active = manifestations.find((m) => m.id === zoomed);
   const scale = active ? 2.4 : 1;
   const tx = active ? 50 - active.x : 0;
   const ty = active ? 50 - HORIZONS[active.horizon].y : 0;
+
 
   return (
     <PhoneFrame>
@@ -177,10 +208,35 @@ function Sky() {
             transition: "transform 700ms cubic-bezier(.6,.05,.2,1)",
           }}
         >
+          {/* floating signs — unattached, drift in upper sky */}
+          {!active && floatingSigns.map((f) => (
+            <button
+              key={f.id}
+              onClick={() => setOpen(f)}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{
+                left: `${f.x}%`, top: `${f.y}%`,
+                animation: `drift 6s ease-in-out ${f.drift}s infinite`,
+              }}
+              aria-label={f.title}
+            >
+              <span
+                className="text-[7px]"
+                style={{
+                  color: "oklch(0.92 0.02 85 / 0.85)",
+                  textShadow: "0 0 5px oklch(0.92 0.04 85 / 0.7)",
+                }}
+              >
+                ✦
+              </span>
+            </button>
+          ))}
+
           {/* sky view: manifestations as stars in their bands */}
           {!active && manifestations.map((m) => {
             const band = HORIZONS[m.horizon];
             const progress = m.totalDays > 0 ? Math.min(1, m.startedDaysAgo / m.totalDays) : 0;
+            const isManifested = manifestedIds.has(m.id);
             return (
               <button
                 key={m.id}
@@ -189,14 +245,16 @@ function Sky() {
                 style={{ left: `${m.x}%`, top: `${band.y}%`, width: "44%" }}
               >
                 <span
-                  className="breathe"
+                  className={isManifested ? "" : "breathe"}
                   style={{
-                    fontSize: `${band.size}px`,
-                    color: "var(--color-mustard)",
-                    textShadow: `0 0 ${10 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow})`,
+                    fontSize: `${band.size + (isManifested ? 4 : 0)}px`,
+                    color: isManifested ? "var(--color-paper)" : "var(--color-mustard)",
+                    textShadow: isManifested
+                      ? "0 0 20px var(--color-paper), 0 0 40px oklch(0.88 0.09 85 / 0.7)"
+                      : `0 0 ${10 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow})`,
                   }}
                 >
-                  ✦
+                  {isManifested ? "❦" : "✦"}
                 </span>
                 <span
                   className="serif italic text-[10px] mt-1.5 px-2 py-0.5 rounded-full text-center leading-tight"
@@ -206,14 +264,15 @@ function Sky() {
                     maxWidth: "100%",
                   }}
                 >
-                  {short(m.title)}
+                  {isManifested ? "manifested · " : ""}{short(m.title)}
                 </span>
-                {m.totalDays > 0 && (
+                {m.totalDays > 0 && !isManifested && (
                   <ProgressArc progress={progress} signs={m.signs.length} />
                 )}
               </button>
             );
           })}
+
 
           {/* cluster view: spiral of signs for this manifestation */}
           {active && (
@@ -294,18 +353,86 @@ function Sky() {
         )}
       </div>
 
-      {/* zoomed manifestation header (below board) */}
+      {/* zoomed manifestation — detailed timeline */}
       {active && (
         <div className="paper-card rounded-lg mt-3 px-4 py-3">
           <p className="serif italic text-[14px] text-ink leading-snug">{active.title}</p>
-          <div className="mt-2">
-            <ProgressBar
-              progress={active.totalDays > 0 ? Math.min(1, active.startedDaysAgo / active.totalDays) : 0}
-              label={remainingLabel(active)}
-            />
+          <p className="small-caps mt-1 text-[10px]" style={{ color: "var(--color-burgundy)" }}>
+            {HORIZONS[active.horizon].label}
+          </p>
+
+          {active.totalDays > 0 ? (
+            <Timeline m={active} onOpen={(s) => setOpen(s)} />
+          ) : (
+            <p className="mt-3 text-[12px] serif italic text-sepia">no horizon · open to the universe</p>
+          )}
+
+          {!manifestedIds.has(active.id) && (
+            <button
+              onClick={() => setRitual("descending")}
+              className="mt-4 w-full py-2.5 rounded-lg serif italic text-[13px]"
+              style={{
+                backgroundColor: "var(--color-paper)",
+                color: "var(--color-burgundy)",
+                border: "1px dashed var(--color-burgundy)",
+              }}
+            >
+              ❦  Mark as manifested
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* MANIFESTED RITUAL — descent + celebration */}
+      {ritual === "descending" && active && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: "oklch(0.1 0.02 60 / 0.92)" }}>
+          <span
+            className="text-6xl"
+            style={{
+              color: "var(--color-paper)",
+              textShadow: "0 0 40px var(--color-paper), 0 0 80px oklch(0.88 0.09 85 / 0.9)",
+              animation: "descend 1.8s cubic-bezier(.4,.05,.2,1) forwards",
+            }}
+          >
+            ✦
+          </span>
+        </div>
+      )}
+      {ritual === "celebrating" && active && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ backgroundColor: "oklch(0.1 0.02 60 / 0.95)", animation: "fade-in 0.5s ease-out" }}>
+          {/* burst sparkles */}
+          {[...Array(8)].map((_, i) => (
+            <span
+              key={i}
+              className="absolute text-xs pointer-events-none"
+              style={{
+                color: "var(--color-mustard)",
+                top: "50%", left: "50%",
+                animation: `burst 1.6s ease-out ${i * 0.05}s forwards`,
+                ["--ang" as any]: `${i * 45}deg`,
+              }}
+            >✦</span>
+          ))}
+          <div className="max-w-[300px] text-center">
+            <span className="text-5xl block mb-4" style={{ color: "var(--color-paper)", textShadow: "0 0 30px var(--color-paper)" }}>❦</span>
+            <p className="small-caps mb-3" style={{ color: "var(--color-mustard)" }}>a message arrived</p>
+            <p className="serif italic text-[20px] leading-snug" style={{ color: "var(--color-paper)" }}>
+              &ldquo;It came.<br />Remember when you weren&apos;t sure?&rdquo;
+            </p>
+            <p className="mt-4 serif text-[13px]" style={{ color: "oklch(0.85 0.05 85 / 0.85)" }}>
+              {active.title}
+            </p>
+            <button
+              onClick={completeRitual}
+              className="mt-6 px-5 py-2.5 rounded-full serif italic text-[13px]"
+              style={{ backgroundColor: "var(--color-paper)", color: "var(--color-burgundy)" }}
+            >
+              Press it into the archive
+            </button>
           </div>
         </div>
       )}
+
 
       {/* sisi suggestion */}
       {phase === "suggesting" && (
@@ -315,16 +442,17 @@ function Sky() {
           </p>
           {search.title && <p className="serif italic text-[14px] text-ink leading-snug">&ldquo;{search.title}&rdquo;</p>}
           <p className="mt-2 serif text-[13px] text-ink/85">
-            This feels like a sign for <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
+            This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
           </p>
           <div className="mt-3 flex gap-2">
-            <button onClick={() => dismissLanding(true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
-              Add this sign
+            <button onClick={() => dismissLanding(false, true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
+              Attach to it
             </button>
-            <button onClick={() => dismissLanding(false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
-              Not now
+            <button onClick={() => dismissLanding(true, false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
+              Leave floating
             </button>
           </div>
+
         </div>
       )}
 
@@ -374,16 +502,46 @@ function ProgressArc({ progress, signs }: { progress: number; signs: number }) {
   );
 }
 
-function ProgressBar({ progress, label }: { progress: number; label: string }) {
+function Timeline({ m, onOpen }: { m: Manifestation; onOpen: (s: Sign) => void }) {
+  const progress = Math.min(1, m.startedDaysAgo / m.totalDays);
+  const dayOfSign = (i: number) =>
+    m.signs.length > 0 ? Math.round(((i + 0.5) / m.signs.length) * m.startedDaysAgo) : 0;
   return (
-    <div>
-      <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: "oklch(0.78 0.08 25 / 0.2)" }}>
-        <div className="h-full" style={{ width: `${progress * 100}%`, backgroundColor: "var(--color-burgundy)" }} />
+    <div className="mt-3">
+      <div className="relative h-9">
+        <div className="absolute left-0 right-0 top-1/2 h-px" style={{ backgroundColor: "oklch(0.55 0.03 70 / 0.4)" }} />
+        <div
+          className="absolute left-0 top-1/2 h-px"
+          style={{ width: `${progress * 100}%`, backgroundColor: "var(--color-burgundy)", transform: "translateY(-0.5px)" }}
+        />
+        <div
+          className="absolute top-0 bottom-0 flex flex-col items-center"
+          style={{ left: `${progress * 100}%`, transform: "translateX(-50%)" }}
+        >
+          <span className="w-0.5 h-full" style={{ backgroundColor: "var(--color-burgundy)" }} />
+          <span className="absolute -bottom-4 text-[9px] serif italic" style={{ color: "var(--color-burgundy)" }}>today</span>
+        </div>
+        {m.signs.map((s, i) => {
+          const left = (dayOfSign(i) / m.totalDays) * 100;
+          return (
+            <button
+              key={s.id}
+              onClick={() => onOpen(s)}
+              className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full hover:scale-150 transition"
+              style={{ left: `${left}%`, width: 8, height: 8, backgroundColor: "var(--color-mustard)", boxShadow: "0 0 6px oklch(0.88 0.09 85 / 0.8)" }}
+              aria-label={s.title}
+            />
+          );
+        })}
       </div>
-      <p className="mt-1.5 text-[11px] serif italic text-sepia">{label}</p>
+      <div className="mt-5 flex justify-between text-[10px] serif italic text-sepia">
+        <span>started · {m.startedDaysAgo}d ago</span>
+        <span>{m.totalDays - m.startedDaysAgo} days left · {m.signs.length} signs</span>
+      </div>
     </div>
   );
 }
+
 
 function remainingLabel(m: Manifestation) {
   if (m.horizon === "someday") return "no horizon · open to the universe";
