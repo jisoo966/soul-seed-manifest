@@ -353,18 +353,86 @@ function Sky() {
         )}
       </div>
 
-      {/* zoomed manifestation header (below board) */}
+      {/* zoomed manifestation — detailed timeline */}
       {active && (
         <div className="paper-card rounded-lg mt-3 px-4 py-3">
           <p className="serif italic text-[14px] text-ink leading-snug">{active.title}</p>
-          <div className="mt-2">
-            <ProgressBar
-              progress={active.totalDays > 0 ? Math.min(1, active.startedDaysAgo / active.totalDays) : 0}
-              label={remainingLabel(active)}
-            />
+          <p className="small-caps mt-1 text-[10px]" style={{ color: "var(--color-burgundy)" }}>
+            {HORIZONS[active.horizon].label}
+          </p>
+
+          {active.totalDays > 0 ? (
+            <Timeline m={active} onOpen={(s) => setOpen(s)} />
+          ) : (
+            <p className="mt-3 text-[12px] serif italic text-sepia">no horizon · open to the universe</p>
+          )}
+
+          {!manifestedIds.has(active.id) && (
+            <button
+              onClick={() => setRitual("descending")}
+              className="mt-4 w-full py-2.5 rounded-lg serif italic text-[13px]"
+              style={{
+                backgroundColor: "var(--color-paper)",
+                color: "var(--color-burgundy)",
+                border: "1px dashed var(--color-burgundy)",
+              }}
+            >
+              ❦  Mark as manifested
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* MANIFESTED RITUAL — descent + celebration */}
+      {ritual === "descending" && active && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: "oklch(0.1 0.02 60 / 0.92)" }}>
+          <span
+            className="text-6xl"
+            style={{
+              color: "var(--color-paper)",
+              textShadow: "0 0 40px var(--color-paper), 0 0 80px oklch(0.88 0.09 85 / 0.9)",
+              animation: "descend 1.8s cubic-bezier(.4,.05,.2,1) forwards",
+            }}
+          >
+            ✦
+          </span>
+        </div>
+      )}
+      {ritual === "celebrating" && active && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ backgroundColor: "oklch(0.1 0.02 60 / 0.95)", animation: "fade-in 0.5s ease-out" }}>
+          {/* burst sparkles */}
+          {[...Array(8)].map((_, i) => (
+            <span
+              key={i}
+              className="absolute text-xs pointer-events-none"
+              style={{
+                color: "var(--color-mustard)",
+                top: "50%", left: "50%",
+                animation: `burst 1.6s ease-out ${i * 0.05}s forwards`,
+                ["--ang" as any]: `${i * 45}deg`,
+              }}
+            >✦</span>
+          ))}
+          <div className="max-w-[300px] text-center">
+            <span className="text-5xl block mb-4" style={{ color: "var(--color-paper)", textShadow: "0 0 30px var(--color-paper)" }}>❦</span>
+            <p className="small-caps mb-3" style={{ color: "var(--color-mustard)" }}>a message arrived</p>
+            <p className="serif italic text-[20px] leading-snug" style={{ color: "var(--color-paper)" }}>
+              &ldquo;It came.<br />Remember when you weren&apos;t sure?&rdquo;
+            </p>
+            <p className="mt-4 serif text-[13px]" style={{ color: "oklch(0.85 0.05 85 / 0.85)" }}>
+              {active.title}
+            </p>
+            <button
+              onClick={completeRitual}
+              className="mt-6 px-5 py-2.5 rounded-full serif italic text-[13px]"
+              style={{ backgroundColor: "var(--color-paper)", color: "var(--color-burgundy)" }}
+            >
+              Press it into the archive
+            </button>
           </div>
         </div>
       )}
+
 
       {/* sisi suggestion */}
       {phase === "suggesting" && (
