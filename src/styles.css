@@ -220,3 +220,15 @@
   0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.2); }
   100% { opacity: 1; }
 }
+
+@keyframes starFall {
+  0%   { transform: translate(-50%, 0) scale(0.4) rotate(-20deg); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(1.4) rotate(10deg); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes starTwinkle {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);   filter: brightness(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.6); filter: brightness(1.6); }
+}
