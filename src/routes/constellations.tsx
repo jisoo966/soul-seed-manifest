@@ -208,10 +208,35 @@ function Sky() {
             transition: "transform 700ms cubic-bezier(.6,.05,.2,1)",
           }}
         >
+          {/* floating signs — unattached, drift in upper sky */}
+          {!active && floatingSigns.map((f) => (
+            <button
+              key={f.id}
+              onClick={() => setOpen(f)}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{
+                left: `${f.x}%`, top: `${f.y}%`,
+                animation: `drift 6s ease-in-out ${f.drift}s infinite`,
+              }}
+              aria-label={f.title}
+            >
+              <span
+                className="text-[7px]"
+                style={{
+                  color: "oklch(0.92 0.02 85 / 0.85)",
+                  textShadow: "0 0 5px oklch(0.92 0.04 85 / 0.7)",
+                }}
+              >
+                ✦
+              </span>
+            </button>
+          ))}
+
           {/* sky view: manifestations as stars in their bands */}
           {!active && manifestations.map((m) => {
             const band = HORIZONS[m.horizon];
             const progress = m.totalDays > 0 ? Math.min(1, m.startedDaysAgo / m.totalDays) : 0;
+            const isManifested = manifestedIds.has(m.id);
             return (
               <button
                 key={m.id}
@@ -220,14 +245,16 @@ function Sky() {
                 style={{ left: `${m.x}%`, top: `${band.y}%`, width: "44%" }}
               >
                 <span
-                  className="breathe"
+                  className={isManifested ? "" : "breathe"}
                   style={{
-                    fontSize: `${band.size}px`,
-                    color: "var(--color-mustard)",
-                    textShadow: `0 0 ${10 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow})`,
+                    fontSize: `${band.size + (isManifested ? 4 : 0)}px`,
+                    color: isManifested ? "var(--color-paper)" : "var(--color-mustard)",
+                    textShadow: isManifested
+                      ? "0 0 20px var(--color-paper), 0 0 40px oklch(0.88 0.09 85 / 0.7)"
+                      : `0 0 ${10 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow})`,
                   }}
                 >
-                  ✦
+                  {isManifested ? "❦" : "✦"}
                 </span>
                 <span
                   className="serif italic text-[10px] mt-1.5 px-2 py-0.5 rounded-full text-center leading-tight"
@@ -237,14 +264,15 @@ function Sky() {
                     maxWidth: "100%",
                   }}
                 >
-                  {short(m.title)}
+                  {isManifested ? "manifested · " : ""}{short(m.title)}
                 </span>
-                {m.totalDays > 0 && (
+                {m.totalDays > 0 && !isManifested && (
                   <ProgressArc progress={progress} signs={m.signs.length} />
                 )}
               </button>
             );
           })}
+
 
           {/* cluster view: spiral of signs for this manifestation */}
           {active && (
