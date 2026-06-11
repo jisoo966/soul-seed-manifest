@@ -35,20 +35,24 @@ function Collect() {
         <span className="w-5" />
       </header>
 
-      <p className="text-center mt-7 serif italic text-sepia">What happened today?</p>
+      <p className="text-center mt-6 small-caps" style={{ color: "var(--color-burgundy)" }}>Herbarium · vol. iv</p>
+      <p className="text-center mt-2 serif italic text-[17px] text-ink">What did you press into today?</p>
 
       <div className="mt-6 grid grid-cols-3 gap-3">
-        {kinds.map(({ label, icon: Icon }) => (
-          <button
-            key={label}
-            className="paper-card rounded-xl py-5 flex flex-col items-center gap-2 hover:opacity-90 transition"
-          >
-            <Icon className="h-5 w-5 text-moss" strokeWidth={1.2} />
-            <span className="serif text-[12px] text-ink text-center px-1 leading-tight">
-              {label}
-            </span>
-          </button>
-        ))}
+        {kinds.map(({ label, icon: Icon }, i) => {
+          const tones = ["var(--color-moss)", "var(--color-burgundy)", "var(--color-mustard)", "var(--color-sky)", "var(--color-moss)", "var(--color-burgundy)"];
+          return (
+            <button
+              key={label}
+              className="paper-card rounded-xl py-5 flex flex-col items-center gap-2 hover:opacity-90 transition"
+            >
+              <Icon className="h-5 w-5" strokeWidth={1.2} style={{ color: tones[i] }} />
+              <span className="serif italic text-[12px] text-ink text-center px-1 leading-tight">
+                {label}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <h2 className="small-caps mt-8 mb-3">Recent entries</h2>
