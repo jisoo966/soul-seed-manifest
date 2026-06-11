@@ -9,8 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as CorrespondenceRouteImport } from './routes/correspondence'
+import { Route as ConstellationsRouteImport } from './routes/constellations'
+import { Route as CollectRouteImport } from './routes/collect'
 import { Route as IndexRouteImport } from './routes/index'
 
+const CorrespondenceRoute = CorrespondenceRouteImport.update({
+  id: '/correspondence',
+  path: '/correspondence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConstellationsRoute = ConstellationsRouteImport.update({
+  id: '/constellations',
+  path: '/constellations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectRoute = CollectRouteImport.update({
+  id: '/collect',
+  path: '/collect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +37,61 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/collect': typeof CollectRoute
+  '/constellations': typeof ConstellationsRoute
+  '/correspondence': typeof CorrespondenceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/collect': typeof CollectRoute
+  '/constellations': typeof ConstellationsRoute
+  '/correspondence': typeof CorrespondenceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/collect': typeof CollectRoute
+  '/constellations': typeof ConstellationsRoute
+  '/correspondence': typeof CorrespondenceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/collect' | '/constellations' | '/correspondence'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/collect' | '/constellations' | '/correspondence'
+  id: '__root__' | '/' | '/collect' | '/constellations' | '/correspondence'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CollectRoute: typeof CollectRoute
+  ConstellationsRoute: typeof ConstellationsRoute
+  CorrespondenceRoute: typeof CorrespondenceRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/correspondence': {
+      id: '/correspondence'
+      path: '/correspondence'
+      fullPath: '/correspondence'
+      preLoaderRoute: typeof CorrespondenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/constellations': {
+      id: '/constellations'
+      path: '/constellations'
+      fullPath: '/constellations'
+      preLoaderRoute: typeof ConstellationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collect': {
+      id: '/collect'
+      path: '/collect'
+      fullPath: '/collect'
+      preLoaderRoute: typeof CollectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +104,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CollectRoute: CollectRoute,
+  ConstellationsRoute: ConstellationsRoute,
+  CorrespondenceRoute: CorrespondenceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
