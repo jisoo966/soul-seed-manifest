@@ -65,6 +65,58 @@ function Home() {
         </p>
       </header>
 
+      {/* (A) one-line wish — quick send to the universe */}
+      <section className="mt-6">
+        <label className="small-caps block mb-2" style={{ color: "var(--color-burgundy)" }}>
+          send a wish to the universe
+        </label>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            addWish(quick, quickPeriod);
+            setQuick("");
+          }}
+          className="paper-card rounded-xl px-3 py-2 flex items-center gap-2"
+        >
+          <span className="text-lg shrink-0" style={{ color: "var(--color-mustard)" }}>✦</span>
+          <input
+            value={quick}
+            onChange={(e) => setQuick(e.target.value)}
+            placeholder="i will…"
+            className="flex-1 bg-transparent outline-none serif italic text-[15px] text-ink placeholder:text-sepia/60 py-1"
+          />
+          <PeriodChip value={quickPeriod} onChange={setQuickPeriod} compact />
+          <button
+            type="submit"
+            aria-label="send"
+            disabled={!quick.trim()}
+            className="shrink-0 h-8 w-8 rounded-full flex items-center justify-center serif transition disabled:opacity-40"
+            style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}
+          >
+            →
+          </button>
+        </form>
+
+        {wishes.length > 0 && (
+          <ul className="mt-3 space-y-1.5">
+            {wishes.slice(0, 3).map((w) => (
+              <li
+                key={w.id}
+                className={`flex items-center gap-2 text-[13px] serif italic text-ink/90 ${
+                  justAdded === w.id ? "animate-fade-in" : ""
+                }`}
+              >
+                <span style={{ color: "var(--color-mustard)" }}>✦</span>
+                <span className="flex-1 truncate">{w.title}</span>
+                <span className="small-caps text-[9px] text-sepia">this {w.period}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+
+
       {/* primary CTA — the one clear action */}
       <Link
         to="/collect"
