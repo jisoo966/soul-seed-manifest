@@ -25,9 +25,9 @@ function Profile() {
       </header>
 
       {/* identity */}
-      <section className="mt-8 text-center">
+      <section className="mt-6 text-center">
         <div
-          className="mx-auto h-20 w-20 rounded-full flex items-center justify-center serif text-3xl"
+          className="mx-auto h-[4.5rem] w-[4.5rem] rounded-full flex items-center justify-center serif text-[1.4rem]"
           style={{
             backgroundColor: "var(--color-burgundy)",
             color: "var(--color-paper)",
@@ -36,19 +36,19 @@ function Profile() {
         >
           J
         </div>
-        <h1 className="mt-3 text-[1.6rem] leading-tight text-ink serif">
+        <h1 className="mt-2.5 text-[1.4rem] leading-tight text-ink serif">
           <em className="font-light">Jisoo</em>
         </h1>
-        <p className="mt-1 text-xs text-sepia serif italic">
+        <p className="mt-0.5 text-[11px] text-sepia serif italic">
           quietly manifesting since June 2026
         </p>
-        <div className="mt-3">
-          <span className="cartouche text-[11px]">jisoo@sisi.app</span>
+        <div className="mt-2">
+          <span className="cartouche text-[10px]">jisoo@sisi.app</span>
         </div>
       </section>
 
       {/* journey numbers */}
-      <section className="mt-8 grid grid-cols-3 gap-2">
+      <section className="mt-6 grid grid-cols-3 gap-2">
         <Stat label="moments" value="47" />
         <Stat label="signs" value="12" />
         <Stat label="manifested" value="3" />
@@ -57,24 +57,24 @@ function Profile() {
       {/* subscription */}
       <Section label="Your subscription">
         <div
-          className="rounded-xl px-5 py-5 relative overflow-hidden"
+          className="rounded-xl px-4 py-4 relative overflow-hidden"
           style={{
             backgroundColor: "var(--color-burgundy)",
             color: "var(--color-paper)",
           }}
         >
-          <span className="absolute top-3 right-4 text-xl" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={20} /></span>
-          <p className="small-caps text-[10px]" style={{ color: "var(--color-mustard)", letterSpacing: "0.3em" }}>
+          <span className="absolute top-2.5 right-3 text-lg" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
+          <p className="small-caps text-[10px]" style={{ color: "var(--color-mustard)", letterSpacing: "0.25em" }}>
             sisi · celestial
           </p>
-          <p className="mt-2 text-[18px] serif italic">
+          <p className="mt-1.5 text-[17px] serif italic">
             unlimited manifestations
           </p>
-          <p className="mt-1 text-[12px] serif opacity-80">
+          <p className="mt-0.5 text-[11px] serif opacity-80">
             renews September 14 · $4.99/month
           </p>
           <button
-            className="mt-4 text-[11px] serif italic underline underline-offset-2 opacity-90"
+            className="mt-3 text-[10px] serif italic underline underline-offset-2 opacity-90"
           >
             manage subscription →
           </button>
