@@ -315,7 +315,9 @@ function Card({
         <p className="text-[15px] serif text-ink leading-snug">{title}</p>
       </div>
       {glyph && (
-        <span className="text-2xl shrink-0 serif" style={{ color: accentColor }}>{glyph}</span>
+        <span className="shrink-0" style={{ color: accentColor }}>
+          <DottedGlyph variant={glyphToVariant(glyph)} size={26} />
+        </span>
       )}
       {badge && (
         <span
