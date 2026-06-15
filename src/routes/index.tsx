@@ -42,13 +42,13 @@ function Home() {
   return (
 
     <PhoneFrame>
-      <header className="pt-6">
+      <header className="pt-5">
         <div className="flex items-start justify-between">
-          <p className="small-caps mb-2" style={{ color: "var(--color-burgundy)" }}>No. 47 · June</p>
+          <p className="small-caps mb-1.5" style={{ color: "var(--color-burgundy)" }}>No. 47 · June</p>
           <Link
             to="/profile"
             aria-label="Your profile"
-            className="h-9 w-9 rounded-full flex items-center justify-center serif text-sm transition hover:opacity-90"
+            className="h-8 w-8 rounded-full flex items-center justify-center serif text-sm transition hover:opacity-90"
             style={{
               backgroundColor: "var(--color-burgundy)",
               color: "var(--color-paper)",
@@ -58,18 +58,18 @@ function Home() {
             J
           </Link>
         </div>
-        <h1 className="text-[2rem] leading-tight text-ink serif">
+        <h1 className="text-[1.75rem] leading-[1.15] text-ink serif">
           Good morning, <em className="font-light">Jisoo</em>.
         </h1>
-        <p className="mt-2 text-sm text-sepia serif italic">
+        <p className="mt-1 text-[13px] text-sepia serif italic leading-snug">
           Something from yesterday stayed with me.
-          <span className="float-right text-lg not-italic" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={20} /></span>
+          <span className="float-right text-lg not-italic -mt-0.5" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
         </p>
       </header>
 
       {/* (A) one-line wish — quick send to the universe */}
-      <section className="mt-6">
-        <label className="small-caps block mb-2" style={{ color: "var(--color-burgundy)" }}>
+      <section className="mt-5">
+        <label className="small-caps block mb-1.5" style={{ color: "var(--color-burgundy)" }}>
           send a wish to the universe
         </label>
         <form
@@ -78,21 +78,21 @@ function Home() {
             addWish(quick, quickPeriod);
             setQuick("");
           }}
-          className="paper-card rounded-xl px-3 py-2 flex items-center gap-2"
+          className="paper-card rounded-xl px-3 py-1.5 flex items-center gap-2"
         >
-          <span className="text-lg shrink-0" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={20} /></span>
+          <span className="text-lg shrink-0" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
           <input
             value={quick}
             onChange={(e) => setQuick(e.target.value)}
             placeholder="i will…"
-            className="flex-1 bg-transparent outline-none serif italic text-[15px] text-ink placeholder:text-sepia/60 py-1"
+            className="flex-1 bg-transparent outline-none serif italic text-[14px] text-ink placeholder:text-sepia/60 py-1"
           />
           <PeriodChip value={quickPeriod} onChange={setQuickPeriod} compact />
           <button
             type="submit"
             aria-label="send"
             disabled={!quick.trim()}
-            className="shrink-0 h-8 w-8 rounded-full flex items-center justify-center serif transition disabled:opacity-40"
+            className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center serif transition disabled:opacity-40"
             style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}
           >
             →

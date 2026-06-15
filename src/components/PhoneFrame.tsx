@@ -34,7 +34,7 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
         </div>
 
         {/* content scroll area */}
-        <div className="flex-1 overflow-y-auto px-6 pb-28">{children}</div>
+        <div className="flex-1 overflow-y-auto px-5 pb-24">{children}</div>
 
         {/* tab bar */}
         <nav
