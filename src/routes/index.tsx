@@ -180,6 +180,90 @@ function Home() {
         />
       </Section>
 
+      {/* (B) bigger ritual — for serious long-term manifestations */}
+      <Section label="Begin a manifestation">
+        {!ritualOpen ? (
+          <button
+            onClick={() => setRitualOpen(true)}
+            className="w-full rounded-xl px-5 py-5 text-left transition hover:opacity-95 relative overflow-hidden"
+            style={{
+              border: "1px dashed var(--color-burgundy)",
+              backgroundColor: "oklch(0.98 0.012 88)",
+            }}
+          >
+            <span className="absolute top-3 right-4 text-xl" style={{ color: "var(--color-mustard)" }}>✦</span>
+            <span className="small-caps text-[10px]" style={{ color: "var(--color-burgundy)", letterSpacing: "0.3em" }}>
+              + new manifestation
+            </span>
+            <p className="mt-2 serif italic text-[16px] text-ink">
+              name something you're calling toward you.
+            </p>
+          </button>
+        ) : (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              addWish(ritualTitle, ritualPeriod);
+              setRitualTitle("");
+              setRitualPeriod("year");
+              setRitualOpen(false);
+            }}
+            className="rounded-xl px-5 py-5 animate-scale-in"
+            style={{
+              border: "1px solid var(--color-burgundy)",
+              backgroundColor: "var(--color-paper)",
+            }}
+          >
+            <p className="small-caps mb-3" style={{ color: "var(--color-burgundy)" }}>
+              what are you calling in?
+            </p>
+            <input
+              autoFocus
+              value={ritualTitle}
+              onChange={(e) => setRitualTitle(e.target.value)}
+              placeholder="this year, I will…"
+              className="w-full bg-transparent outline-none serif italic text-[18px] text-ink placeholder:text-sepia/60 border-b py-2"
+              style={{ borderColor: "var(--color-burgundy)" }}
+            />
+            <p className="small-caps mt-5 mb-2 text-sepia">by when</p>
+            <div className="flex gap-2">
+              {(["week", "month", "year"] as Period[]).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setRitualPeriod(p)}
+                  className="flex-1 py-2 rounded-lg serif italic text-[13px] transition"
+                  style={{
+                    border: "1px solid var(--color-burgundy)",
+                    backgroundColor: ritualPeriod === p ? "var(--color-burgundy)" : "transparent",
+                    color: ritualPeriod === p ? "var(--color-paper)" : "var(--color-burgundy)",
+                  }}
+                >
+                  this {p}
+                </button>
+              ))}
+            </div>
+            <div className="mt-5 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => { setRitualOpen(false); setRitualTitle(""); }}
+                className="text-xs serif italic text-sepia"
+              >
+                not yet
+              </button>
+              <button
+                type="submit"
+                disabled={!ritualTitle.trim()}
+                className="px-4 py-2 rounded-full serif italic text-[13px] transition disabled:opacity-40"
+                style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}
+              >
+                send to the universe ✦
+              </button>
+            </div>
+          </form>
+        )}
+      </Section>
+
       <Section label="Recent pattern">
         <Card
           to="/constellations"
