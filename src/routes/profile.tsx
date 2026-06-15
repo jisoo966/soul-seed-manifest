@@ -97,16 +97,16 @@ function Profile() {
         <Row title="About Sisi" />
       </Section>
 
-      <div className="mt-8 text-center">
-        <button className="text-xs serif italic text-sepia underline underline-offset-2">
+      <div className="mt-6 text-center">
+        <button className="text-[11px] serif italic text-sepia underline underline-offset-2">
           sign out
         </button>
       </div>
 
-      <div className="mt-8 ornament-rule text-sm">
-        <span><DottedGlyph variant="fleuron" size={22} /></span>
+      <div className="mt-6 ornament-rule text-sm">
+        <span><DottedGlyph variant="fleuron" size={18} /></span>
       </div>
-      <footer className="mt-3 mb-2 text-center serif italic text-[11px] text-sepia">
+      <footer className="mt-2 mb-2 text-center serif italic text-[10px] text-sepia">
         kept softly, between you and the universe.
       </footer>
     </PhoneFrame>
@@ -115,9 +115,9 @@ function Profile() {
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <section className="mt-7">
-      <h2 className="small-caps mb-2">{label}</h2>
-      <div className="space-y-2">{children}</div>
+    <section className="mt-5">
+      <h2 className="small-caps mb-1.5">{label}</h2>
+      <div className="space-y-1.5">{children}</div>
     </section>
   );
 }
