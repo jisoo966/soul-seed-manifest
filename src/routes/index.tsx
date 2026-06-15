@@ -20,7 +20,25 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const [wishes, setWishes] = useState<Wish[]>([]);
+  const [quick, setQuick] = useState("");
+  const [quickPeriod, setQuickPeriod] = useState<Period>("year");
+  const [ritualOpen, setRitualOpen] = useState(false);
+  const [ritualTitle, setRitualTitle] = useState("");
+  const [ritualPeriod, setRitualPeriod] = useState<Period>("year");
+  const [justAdded, setJustAdded] = useState<string | null>(null);
+
+  const addWish = (title: string, period: Period) => {
+    const t = title.trim();
+    if (!t) return;
+    const id = String(Date.now());
+    setWishes((w) => [{ id, title: t, period }, ...w]);
+    setJustAdded(id);
+    setTimeout(() => setJustAdded((cur) => (cur === id ? null : cur)), 1600);
+  };
+
   return (
+
     <PhoneFrame>
       <header className="pt-6">
         <div className="flex items-start justify-between">
