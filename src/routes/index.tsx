@@ -156,14 +156,14 @@ function Home() {
           className="block rounded-lg overflow-hidden border hover:opacity-90 transition"
           style={{ borderColor: "var(--color-burgundy)" }}
         >
-          <div className="celestial px-4 py-6 relative">
-            <p className="serif text-[11px] tracking-[0.3em] uppercase" style={{ color: "oklch(0.85 0.08 90)" }}>
+          <div className="celestial px-4 py-5 relative">
+            <p className="serif text-[10px] tracking-[0.22em] uppercase" style={{ color: "oklch(0.85 0.08 90)" }}>
               A message arrived
             </p>
-            <p className="mt-2 serif text-[18px] leading-snug" style={{ color: "oklch(0.95 0.03 85)" }}>
+            <p className="mt-1.5 serif text-[17px] leading-[1.25]" style={{ color: "oklch(0.95 0.03 85)" }}>
               &ldquo;Some things arrive slowly.&rdquo;
             </p>
-            <span className="absolute top-3 right-4 text-xl" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="moon" size={20} /></span>
+            <span className="absolute top-2.5 right-3 text-lg" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="moon" size={18} /></span>
           </div>
         </Link>
       </Section>
@@ -182,17 +182,17 @@ function Home() {
         {!ritualOpen ? (
           <button
             onClick={() => setRitualOpen(true)}
-            className="w-full rounded-xl px-5 py-5 text-left transition hover:opacity-95 relative overflow-hidden"
+            className="w-full rounded-xl px-4 py-4 text-left transition hover:opacity-95 relative overflow-hidden"
             style={{
               border: "1px dashed var(--color-burgundy)",
               backgroundColor: "oklch(0.98 0.012 88)",
             }}
           >
-            <span className="absolute top-3 right-4 text-xl" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={20} /></span>
-            <span className="small-caps text-[10px]" style={{ color: "var(--color-burgundy)", letterSpacing: "0.3em" }}>
+            <span className="absolute top-2.5 right-3 text-lg" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
+            <span className="small-caps text-[10px]" style={{ color: "var(--color-burgundy)", letterSpacing: "0.25em" }}>
               + new manifestation
             </span>
-            <p className="mt-2 serif italic text-[16px] text-ink">
+            <p className="mt-1.5 serif italic text-[15px] text-ink leading-snug">
               name something you're calling toward you.
             </p>
           </button>
