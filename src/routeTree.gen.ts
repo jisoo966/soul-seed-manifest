@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as CorrespondenceRouteImport } from './routes/correspondence'
 import { Route as ConstellationsRouteImport } from './routes/constellations'
 import { Route as CollectRouteImport } from './routes/collect'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CorrespondenceRoute = CorrespondenceRouteImport.update({
   id: '/correspondence',
   path: '/correspondence',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/collect': typeof CollectRoute
   '/constellations': typeof ConstellationsRoute
   '/correspondence': typeof CorrespondenceRoute
+  '/profile': typeof ProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/collect': typeof CollectRoute
   '/constellations': typeof ConstellationsRoute
   '/correspondence': typeof CorrespondenceRoute
+  '/profile': typeof ProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,25 @@ export interface FileRoutesById {
   '/collect': typeof CollectRoute
   '/constellations': typeof ConstellationsRoute
   '/correspondence': typeof CorrespondenceRoute
+  '/profile': typeof ProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/collect' | '/constellations' | '/correspondence'
+  fullPaths:
+    | '/'
+    | '/collect'
+    | '/constellations'
+    | '/correspondence'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/collect' | '/constellations' | '/correspondence'
-  id: '__root__' | '/' | '/collect' | '/constellations' | '/correspondence'
+  to: '/' | '/collect' | '/constellations' | '/correspondence' | '/profile'
+  id:
+    | '__root__'
+    | '/'
+    | '/collect'
+    | '/constellations'
+    | '/correspondence'
+    | '/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +87,18 @@ export interface RootRouteChildren {
   CollectRoute: typeof CollectRoute
   ConstellationsRoute: typeof ConstellationsRoute
   CorrespondenceRoute: typeof CorrespondenceRoute
+  ProfileRoute: typeof ProfileRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/correspondence': {
       id: '/correspondence'
       path: '/correspondence'
@@ -107,17 +135,8 @@ const rootRouteChildren: RootRouteChildren = {
   CollectRoute: CollectRoute,
   ConstellationsRoute: ConstellationsRoute,
   CorrespondenceRoute: CorrespondenceRoute,
+  ProfileRoute: ProfileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

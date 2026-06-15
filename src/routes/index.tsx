@@ -18,7 +18,21 @@ function Home() {
   return (
     <PhoneFrame>
       <header className="pt-6">
-        <p className="small-caps mb-2" style={{ color: "var(--color-burgundy)" }}>No. 47 · June</p>
+        <div className="flex items-start justify-between">
+          <p className="small-caps mb-2" style={{ color: "var(--color-burgundy)" }}>No. 47 · June</p>
+          <Link
+            to="/profile"
+            aria-label="Your profile"
+            className="h-9 w-9 rounded-full flex items-center justify-center serif text-sm transition hover:opacity-90"
+            style={{
+              backgroundColor: "var(--color-burgundy)",
+              color: "var(--color-paper)",
+              boxShadow: "0 4px 12px -6px var(--color-burgundy)",
+            }}
+          >
+            J
+          </Link>
+        </div>
         <h1 className="text-[2rem] leading-tight text-ink serif">
           Good morning, <em className="font-light">Jisoo</em>.
         </h1>
