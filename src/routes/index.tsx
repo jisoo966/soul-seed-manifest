@@ -359,3 +359,11 @@ function PeriodChip({
     </button>
   );
 }
+
+function glyphToVariant(g: string): "star" | "moon" | "flower" | "fleuron" | "spark" {
+  if (g === "☾") return "moon";
+  if (g === "✿" || g === "❀") return "flower";
+  if (g === "❦") return "fleuron";
+  if (g === "✧") return "spark";
+  return "star";
+}
