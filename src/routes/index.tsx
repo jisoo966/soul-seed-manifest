@@ -100,7 +100,7 @@ function Home() {
         </form>
 
         {wishes.length > 0 && (
-          <ul className="mt-3 space-y-1.5">
+          <ul className="mt-2 space-y-1">
             {wishes.slice(0, 3).map((w) => (
               <li
                 key={w.id}
@@ -108,7 +108,7 @@ function Home() {
                   justAdded === w.id ? "animate-fade-in" : ""
                 }`}
               >
-                <span style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={20} /></span>
+                <span style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={16} /></span>
                 <span className="flex-1 truncate">{w.title}</span>
                 <span className="small-caps text-[9px] text-sepia">this {w.period}</span>
               </li>
@@ -122,30 +122,30 @@ function Home() {
       {/* primary CTA — the one clear action */}
       <Link
         to="/collect"
-        className="mt-7 block rounded-xl px-5 py-4 text-center serif transition hover:opacity-95"
+        className="mt-5 block rounded-xl px-5 py-3.5 text-center serif transition hover:opacity-95"
         style={{
           backgroundColor: "var(--color-burgundy)",
           color: "var(--color-paper)",
           boxShadow: "0 6px 18px -10px var(--color-burgundy)",
         }}
       >
-        <span className="small-caps block text-[10px] mb-1" style={{ color: "var(--color-mustard)", letterSpacing: "0.3em" }}>
+        <span className="small-caps block text-[10px] mb-0.5" style={{ color: "var(--color-mustard)", letterSpacing: "0.25em" }}>
           today's ritual
         </span>
-        <span className="text-[17px] italic">
+        <span className="text-[16px] italic">
           Press today's moment into the book →
         </span>
       </Link>
 
 
       {/* yesterday quote */}
-      <section className="mt-7">
-        <div className="torn-note px-6 py-7 relative">
-          <p className="text-[1.45rem] leading-snug serif text-ink">
+      <section className="mt-5">
+        <div className="torn-note px-5 py-5 relative">
+          <p className="text-[1.35rem] leading-[1.2] serif text-ink">
             &ldquo;You said you wanted<br />to feel chosen.&rdquo;
           </p>
-          <p className="mt-3 text-xs text-sepia serif italic">— Yesterday</p>
-          <span className="absolute top-3 right-4 text-2xl" style={{ color: "var(--color-burgundy)", opacity: 0.7 }}><DottedGlyph variant="fleuron" size={22} /></span>
+          <p className="mt-2 text-[11px] text-sepia serif italic">— Yesterday</p>
+          <span className="absolute top-2.5 right-3 text-xl" style={{ color: "var(--color-burgundy)", opacity: 0.7 }}><DottedGlyph variant="fleuron" size={18} /></span>
         </div>
       </section>
 
