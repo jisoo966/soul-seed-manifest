@@ -2,9 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronRight, Plus } from "lucide-react";
 import { useState } from "react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { DottedGlyph } from "@/components/DottedGlyph";
 
 type Period = "week" | "month" | "year";
 type Wish = { id: string; title: string; period: Period };
+
 
 
 export const Route = createFileRoute("/")({
