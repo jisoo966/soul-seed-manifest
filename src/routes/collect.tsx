@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, ChevronRight, Sun, Compass, Sparkles, Moon, MessageCircle, BookMarked } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { DottedGlyph } from "@/components/DottedGlyph";
 
 export const Route = createFileRoute("/collect")({
   head: () => ({
@@ -101,7 +102,7 @@ function Collect() {
           boxShadow: canSubmit ? "0 6px 18px -10px var(--color-burgundy)" : "none",
         }}
       >
-        ❦  Press it into the book
+        <span className="inline-flex items-center gap-2"><DottedGlyph variant="fleuron" size={18} />Press it into the book</span>
 
       </button>
 
@@ -109,8 +110,8 @@ function Collect() {
       <div className="space-y-3">
         {recent.map((r) => (
           <div key={r.title} className="paper-card rounded-lg px-4 py-3 flex items-center gap-3">
-            <div className="h-12 w-14 rounded bg-secondary flex items-center justify-center text-xl text-moss">
-              {r.glyph}
+            <div className="h-12 w-14 rounded bg-secondary flex items-center justify-center text-moss">
+              <DottedGlyph variant={r.glyph === "❦" ? "fleuron" : "star"} size={26} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="serif text-[14px] text-ink leading-snug">{r.title}</p>

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { DottedGlyph } from "@/components/DottedGlyph";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -62,7 +63,7 @@ function Profile() {
             color: "var(--color-paper)",
           }}
         >
-          <span className="absolute top-3 right-4 text-xl" style={{ color: "var(--color-mustard)" }}>✦</span>
+          <span className="absolute top-3 right-4 text-xl" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={20} /></span>
           <p className="small-caps text-[10px]" style={{ color: "var(--color-mustard)", letterSpacing: "0.3em" }}>
             sisi · celestial
           </p>
@@ -103,7 +104,7 @@ function Profile() {
       </div>
 
       <div className="mt-8 ornament-rule text-sm">
-        <span>❦</span>
+        <span><DottedGlyph variant="fleuron" size={22} /></span>
       </div>
       <footer className="mt-3 mb-2 text-center serif italic text-[11px] text-sepia">
         kept softly, between you and the universe.

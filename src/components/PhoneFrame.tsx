@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, BookOpen, Mail, Sparkles } from "lucide-react";
+import { dottedIconProps } from "./DottedGlyph";
 
 const tabs = [
   { to: "/", label: "Home", icon: Home },
@@ -49,7 +50,7 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
                 className="flex flex-col items-center gap-1 py-1 px-3 transition-opacity"
                 style={{ opacity: active ? 1 : 0.55 }}
               >
-                <Icon className="h-[18px] w-[18px]" strokeWidth={1.4} />
+                <Icon className="h-[20px] w-[20px]" {...dottedIconProps} />
                 <span className="text-[10px] tracking-wide serif italic">{label}</span>
               </Link>
             );

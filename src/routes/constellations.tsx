@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Plus, X, Sparkles } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { DottedGlyph } from "@/components/DottedGlyph";
 
 type Search = { landing?: "1"; title?: string; kind?: string };
 
@@ -227,7 +228,7 @@ function Sky() {
                   textShadow: "0 0 5px oklch(0.92 0.04 85 / 0.7)",
                 }}
               >
-                ✦
+                <DottedGlyph variant="star" size={10} />
               </span>
             </button>
           ))}
@@ -247,14 +248,16 @@ function Sky() {
                 <span
                   className={isManifested ? "" : "breathe"}
                   style={{
-                    fontSize: `${band.size + (isManifested ? 4 : 0)}px`,
                     color: isManifested ? "var(--color-paper)" : "var(--color-mustard)",
-                    textShadow: isManifested
-                      ? "0 0 20px var(--color-paper), 0 0 40px oklch(0.88 0.09 85 / 0.7)"
-                      : `0 0 ${10 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow})`,
+                    filter: isManifested
+                      ? "drop-shadow(0 0 14px var(--color-paper)) drop-shadow(0 0 30px oklch(0.88 0.09 85 / 0.7))"
+                      : `drop-shadow(0 0 ${8 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow}))`,
                   }}
                 >
-                  {isManifested ? "❦" : "✦"}
+                  <DottedGlyph
+                    variant={isManifested ? "fleuron" : "star"}
+                    size={band.size + (isManifested ? 6 : 2)}
+                  />
                 </span>
                 <span
                   className="serif italic text-[10px] mt-1.5 px-2 py-0.5 rounded-full text-center leading-tight"
@@ -325,7 +328,7 @@ function Sky() {
               ["--ty" as any]: `${HORIZONS[suggested.horizon].y + 8}%`,
             }}
           >
-            ✦
+            <DottedGlyph variant="star" size={22} />
           </span>
         )}
         {(phase === "landed" || phase === "suggesting") && (
@@ -339,7 +342,7 @@ function Sky() {
               animation: "starTwinkle 1.6s ease-out 2",
             }}
           >
-            ✦
+            <DottedGlyph variant="star" size={22} />
           </span>
         )}
 
@@ -377,7 +380,7 @@ function Sky() {
                 border: "1px dashed var(--color-burgundy)",
               }}
             >
-              ❦  Mark as manifested
+              <span className="inline-flex items-center gap-2"><DottedGlyph variant="fleuron" size={16} />Mark as manifested</span>
             </button>
           )}
         </div>
@@ -394,7 +397,7 @@ function Sky() {
               animation: "descend 1.8s cubic-bezier(.4,.05,.2,1) forwards",
             }}
           >
-            ✦
+            <DottedGlyph variant="star" size={80} />
           </span>
         </div>
       )}
@@ -411,10 +414,10 @@ function Sky() {
                 animation: `burst 1.6s ease-out ${i * 0.05}s forwards`,
                 ["--ang" as any]: `${i * 45}deg`,
               }}
-            >✦</span>
+            ><DottedGlyph variant="star" size={20} /></span>
           ))}
           <div className="max-w-[300px] text-center">
-            <span className="text-5xl block mb-4" style={{ color: "var(--color-paper)", textShadow: "0 0 30px var(--color-paper)" }}>❦</span>
+            <span className="text-5xl block mb-4" style={{ color: "var(--color-paper)", textShadow: "0 0 30px var(--color-paper)" }}><DottedGlyph variant="fleuron" size={22} /></span>
             <p className="small-caps mb-3" style={{ color: "var(--color-mustard)" }}>a message arrived</p>
             <p className="serif italic text-[20px] leading-snug" style={{ color: "var(--color-paper)" }}>
               &ldquo;It came.<br />Remember when you weren&apos;t sure?&rdquo;
@@ -581,7 +584,7 @@ function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
       return (
         <div className="paper-card rounded-sm p-1 pb-2" style={{ backgroundColor: bg }}>
           <div className="aspect-[5/4] rounded-sm flex items-center justify-center" style={{ backgroundColor: "oklch(0.88 0.03 70)" }}>
-            <span className={mini ? "text-xs" : "text-2xl"} style={{ color: "var(--color-moss)" }}>❦</span>
+            <span className={mini ? "text-xs" : "text-2xl"} style={{ color: "var(--color-moss)" }}><DottedGlyph variant="fleuron" size={22} /></span>
           </div>
           <p className={`mt-0.5 italic serif text-center ${t}`} style={{ color: ink }}>{sign.title}</p>
         </div>
