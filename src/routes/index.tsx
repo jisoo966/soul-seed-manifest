@@ -327,3 +327,31 @@ function Card({
     </Link>
   );
 }
+
+function PeriodChip({
+  value,
+  onChange,
+  compact,
+}: {
+  value: Period;
+  onChange: (p: Period) => void;
+  compact?: boolean;
+}) {
+  const order: Period[] = ["week", "month", "year"];
+  const next = () => onChange(order[(order.indexOf(value) + 1) % order.length]);
+  return (
+    <button
+      type="button"
+      onClick={next}
+      className={`shrink-0 small-caps rounded-full border ${compact ? "px-2 py-1 text-[9px]" : "px-3 py-1.5 text-[10px]"}`}
+      style={{
+        borderColor: "var(--color-burgundy)",
+        color: "var(--color-burgundy)",
+        letterSpacing: "0.2em",
+      }}
+      aria-label={`period: this ${value}`}
+    >
+      this {value}
+    </button>
+  );
+}
