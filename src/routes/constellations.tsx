@@ -175,14 +175,14 @@ function Sky() {
         <button className="p-1"><Plus className="h-5 w-5 text-ink" strokeWidth={1.4} /></button>
       </header>
 
-      <p className="small-caps text-center mt-4" style={{ color: "var(--color-burgundy)" }}>
+      <p className="small-caps text-center mt-3" style={{ color: "var(--color-burgundy)" }}>
         {active
           ? `${active.signs.length} signs · ${remainingLabel(active)}`
           : "near sky · this month  ·  far sky · someday"}
       </p>
 
       {/* the sky */}
-      <div className="celestial relative mt-4 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)" }}>
+      <div className="celestial relative mt-3 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)" }}>
         {/* horizon bands — only on sky view */}
         {!active && (
           <>
