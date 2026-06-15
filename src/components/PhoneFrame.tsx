@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, BookOpen, Mail, Sparkles } from "lucide-react";
+import { dottedIconProps } from "./DottedGlyph";
 
 const tabs = [
   { to: "/", label: "Home", icon: Home },
