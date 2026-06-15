@@ -137,11 +137,6 @@ function Home() {
         </span>
       </Link>
 
-      <div className="mt-3 text-center">
-        <span className="cartouche text-[11px]">
-          a museum of everything you've ever loved
-        </span>
-      </div>
 
       {/* yesterday quote */}
       <section className="mt-7">
