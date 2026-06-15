@@ -161,7 +161,7 @@ function Sky() {
 
   return (
     <PhoneFrame>
-      <header className="pt-4 flex items-center justify-between">
+      <header className="pt-3 flex items-center justify-between">
         {zoomed ? (
           <button onClick={() => setZoomed(null)} className="p-1">
             <ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} />
@@ -169,20 +169,20 @@ function Sky() {
         ) : (
           <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
         )}
-        <h1 className="text-lg serif text-ink">
+        <h1 className="text-[16px] serif text-ink">
           {active ? <em className="italic">your manifestation</em> : "Your sky"}
         </h1>
         <button className="p-1"><Plus className="h-5 w-5 text-ink" strokeWidth={1.4} /></button>
       </header>
 
-      <p className="small-caps text-center mt-4" style={{ color: "var(--color-burgundy)" }}>
+      <p className="small-caps text-center mt-3" style={{ color: "var(--color-burgundy)" }}>
         {active
           ? `${active.signs.length} signs · ${remainingLabel(active)}`
           : "near sky · this month  ·  far sky · someday"}
       </p>
 
       {/* the sky */}
-      <div className="celestial relative mt-4 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)" }}>
+      <div className="celestial relative mt-3 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)" }}>
         {/* horizon bands — only on sky view */}
         {!active && (
           <>

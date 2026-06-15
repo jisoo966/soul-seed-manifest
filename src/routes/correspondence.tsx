@@ -43,24 +43,24 @@ function Correspondence() {
 
   return (
     <PhoneFrame>
-      <header className="pt-4 flex items-center justify-between">
+      <header className="pt-3 flex items-center justify-between">
         <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
-        <h1 className="text-lg serif text-ink">Correspondence</h1>
+        <h1 className="text-[16px] serif text-ink">Correspondence</h1>
         <Mail className="h-5 w-5 text-ink" strokeWidth={1.4} />
       </header>
 
-      <p className="mt-6 text-center small-caps">Today</p>
+      <p className="mt-5 text-center small-caps">Today</p>
 
-      <div className="mt-4 space-y-5">
+      <div className="mt-3 space-y-4">
         {msgs.map((m, i) => (
           <div key={i}>
-            <p className="serif italic text-[13px] text-sepia mb-1">
+            <p className="serif italic text-[12px] text-sepia mb-0.5">
               {m.from === "you" ? "You" : "Sisi"}
             </p>
-            <p className="serif text-[16px] text-ink whitespace-pre-line leading-snug">
+            <p className="serif text-[15px] text-ink whitespace-pre-line leading-snug">
               {m.text}
             </p>
-            <p className="text-[11px] text-sepia/70 mt-1 text-right">{m.time}</p>
+            <p className="text-[10px] text-sepia/70 mt-0.5 text-right">{m.time}</p>
           </div>
         ))}
       </div>

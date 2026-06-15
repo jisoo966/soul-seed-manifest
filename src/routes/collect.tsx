@@ -36,48 +36,48 @@ function Collect() {
 
   return (
     <PhoneFrame>
-      <header className="pt-4 flex items-center justify-between">
+      <header className="pt-3 flex items-center justify-between">
         <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
-        <h1 className="text-lg serif text-ink">Press a moment</h1>
+        <h1 className="text-[16px] serif text-ink">Press a moment</h1>
         <span className="w-5" />
       </header>
 
       {/* Step 1 — Write */}
-      <div className="mt-5">
-        <div className="flex items-baseline justify-between mb-2">
+      <div className="mt-4">
+        <div className="flex items-baseline justify-between mb-1.5">
           <span className="small-caps" style={{ color: "var(--color-burgundy)" }}>1 · Write</span>
-          <span className="text-[11px] text-sepia serif italic">{text.length}/280</span>
+          <span className="text-[10px] text-sepia serif italic">{text.length}/280</span>
         </div>
-        <div className="torn-note px-4 py-4">
+        <div className="torn-note px-4 py-3">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value.slice(0, 280))}
             placeholder="A white feather on the sidewalk. The song you wished for, on the radio…"
             rows={4}
-            className="w-full bg-transparent outline-none serif italic text-[15px] text-ink placeholder:text-sepia/60 leading-relaxed resize-none"
+            className="w-full bg-transparent outline-none serif italic text-[14px] text-ink placeholder:text-sepia/60 leading-snug resize-none"
           />
         </div>
       </div>
 
       {/* Step 2 — Tag */}
-      <div className="mt-6">
+      <div className="mt-4">
         <span className="small-caps" style={{ color: "var(--color-burgundy)" }}>2 · What kind?</span>
-        <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="mt-2 grid grid-cols-3 gap-2">
           {kinds.map(({ label, icon: Icon, tone }) => {
             const active = kind === label;
             return (
               <button
                 key={label}
                 onClick={() => setKind(label)}
-                className="paper-card rounded-xl py-3 flex flex-col items-center gap-1 transition"
+                className="paper-card rounded-xl py-2.5 flex flex-col items-center gap-0.5 transition"
                 style={{
                   borderColor: active ? tone : undefined,
                   boxShadow: active ? `inset 0 0 0 1.5px ${tone}` : undefined,
                   opacity: active ? 1 : 0.75,
                 }}
               >
-                <Icon className="h-4 w-4" strokeWidth={1.3} style={{ color: tone }} />
-                <span className="serif italic text-[12px] text-ink">{label}</span>
+                <Icon className="h-3.5 w-3.5" strokeWidth={1.3} style={{ color: tone }} />
+                <span className="serif italic text-[11px] text-ink">{label}</span>
               </button>
             );
           })}
@@ -95,29 +95,28 @@ function Collect() {
             search: { landing: "1", title, kind: kind ?? "Sign" },
           });
         }}
-        className="mt-6 w-full rounded-xl py-4 serif text-[16px] italic transition disabled:opacity-40"
+        className="mt-5 w-full rounded-xl py-3.5 serif text-[15px] italic transition disabled:opacity-40"
         style={{
           backgroundColor: "var(--color-burgundy)",
           color: "var(--color-paper)",
           boxShadow: canSubmit ? "0 6px 18px -10px var(--color-burgundy)" : "none",
         }}
       >
-        <span className="inline-flex items-center gap-2"><DottedGlyph variant="fleuron" size={18} />Press it into the book</span>
-
+        <span className="inline-flex items-center gap-2"><DottedGlyph variant="fleuron" size={16} />Press it into the book</span>
       </button>
 
-      <h2 className="small-caps mt-9 mb-3">Pressed earlier</h2>
-      <div className="space-y-3">
+      <h2 className="small-caps mt-7 mb-2">Pressed earlier</h2>
+      <div className="space-y-2">
         {recent.map((r) => (
-          <div key={r.title} className="paper-card rounded-lg px-4 py-3 flex items-center gap-3">
-            <div className="h-12 w-14 rounded bg-secondary flex items-center justify-center text-moss">
-              <DottedGlyph variant={r.glyph === "❦" ? "fleuron" : "star"} size={26} />
+          <div key={r.title} className="paper-card rounded-lg px-3.5 py-2.5 flex items-center gap-3">
+            <div className="h-10 w-12 rounded bg-secondary flex items-center justify-center text-moss">
+              <DottedGlyph variant={r.glyph === "❦" ? "fleuron" : "star"} size={22} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="serif text-[14px] text-ink leading-snug">{r.title}</p>
-              <p className="text-[11px] text-sepia mt-1 italic serif">{r.when}</p>
+              <p className="serif text-[13px] text-ink leading-snug">{r.title}</p>
+              <p className="text-[10px] text-sepia mt-0.5 italic serif">{r.when}</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-sepia/60" strokeWidth={1.3} />
+            <ChevronRight className="h-3.5 w-3.5 text-sepia/60" strokeWidth={1.3} />
           </div>
         ))}
       </div>

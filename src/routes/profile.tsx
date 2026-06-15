@@ -25,9 +25,9 @@ function Profile() {
       </header>
 
       {/* identity */}
-      <section className="mt-8 text-center">
+      <section className="mt-6 text-center">
         <div
-          className="mx-auto h-20 w-20 rounded-full flex items-center justify-center serif text-3xl"
+          className="mx-auto h-[4.5rem] w-[4.5rem] rounded-full flex items-center justify-center serif text-[1.4rem]"
           style={{
             backgroundColor: "var(--color-burgundy)",
             color: "var(--color-paper)",
@@ -36,19 +36,19 @@ function Profile() {
         >
           J
         </div>
-        <h1 className="mt-3 text-[1.6rem] leading-tight text-ink serif">
+        <h1 className="mt-2.5 text-[1.4rem] leading-tight text-ink serif">
           <em className="font-light">Jisoo</em>
         </h1>
-        <p className="mt-1 text-xs text-sepia serif italic">
+        <p className="mt-0.5 text-[11px] text-sepia serif italic">
           quietly manifesting since June 2026
         </p>
-        <div className="mt-3">
-          <span className="cartouche text-[11px]">jisoo@sisi.app</span>
+        <div className="mt-2">
+          <span className="cartouche text-[10px]">jisoo@sisi.app</span>
         </div>
       </section>
 
       {/* journey numbers */}
-      <section className="mt-8 grid grid-cols-3 gap-2">
+      <section className="mt-6 grid grid-cols-3 gap-2">
         <Stat label="moments" value="47" />
         <Stat label="signs" value="12" />
         <Stat label="manifested" value="3" />
@@ -57,24 +57,24 @@ function Profile() {
       {/* subscription */}
       <Section label="Your subscription">
         <div
-          className="rounded-xl px-5 py-5 relative overflow-hidden"
+          className="rounded-xl px-4 py-4 relative overflow-hidden"
           style={{
             backgroundColor: "var(--color-burgundy)",
             color: "var(--color-paper)",
           }}
         >
-          <span className="absolute top-3 right-4 text-xl" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={20} /></span>
-          <p className="small-caps text-[10px]" style={{ color: "var(--color-mustard)", letterSpacing: "0.3em" }}>
+          <span className="absolute top-2.5 right-3 text-lg" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
+          <p className="small-caps text-[10px]" style={{ color: "var(--color-mustard)", letterSpacing: "0.25em" }}>
             sisi · celestial
           </p>
-          <p className="mt-2 text-[18px] serif italic">
+          <p className="mt-1.5 text-[17px] serif italic">
             unlimited manifestations
           </p>
-          <p className="mt-1 text-[12px] serif opacity-80">
+          <p className="mt-0.5 text-[11px] serif opacity-80">
             renews September 14 · $4.99/month
           </p>
           <button
-            className="mt-4 text-[11px] serif italic underline underline-offset-2 opacity-90"
+            className="mt-3 text-[10px] serif italic underline underline-offset-2 opacity-90"
           >
             manage subscription →
           </button>
@@ -97,16 +97,16 @@ function Profile() {
         <Row title="About Sisi" />
       </Section>
 
-      <div className="mt-8 text-center">
-        <button className="text-xs serif italic text-sepia underline underline-offset-2">
+      <div className="mt-6 text-center">
+        <button className="text-[11px] serif italic text-sepia underline underline-offset-2">
           sign out
         </button>
       </div>
 
-      <div className="mt-8 ornament-rule text-sm">
-        <span><DottedGlyph variant="fleuron" size={22} /></span>
+      <div className="mt-6 ornament-rule text-sm">
+        <span><DottedGlyph variant="fleuron" size={18} /></span>
       </div>
-      <footer className="mt-3 mb-2 text-center serif italic text-[11px] text-sepia">
+      <footer className="mt-2 mb-2 text-center serif italic text-[10px] text-sepia">
         kept softly, between you and the universe.
       </footer>
     </PhoneFrame>
@@ -115,28 +115,28 @@ function Profile() {
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <section className="mt-7">
-      <h2 className="small-caps mb-2">{label}</h2>
-      <div className="space-y-2">{children}</div>
+    <section className="mt-5">
+      <h2 className="small-caps mb-1.5">{label}</h2>
+      <div className="space-y-1.5">{children}</div>
     </section>
   );
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="paper-card rounded-lg py-3 text-center">
-      <p className="serif text-[1.4rem] text-ink leading-none">{value}</p>
-      <p className="mt-1 small-caps text-[9px]">{label}</p>
+    <div className="paper-card rounded-lg py-2.5 text-center">
+      <p className="serif text-[1.25rem] text-ink leading-none">{value}</p>
+      <p className="mt-0.5 small-caps text-[9px]">{label}</p>
     </div>
   );
 }
 
 function Row({ title, hint }: { title: string; hint?: string }) {
   return (
-    <button className="w-full paper-card rounded-lg px-4 py-3 flex items-center gap-3 hover:opacity-90 transition text-left">
-      <span className="flex-1 text-[14px] serif text-ink">{title}</span>
-      {hint && <span className="text-[12px] serif italic text-sepia">{hint}</span>}
-      <ChevronRight className="h-4 w-4 text-sepia/60 shrink-0" strokeWidth={1.3} />
+    <button className="w-full paper-card rounded-lg px-3.5 py-2.5 flex items-center gap-3 hover:opacity-90 transition text-left">
+      <span className="flex-1 text-[13px] serif text-ink">{title}</span>
+      {hint && <span className="text-[11px] serif italic text-sepia">{hint}</span>}
+      <ChevronRight className="h-3.5 w-3.5 text-sepia/60 shrink-0" strokeWidth={1.3} />
     </button>
   );
 }
