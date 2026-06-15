@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Mail } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { DottedGlyph } from "@/components/DottedGlyph";
 
 export const Route = createFileRoute("/correspondence")({
   head: () => ({
@@ -77,7 +78,7 @@ function Correspondence() {
           onClick={send}
           className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm"
           aria-label="Send"
-        >✦</button>
+        ><DottedGlyph variant="star" size={18} /></button>
       </div>
     </PhoneFrame>
   );

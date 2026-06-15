@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, ChevronRight, Sun, Compass, Sparkles, Moon, MessageCircle, BookMarked } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { DottedGlyph } from "@/components/DottedGlyph";
 
 export const Route = createFileRoute("/collect")({
   head: () => ({

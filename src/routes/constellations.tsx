@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Plus, X, Sparkles } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { DottedGlyph } from "@/components/DottedGlyph";
 
 type Search = { landing?: "1"; title?: string; kind?: string };
 
@@ -411,10 +412,10 @@ function Sky() {
                 animation: `burst 1.6s ease-out ${i * 0.05}s forwards`,
                 ["--ang" as any]: `${i * 45}deg`,
               }}
-            >✦</span>
+            ><DottedGlyph variant="star" size={20} /></span>
           ))}
           <div className="max-w-[300px] text-center">
-            <span className="text-5xl block mb-4" style={{ color: "var(--color-paper)", textShadow: "0 0 30px var(--color-paper)" }}>❦</span>
+            <span className="text-5xl block mb-4" style={{ color: "var(--color-paper)", textShadow: "0 0 30px var(--color-paper)" }}><DottedGlyph variant="fleuron" size={22} /></span>
             <p className="small-caps mb-3" style={{ color: "var(--color-mustard)" }}>a message arrived</p>
             <p className="serif italic text-[20px] leading-snug" style={{ color: "var(--color-paper)" }}>
               &ldquo;It came.<br />Remember when you weren&apos;t sure?&rdquo;
@@ -581,7 +582,7 @@ function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
       return (
         <div className="paper-card rounded-sm p-1 pb-2" style={{ backgroundColor: bg }}>
           <div className="aspect-[5/4] rounded-sm flex items-center justify-center" style={{ backgroundColor: "oklch(0.88 0.03 70)" }}>
-            <span className={mini ? "text-xs" : "text-2xl"} style={{ color: "var(--color-moss)" }}>❦</span>
+            <span className={mini ? "text-xs" : "text-2xl"} style={{ color: "var(--color-moss)" }}><DottedGlyph variant="fleuron" size={22} /></span>
           </div>
           <p className={`mt-0.5 italic serif text-center ${t}`} style={{ color: ink }}>{sign.title}</p>
         </div>
