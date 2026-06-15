@@ -1,31 +1,22 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, ChevronRight, Sun, Compass, Sparkles, Moon, MessageCircle, BookMarked } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
-import { DottedGlyph } from "@/components/DottedGlyph";
 
 export const Route = createFileRoute("/collect")({
   head: () => ({
     meta: [
-      { title: "Collect — Sisi" },
-      { name: "description", content: "Press today's moment into your book." },
+      { title: "Write — Sisi" },
+      { name: "description", content: "Today's entry." },
     ],
   }),
   component: Collect,
 });
 
-const kinds = [
-  { label: "Sign", icon: Sun, tone: "var(--color-mustard)" },
-  { label: "Sync", icon: Compass, tone: "var(--color-sky)" },
-  { label: "Wish", icon: Sparkles, tone: "var(--color-burgundy)" },
-  { label: "Dream", icon: Moon, tone: "var(--color-sky)" },
-  { label: "Thought", icon: MessageCircle, tone: "var(--color-moss)" },
-  { label: "Memory", icon: BookMarked, tone: "var(--color-burgundy)" },
-];
+const kinds = ["Sign", "Sync", "Wish", "Dream", "Thought", "Memory"];
 
 const recent = [
-  { title: "Saw a white feather on my way to work.", when: "Today, 8:42 AM", glyph: "✦" },
-  { title: "The interview went better than I expected.", when: "Yesterday, 3:11 PM", glyph: "❦" },
+  { title: "Saw a white feather on my way to work.", when: "Today, 8:42 AM" },
+  { title: "The interview went better than I expected.", when: "Yesterday, 3:11 PM" },
 ];
 
 function Collect() {
@@ -36,55 +27,49 @@ function Collect() {
 
   return (
     <PhoneFrame>
-      <header className="pt-3 flex items-center justify-between">
-        <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
-        <h1 className="text-[16px] serif text-ink">Press a moment</h1>
-        <span className="w-5" />
+      <header className="pt-6 flex items-center justify-between">
+        <Link to="/" className="text-[11px] tracking-[0.22em] uppercase text-ink">
+          ← Back
+        </Link>
+        <p className="small-caps">New entry</p>
+        <span className="w-10" />
       </header>
 
-      {/* Step 1 — Write */}
-      <div className="mt-4">
-        <div className="flex items-baseline justify-between mb-1.5">
-          <span className="small-caps" style={{ color: "var(--color-burgundy)" }}>1 · Write</span>
-          <span className="text-[10px] text-sepia serif italic">{text.length}/280</span>
-        </div>
-        <div className="torn-note px-4 py-3">
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value.slice(0, 280))}
-            placeholder="A white feather on the sidewalk. The song you wished for, on the radio…"
-            rows={4}
-            className="w-full bg-transparent outline-none serif italic text-[14px] text-ink placeholder:text-sepia/60 leading-snug resize-none"
-          />
-        </div>
+      <div className="mt-8">
+        <p className="small-caps mb-3">Write</p>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value.slice(0, 280))}
+          placeholder="A white feather on the sidewalk. The song you wished for, on the radio…"
+          rows={6}
+          className="w-full bg-transparent outline-none serif text-[15px] text-ink placeholder:text-sepia/50 leading-relaxed resize-none border-b border-border focus:border-ink transition-colors pb-2"
+        />
+        <p className="mt-2 text-right text-[10px] text-sepia tracking-wide">{text.length}/280</p>
       </div>
 
-      {/* Step 2 — Tag */}
-      <div className="mt-4">
-        <span className="small-caps" style={{ color: "var(--color-burgundy)" }}>2 · What kind?</span>
-        <div className="mt-2 grid grid-cols-3 gap-2">
-          {kinds.map(({ label, icon: Icon, tone }) => {
+      <div className="mt-8">
+        <p className="small-caps mb-3">Kind</p>
+        <div className="flex flex-wrap gap-2">
+          {kinds.map((label) => {
             const active = kind === label;
             return (
               <button
                 key={label}
                 onClick={() => setKind(label)}
-                className="paper-card rounded-xl py-2.5 flex flex-col items-center gap-0.5 transition"
+                className="px-3 py-1.5 rounded-full border serif text-[12px] transition"
                 style={{
-                  borderColor: active ? tone : undefined,
-                  boxShadow: active ? `inset 0 0 0 1.5px ${tone}` : undefined,
-                  opacity: active ? 1 : 0.75,
+                  borderColor: active ? "var(--color-ink)" : "var(--color-border)",
+                  backgroundColor: active ? "var(--color-ink)" : "transparent",
+                  color: active ? "var(--color-paper)" : "var(--color-ink)",
                 }}
               >
-                <Icon className="h-3.5 w-3.5" strokeWidth={1.3} style={{ color: tone }} />
-                <span className="serif italic text-[11px] text-ink">{label}</span>
+                {label}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Step 3 — Press */}
       <button
         disabled={!canSubmit}
         onClick={() => {
@@ -95,28 +80,19 @@ function Collect() {
             search: { landing: "1", title, kind: kind ?? "Sign" },
           });
         }}
-        className="mt-5 w-full rounded-xl py-3.5 serif text-[15px] italic transition disabled:opacity-40"
-        style={{
-          backgroundColor: "var(--color-burgundy)",
-          color: "var(--color-paper)",
-          boxShadow: canSubmit ? "0 6px 18px -10px var(--color-burgundy)" : "none",
-        }}
+        className="mt-10 w-full py-4 border border-ink text-ink serif text-[14px] tracking-[0.05em] rounded-md transition disabled:opacity-30 hover:bg-ink hover:text-paper disabled:hover:bg-transparent disabled:hover:text-ink"
       >
-        <span className="inline-flex items-center gap-2"><DottedGlyph variant="fleuron" size={16} />Press it into the book</span>
+        Save entry
       </button>
 
-      <h2 className="small-caps mt-7 mb-2">Pressed earlier</h2>
-      <div className="space-y-2">
+      <div className="mt-12 ink-divider" />
+
+      <p className="small-caps mt-8 mb-4">Earlier</p>
+      <div className="space-y-5">
         {recent.map((r) => (
-          <div key={r.title} className="paper-card rounded-lg px-3.5 py-2.5 flex items-center gap-3">
-            <div className="h-10 w-12 rounded bg-secondary flex items-center justify-center text-moss">
-              <DottedGlyph variant={r.glyph === "❦" ? "fleuron" : "star"} size={22} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="serif text-[13px] text-ink leading-snug">{r.title}</p>
-              <p className="text-[10px] text-sepia mt-0.5 italic serif">{r.when}</p>
-            </div>
-            <ChevronRight className="h-3.5 w-3.5 text-sepia/60" strokeWidth={1.3} />
+          <div key={r.title}>
+            <p className="serif text-[14px] text-ink leading-snug">{r.title}</p>
+            <p className="text-[10px] text-sepia mt-1 tracking-wide">{r.when}</p>
           </div>
         ))}
       </div>

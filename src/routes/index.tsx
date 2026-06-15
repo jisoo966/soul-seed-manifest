@@ -1,21 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, Plus } from "lucide-react";
 import { useState } from "react";
 import { PhoneFrame } from "@/components/PhoneFrame";
-import { DottedGlyph } from "@/components/DottedGlyph";
 
 type Period = "week" | "month" | "year";
 type Wish = { id: string; title: string; period: Period };
 
-
-
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sisi — a museum of everything you've ever loved" },
-      { name: "description", content: "Sisi is a quiet companion that helps you manifest your wish — soft reminders, pressed moments, and the constellations of your inner world." },
-      { property: "og:title", content: "Sisi — a museum of everything you've ever loved" },
-      { property: "og:description", content: "A friend, checking in. Capture meaningful moments and watch your inner world take shape." },
+      { title: "Sisi — a quiet daily journal" },
+      { name: "description", content: "One small entry a day. A quiet daily journal." },
+      { property: "og:title", content: "Sisi — a quiet daily journal" },
+      { property: "og:description", content: "One small entry a day." },
     ],
   }),
   component: Home,
@@ -24,341 +20,131 @@ export const Route = createFileRoute("/")({
 function Home() {
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [quick, setQuick] = useState("");
-  const [quickPeriod, setQuickPeriod] = useState<Period>("year");
-  const [ritualOpen, setRitualOpen] = useState(false);
-  const [ritualTitle, setRitualTitle] = useState("");
-  const [ritualPeriod, setRitualPeriod] = useState<Period>("year");
-  const [justAdded, setJustAdded] = useState<string | null>(null);
 
-  const addWish = (title: string, period: Period) => {
+  const addWish = (title: string) => {
     const t = title.trim();
     if (!t) return;
-    const id = String(Date.now());
-    setWishes((w) => [{ id, title: t, period }, ...w]);
-    setJustAdded(id);
-    setTimeout(() => setJustAdded((cur) => (cur === id ? null : cur)), 1600);
+    setWishes((w) => [{ id: String(Date.now()), title: t, period: "year" }, ...w]);
   };
 
   return (
-
     <PhoneFrame>
-      <header className="pt-5">
-        <div className="flex items-start justify-between">
-          <p className="small-caps mb-1.5" style={{ color: "var(--color-burgundy)" }}>No. 47 · June</p>
-          <Link
-            to="/profile"
-            aria-label="Your profile"
-            className="h-8 w-8 rounded-full flex items-center justify-center serif text-sm transition hover:opacity-90"
-            style={{
-              backgroundColor: "var(--color-burgundy)",
-              color: "var(--color-paper)",
-              boxShadow: "0 4px 12px -6px var(--color-burgundy)",
-            }}
-          >
-            J
-          </Link>
+      <header className="pt-6 flex items-start justify-between">
+        <div>
+          <p className="small-caps">Monday</p>
+          <h1 className="mt-2 serif text-[2.25rem] leading-[1] text-ink">
+            June 15
+          </h1>
+          <p className="mt-1 text-[12px] text-sepia">2026</p>
         </div>
-        <h1 className="text-[1.75rem] leading-[1.15] text-ink serif">
-          Good morning, <em className="font-light">Jisoo</em>.
-        </h1>
-        <p className="mt-1 text-[13px] text-sepia serif italic leading-snug">
-          Something from yesterday stayed with me.
-          <span className="float-right text-lg not-italic -mt-0.5" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
-        </p>
+        <Link
+          to="/profile"
+          aria-label="Profile"
+          className="h-9 w-9 rounded-full border border-border flex items-center justify-center serif text-[13px] text-ink hover:bg-muted transition"
+        >
+          J
+        </Link>
       </header>
 
-      {/* (A) one-line wish — quick send to the universe */}
-      <section className="mt-5">
-        <label className="small-caps block mb-1.5" style={{ color: "var(--color-burgundy)" }}>
-          send a wish to the universe
-        </label>
+      <div className="mt-8 ink-divider" />
+
+      {/* Today's prompt */}
+      <section className="mt-8">
+        <p className="small-caps mb-3">Today's prompt</p>
+        <p className="serif text-[1.35rem] leading-[1.35] text-ink">
+          What is one thing that stayed with you from yesterday?
+        </p>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            addWish(quick, quickPeriod);
+            addWish(quick);
             setQuick("");
           }}
-          className="paper-card rounded-xl px-3 py-1.5 flex items-center gap-2"
+          className="mt-6"
         >
-          <span className="text-lg shrink-0" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
           <input
             value={quick}
             onChange={(e) => setQuick(e.target.value)}
-            placeholder="i will…"
-            className="flex-1 bg-transparent outline-none serif italic text-[14px] text-ink placeholder:text-sepia/60 py-1"
+            placeholder="Write a single line…"
+            className="w-full bg-transparent outline-none serif text-[15px] text-ink placeholder:text-sepia/60 border-b border-border py-2 focus:border-ink transition-colors"
           />
-          <PeriodChip value={quickPeriod} onChange={setQuickPeriod} compact />
-          <button
-            type="submit"
-            aria-label="send"
-            disabled={!quick.trim()}
-            className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center serif transition disabled:opacity-40"
-            style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}
-          >
-            →
-          </button>
+          <div className="mt-3 flex justify-end">
+            <button
+              type="submit"
+              disabled={!quick.trim()}
+              className="text-[11px] tracking-[0.22em] uppercase text-ink disabled:opacity-30 transition"
+            >
+              Save →
+            </button>
+          </div>
         </form>
 
         {wishes.length > 0 && (
-          <ul className="mt-2 space-y-1">
+          <ul className="mt-2 space-y-2">
             {wishes.slice(0, 3).map((w) => (
-              <li
-                key={w.id}
-                className={`flex items-center gap-2 text-[13px] serif italic text-ink/90 ${
-                  justAdded === w.id ? "animate-fade-in" : ""
-                }`}
-              >
-                <span style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={16} /></span>
+              <li key={w.id} className="flex items-baseline gap-3 text-[14px] serif text-ink">
+                <span className="text-sepia text-[10px]">—</span>
                 <span className="flex-1 truncate">{w.title}</span>
-                <span className="small-caps text-[9px] text-sepia">this {w.period}</span>
               </li>
             ))}
           </ul>
         )}
       </section>
 
+      <div className="mt-10 ink-divider" />
 
-
-      {/* primary CTA — the one clear action */}
+      {/* Primary action */}
       <Link
         to="/collect"
-        className="mt-5 block rounded-xl px-5 py-3.5 text-center serif transition hover:opacity-95"
-        style={{
-          backgroundColor: "var(--color-burgundy)",
-          color: "var(--color-paper)",
-          boxShadow: "0 6px 18px -10px var(--color-burgundy)",
-        }}
+        className="mt-8 block text-center py-4 border border-ink text-ink serif text-[14px] tracking-[0.05em] hover:bg-ink hover:text-paper transition rounded-md"
       >
-        <span className="small-caps block text-[10px] mb-0.5" style={{ color: "var(--color-mustard)", letterSpacing: "0.25em" }}>
-          today's ritual
-        </span>
-        <span className="text-[16px] italic">
-          Press today's moment into the book →
-        </span>
+        Write today's entry
       </Link>
 
-
-      {/* yesterday quote */}
-      <section className="mt-5">
-        <div className="torn-note px-5 py-5 relative">
-          <p className="text-[1.35rem] leading-[1.2] serif text-ink">
-            &ldquo;You said you wanted<br />to feel chosen.&rdquo;
-          </p>
-          <p className="mt-2 text-[11px] text-sepia serif italic">— Yesterday</p>
-          <span className="absolute top-2.5 right-3 text-xl" style={{ color: "var(--color-burgundy)", opacity: 0.7 }}><DottedGlyph variant="fleuron" size={18} /></span>
-        </div>
+      {/* Yesterday */}
+      <section className="mt-10">
+        <p className="small-caps mb-3">Yesterday</p>
+        <blockquote className="serif text-[1.1rem] leading-[1.45] text-ink">
+          "You said you wanted to feel chosen."
+        </blockquote>
+        <p className="mt-2 text-[11px] text-sepia">June 14, 2026</p>
       </section>
 
-      {/* today's message — celestial */}
-      <Section label="Today's message">
-        <Link
-          to="/collect"
-          className="block rounded-lg overflow-hidden border hover:opacity-90 transition"
-          style={{ borderColor: "var(--color-burgundy)" }}
-        >
-          <div className="celestial px-4 py-5 relative">
-            <p className="serif text-[10px] tracking-[0.22em] uppercase" style={{ color: "oklch(0.85 0.08 90)" }}>
-              A message arrived
-            </p>
-            <p className="mt-1.5 serif text-[17px] leading-[1.25]" style={{ color: "oklch(0.95 0.03 85)" }}>
-              &ldquo;Some things arrive slowly.&rdquo;
-            </p>
-            <span className="absolute top-2.5 right-3 text-lg" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="moon" size={18} /></span>
-          </div>
-        </Link>
-      </Section>
+      <div className="mt-8 ink-divider" />
 
-      <Section label="Quiet reminder">
-        <Card
-          to="/correspondence"
-          title="You haven't mentioned your painting recently. How is it?"
-          glyph="✿"
-          accent="moss"
-        />
-      </Section>
+      {/* Today's message */}
+      <Link to="/collect" className="mt-8 block group">
+        <p className="small-caps mb-3">A message arrived</p>
+        <p className="serif text-[1.1rem] leading-[1.45] text-ink group-hover:opacity-70 transition">
+          "Some things arrive slowly."
+        </p>
+      </Link>
 
-      {/* (B) bigger ritual — for serious long-term manifestations */}
-      <Section label="Begin a manifestation">
-        {!ritualOpen ? (
-          <button
-            onClick={() => setRitualOpen(true)}
-            className="w-full rounded-xl px-4 py-4 text-left transition hover:opacity-95 relative overflow-hidden"
-            style={{
-              border: "1px dashed var(--color-burgundy)",
-              backgroundColor: "oklch(0.98 0.012 88)",
-            }}
-          >
-            <span className="absolute top-2.5 right-3 text-lg" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
-            <span className="small-caps text-[10px]" style={{ color: "var(--color-burgundy)", letterSpacing: "0.25em" }}>
-              + new manifestation
-            </span>
-            <p className="mt-1.5 serif italic text-[15px] text-ink leading-snug">
-              name something you're calling toward you.
-            </p>
-          </button>
-        ) : (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              addWish(ritualTitle, ritualPeriod);
-              setRitualTitle("");
-              setRitualPeriod("year");
-              setRitualOpen(false);
-            }}
-            className="rounded-xl px-4 py-4 animate-scale-in"
-            style={{
-              border: "1px solid var(--color-burgundy)",
-              backgroundColor: "var(--color-paper)",
-            }}
-          >
-            <p className="small-caps mb-2" style={{ color: "var(--color-burgundy)" }}>
-              what are you calling in?
-            </p>
-            <input
-              autoFocus
-              value={ritualTitle}
-              onChange={(e) => setRitualTitle(e.target.value)}
-              placeholder="this year, I will…"
-              className="w-full bg-transparent outline-none serif italic text-[17px] text-ink placeholder:text-sepia/60 border-b py-1.5"
-              style={{ borderColor: "var(--color-burgundy)" }}
-            />
-            <p className="small-caps mt-4 mb-1.5 text-sepia">by when</p>
-            <div className="flex gap-2">
-              {(["week", "month", "year"] as Period[]).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setRitualPeriod(p)}
-                  className="flex-1 py-1.5 rounded-lg serif italic text-[12px] transition"
-                  style={{
-                    border: "1px solid var(--color-burgundy)",
-                    backgroundColor: ritualPeriod === p ? "var(--color-burgundy)" : "transparent",
-                    color: ritualPeriod === p ? "var(--color-paper)" : "var(--color-burgundy)",
-                  }}
-                >
-                  this {p}
-                </button>
-              ))}
-            </div>
-            <div className="mt-5 flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => { setRitualOpen(false); setRitualTitle(""); }}
-                className="text-xs serif italic text-sepia"
-              >
-                not yet
-              </button>
-              <button
-                type="submit"
-                disabled={!ritualTitle.trim()}
-                className="px-4 py-2 rounded-full serif italic text-[13px] transition disabled:opacity-40"
-                style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}
-              >
-                send to the universe
-              </button>
-            </div>
-          </form>
-        )}
-      </Section>
+      <div className="mt-8 ink-divider" />
 
-      <Section label="Recent pattern">
-        <Card
-          to="/constellations"
-          title={<>You've been thinking about <em className="serif italic">"relationship"</em> a lot lately.</>}
-          badge="4"
-          accent="sky"
-        />
-      </Section>
+      <Link to="/correspondence" className="mt-8 block group">
+        <p className="small-caps mb-3">Quiet reminder</p>
+        <p className="serif text-[1.05rem] leading-[1.45] text-ink group-hover:opacity-70 transition">
+          You haven't mentioned your painting recently. How is it?
+        </p>
+      </Link>
 
-      <div className="mt-10 ornament-rule text-sm">
-        <span><DottedGlyph variant="fleuron" size={22} /></span>
-      </div>
-      <footer className="mt-4 text-center serif italic text-xs text-sepia">
-        little by little, day by day,<br />
-        what is meant for you will find its way.
+      <div className="mt-8 ink-divider" />
+
+      <Link to="/constellations" className="mt-8 block group">
+        <p className="small-caps mb-3">Recent pattern</p>
+        <p className="serif text-[1.05rem] leading-[1.45] text-ink group-hover:opacity-70 transition">
+          You've been thinking about <em>relationship</em> a lot lately.
+          <span className="text-sepia text-[12px] ml-2 not-italic">4 entries</span>
+        </p>
+      </Link>
+
+      <footer className="mt-16 mb-4 text-center">
+        <p className="text-[11px] text-sepia tracking-wide">
+          little by little, day by day.
+        </p>
       </footer>
     </PhoneFrame>
   );
-}
-
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-5">
-      <h2 className="small-caps mb-1.5">{label}</h2>
-      {children}
-    </section>
-  );
-}
-
-function Card({
-  to, title, glyph, badge, accent,
-}: {
-  to: "/collect" | "/correspondence" | "/constellations";
-  title: React.ReactNode;
-  glyph?: string;
-  badge?: string;
-  accent?: "moss" | "sky" | "burgundy" | "mustard";
-}) {
-  const accentColor =
-    accent === "sky" ? "var(--color-sky)" :
-    accent === "burgundy" ? "var(--color-burgundy)" :
-    accent === "mustard" ? "var(--color-mustard)" :
-    "var(--color-moss)";
-  return (
-    <Link to={to} className="block paper-card rounded-lg px-4 py-4 flex items-center gap-3 hover:opacity-90 transition">
-      <div className="flex-1 min-w-0">
-        <p className="text-[15px] serif text-ink leading-snug">{title}</p>
-      </div>
-      {glyph && (
-        <span className="shrink-0" style={{ color: accentColor }}>
-          <DottedGlyph variant={glyphToVariant(glyph)} size={26} />
-        </span>
-      )}
-      {badge && (
-        <span
-          className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-xs serif"
-          style={{ backgroundColor: accentColor, color: "var(--color-paper)" }}
-        >
-          {badge}
-        </span>
-      )}
-      <ChevronRight className="h-4 w-4 text-sepia/60 shrink-0" strokeWidth={1.3} />
-    </Link>
-  );
-}
-
-function PeriodChip({
-  value,
-  onChange,
-  compact,
-}: {
-  value: Period;
-  onChange: (p: Period) => void;
-  compact?: boolean;
-}) {
-  const order: Period[] = ["week", "month", "year"];
-  const next = () => onChange(order[(order.indexOf(value) + 1) % order.length]);
-  return (
-    <button
-      type="button"
-      onClick={next}
-      className={`shrink-0 small-caps rounded-full border ${compact ? "px-2 py-1 text-[9px]" : "px-3 py-1.5 text-[10px]"}`}
-      style={{
-        borderColor: "var(--color-burgundy)",
-        color: "var(--color-burgundy)",
-        letterSpacing: "0.2em",
-      }}
-      aria-label={`period: this ${value}`}
-    >
-      this {value}
-    </button>
-  );
-}
-
-function glyphToVariant(g: string): "star" | "moon" | "flower" | "fleuron" | "spark" {
-  if (g === "☾") return "moon";
-  if (g === "✿" || g === "❀") return "flower";
-  if (g === "❦") return "fleuron";
-  if (g === "✧") return "spark";
-  return "star";
 }

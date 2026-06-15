@@ -5,10 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Sisi — Direction 02
- * Aesthetic: herbarium, celestial atlas, ornamental engravings,
- * pressed botanicals, museum of small wonders.
- * Palette: sage, cream, dusty blue, burgundy, mustard, dark brown.
+ * Sisi — Minimal Journal
+ * Pure paper white, near-black ink, hairline rules.
  */
 
 @theme inline {
@@ -49,60 +47,55 @@
 }
 
 :root {
-  --radius: 0.375rem;
-  /* Cream paper */
-  --background: oklch(0.955 0.018 85);
-  --paper: oklch(0.965 0.020 86);
-  /* Dark brown ink (charcoal-brown from palette) */
-  --foreground: oklch(0.26 0.012 60);
-  --ink: oklch(0.24 0.012 60);
-  --sepia: oklch(0.50 0.025 65);
-  /* Sage green */
-  --moss: oklch(0.62 0.035 130);
-  /* Dusty blue */
-  --sky: oklch(0.68 0.055 250);
-  /* Deep burgundy red */
-  --burgundy: oklch(0.42 0.13 25);
-  /* Mustard yellow */
-  --mustard: oklch(0.72 0.13 80);
+  --radius: 0.5rem;
+  --background: oklch(0.995 0 0);
+  --paper: oklch(1 0 0);
+  --foreground: oklch(0.18 0 0);
+  --ink: oklch(0.18 0 0);
+  --sepia: oklch(0.55 0 0);
+  --moss: oklch(0.55 0 0);
+  --sky: oklch(0.55 0 0);
+  --burgundy: oklch(0.18 0 0);
+  --mustard: oklch(0.55 0 0);
 
-  --card: oklch(0.965 0.020 86);
+  --card: oklch(1 0 0);
   --card-foreground: var(--ink);
-  --popover: oklch(0.965 0.020 86);
+  --popover: oklch(1 0 0);
   --popover-foreground: var(--ink);
-  --primary: oklch(0.42 0.13 25);              /* burgundy as primary accent */
-  --primary-foreground: oklch(0.965 0.020 86);
-  --secondary: oklch(0.90 0.025 100);
+  --primary: oklch(0.18 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.97 0 0);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.92 0.018 85);
-  --muted-foreground: oklch(0.50 0.025 65);
-  --accent: oklch(0.85 0.05 100);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.55 0 0);
+  --accent: oklch(0.96 0 0);
   --accent-foreground: var(--ink);
-  --destructive: oklch(0.45 0.15 25);
-  --destructive-foreground: oklch(0.96 0.014 88);
-  --border: oklch(0.82 0.022 80);
-  --input: oklch(0.86 0.02 80);
-  --ring: oklch(0.55 0.05 130);
+  --destructive: oklch(0.50 0.15 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.92 0 0);
+  --input: oklch(0.92 0 0);
+  --ring: oklch(0.80 0 0);
 }
 
 .dark {
-  --background: oklch(0.22 0.015 60);
-  --foreground: oklch(0.92 0.018 85);
-  --paper: oklch(0.25 0.015 60);
-  --ink: oklch(0.92 0.018 85);
-  --card: oklch(0.26 0.015 60);
-  --card-foreground: oklch(0.92 0.018 85);
-  --primary: oklch(0.55 0.15 25);
-  --primary-foreground: oklch(0.95 0.015 85);
-  --secondary: oklch(0.30 0.018 70);
-  --secondary-foreground: oklch(0.92 0.018 85);
-  --muted: oklch(0.30 0.018 70);
-  --muted-foreground: oklch(0.70 0.02 78);
-  --accent: oklch(0.32 0.02 75);
-  --accent-foreground: oklch(0.92 0.018 85);
-  --border: oklch(0.35 0.018 70);
-  --input: oklch(0.35 0.018 70);
-  --ring: oklch(0.55 0.05 130);
+  --background: oklch(0.14 0 0);
+  --foreground: oklch(0.96 0 0);
+  --paper: oklch(0.16 0 0);
+  --ink: oklch(0.96 0 0);
+  --sepia: oklch(0.65 0 0);
+  --card: oklch(0.16 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.14 0 0);
+  --secondary: oklch(0.22 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.22 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.22 0 0);
+  --accent-foreground: oklch(0.96 0 0);
+  --border: oklch(0.28 0 0);
+  --input: oklch(0.28 0 0);
+  --ring: oklch(0.50 0 0);
 }
 
 @layer base {
@@ -112,12 +105,12 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-weight: 300;
-    letter-spacing: 0.01em;
+    letter-spacing: 0;
   }
   h1, h2, h3, h4, .serif {
     font-family: var(--font-serif);
     font-weight: 300;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
   .script {
     font-family: var(--font-script);
@@ -129,90 +122,60 @@
 @layer components {
   .paper-card {
     background-color: var(--color-paper);
-    background-image:
-      radial-gradient(ellipse at 20% 10%, oklch(0.9 0.03 80 / 0.30), transparent 60%),
-      radial-gradient(ellipse at 80% 90%, oklch(0.88 0.04 65 / 0.20), transparent 55%);
-    box-shadow:
-      0 1px 0 oklch(0.85 0.02 75) inset,
-      0 14px 30px -20px oklch(0.3 0.05 60 / 0.22);
-    border: 1px solid oklch(0.84 0.022 80);
+    border: 1px solid var(--color-border);
+    box-shadow: none;
   }
   .torn-note {
-    background-color: oklch(0.96 0.018 88);
-    background-image:
-      repeating-linear-gradient(135deg, oklch(0.9 0.03 75 / 0.04) 0 2px, transparent 2px 6px),
-      radial-gradient(ellipse at 30% 0%, oklch(0.85 0.04 70 / 0.18), transparent 60%);
-    box-shadow:
-      0 1px 0 oklch(0.85 0.02 75) inset,
-      0 10px 24px -18px oklch(0.3 0.05 60 / 0.4);
-    clip-path: polygon(
-      2% 4%, 12% 1%, 28% 5%, 45% 2%, 62% 6%, 80% 2%, 96% 5%,
-      99% 18%, 97% 38%, 99% 60%, 96% 82%, 98% 96%,
-      82% 99%, 64% 96%, 46% 99%, 28% 96%, 12% 99%, 3% 95%,
-      1% 78%, 4% 58%, 1% 38%, 3% 18%
-    );
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
   }
   .ink-divider {
-    background-image: linear-gradient(to right,
-      transparent, oklch(0.5 0.03 60 / 0.5), transparent);
+    background-color: var(--color-border);
     height: 1px;
   }
   .small-caps {
     text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-size: 0.62rem;
-    font-weight: 300;
+    letter-spacing: 0.22em;
+    font-size: 0.625rem;
+    font-weight: 400;
     color: var(--color-muted-foreground);
+    font-family: var(--font-sans);
   }
-  /* Burgundy cartouche label, like the moodboard sticker */
   .cartouche {
     display: inline-block;
-    padding: 0.5rem 1.25rem;
-    border: 1.5px solid var(--color-burgundy);
-    color: var(--color-burgundy);
-    font-family: var(--font-serif);
-    font-style: italic;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--color-border);
+    color: var(--color-muted-foreground);
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
     border-radius: 9999px;
-    background: oklch(0.965 0.020 86);
-    box-shadow: 0 0 0 3px oklch(0.965 0.020 86), 0 0 0 4px var(--color-burgundy);
+    background: transparent;
+    box-shadow: none;
   }
-  /* Star-flecked celestial background, like Secrets of the Stars */
   .celestial {
-    background-color: oklch(0.30 0.02 260);
-    background-image:
-      radial-gradient(1px 1px at 20% 30%, oklch(0.9 0.05 90) 50%, transparent 51%),
-      radial-gradient(1px 1px at 70% 20%, oklch(0.95 0.06 90) 50%, transparent 51%),
-      radial-gradient(1.5px 1.5px at 40% 75%, oklch(0.95 0.08 90) 50%, transparent 51%),
-      radial-gradient(1px 1px at 85% 65%, oklch(0.9 0.05 90) 50%, transparent 51%),
-      radial-gradient(1px 1px at 15% 85%, oklch(0.9 0.05 90) 50%, transparent 51%),
-      radial-gradient(2px 2px at 55% 45%, oklch(0.9 0.08 90) 50%, transparent 51%);
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-border);
   }
   .ornament-rule {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
-    color: var(--color-burgundy);
-    font-family: var(--font-serif);
+    color: var(--color-muted-foreground);
   }
   .ornament-rule::before,
   .ornament-rule::after {
     content: "";
     flex: 1;
     height: 1px;
-    background: linear-gradient(to right, transparent, var(--color-burgundy) 50%, transparent);
-    opacity: 0.5;
+    background: var(--color-border);
   }
-}
-
-@keyframes stickerIn {
-  0%   { transform: scale(0.6) rotate(-4deg); opacity: 0; }
-  60%  { transform: scale(1.04) rotate(1deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 @keyframes breathe {
   0%, 100% { opacity: 0.55; transform: scale(1); }
-  50%      { opacity: 1;    transform: scale(1.25); }
+  50%      { opacity: 1;    transform: scale(1.15); }
 }
 .breathe { animation: breathe 3.2s ease-in-out infinite; }
 
@@ -222,15 +185,15 @@
 }
 
 @keyframes starFall {
-  0%   { transform: translate(-50%, 0) scale(0.4) rotate(-20deg); opacity: 0; }
+  0%   { transform: translate(-50%, 0) scale(0.4); opacity: 0; }
   20%  { opacity: 1; }
-  80%  { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(1.4) rotate(10deg); opacity: 1; }
-  100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(1) rotate(0deg); opacity: 1; }
+  80%  { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(1.2); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(1); opacity: 1; }
 }
 
 @keyframes starTwinkle {
-  0%, 100% { transform: translate(-50%, -50%) scale(1);   filter: brightness(1); }
-  50%      { transform: translate(-50%, -50%) scale(1.6); filter: brightness(1.6); }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.4); }
 }
 
 @keyframes drift {
@@ -239,10 +202,10 @@
 }
 
 @keyframes descend {
-  0%   { transform: translateY(-60vh) scale(0.4) rotate(-12deg); opacity: 0; }
+  0%   { transform: translateY(-60vh) scale(0.4); opacity: 0; }
   25%  { opacity: 1; }
-  85%  { transform: translateY(0) scale(1.6) rotate(8deg); opacity: 1; }
-  100% { transform: translateY(0) scale(1.2) rotate(0deg); opacity: 1; }
+  85%  { transform: translateY(0) scale(1.4); opacity: 1; }
+  100% { transform: translateY(0) scale(1.1); opacity: 1; }
 }
 
 @keyframes burst {

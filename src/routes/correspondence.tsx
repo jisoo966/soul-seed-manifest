@@ -1,14 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Mail } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
-import { DottedGlyph } from "@/components/DottedGlyph";
 
 export const Route = createFileRoute("/correspondence")({
   head: () => ({
     meta: [
-      { title: "Correspondence — Sisi" },
-      { name: "description", content: "Talk with Sisi. She remembers the little things." },
+      { title: "Letters — Sisi" },
+      { name: "description", content: "A quiet correspondence." },
     ],
   }),
   component: Correspondence,
@@ -18,9 +16,9 @@ type Msg = { from: "you" | "sisi"; text: string; time: string };
 
 const seed: Msg[] = [
   { from: "you", text: "I feel stuck lately.", time: "10:31 AM" },
-  { from: "sisi", text: "Maybe not stuck.\nMaybe waiting.", time: "10:32 AM" },
+  { from: "sisi", text: "Maybe not stuck. Maybe waiting.", time: "10:32 AM" },
   { from: "sisi", text: "You mentioned this same feeling three weeks ago.", time: "10:32 AM" },
-  { from: "sisi", text: "Back then,\nyou called it uncertainty.", time: "10:32 AM" },
+  { from: "sisi", text: "Back then, you called it uncertainty.", time: "10:32 AM" },
   { from: "sisi", text: "What's different now?", time: "10:32 AM" },
 ];
 
@@ -34,51 +32,49 @@ function Correspondence() {
     setMsgs((m) => [...m, { from: "you", text: draft.trim(), time: now }]);
     setDraft("");
     setTimeout(() => {
-      setMsgs((m) => [
-        ...m,
-        { from: "sisi", text: "I hear you. Tell me more.", time: now },
-      ]);
+      setMsgs((m) => [...m, { from: "sisi", text: "I hear you. Tell me more.", time: now }]);
     }, 900);
   };
 
   return (
     <PhoneFrame>
-      <header className="pt-3 flex items-center justify-between">
-        <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
-        <h1 className="text-[16px] serif text-ink">Correspondence</h1>
-        <Mail className="h-5 w-5 text-ink" strokeWidth={1.4} />
+      <header className="pt-6 flex items-center justify-between">
+        <Link to="/" className="text-[11px] tracking-[0.22em] uppercase text-ink">← Back</Link>
+        <p className="small-caps">Letters</p>
+        <span className="w-10" />
       </header>
 
-      <p className="mt-5 text-center small-caps">Today</p>
+      <p className="mt-8 text-center small-caps">Today</p>
 
-      <div className="mt-3 space-y-4">
+      <div className="mt-6 space-y-6">
         {msgs.map((m, i) => (
           <div key={i}>
-            <p className="serif italic text-[12px] text-sepia mb-0.5">
-              {m.from === "you" ? "You" : "Sisi"}
+            <p className="small-caps mb-1.5">
+              {m.from === "you" ? "You" : "Sisi"} · {m.time}
             </p>
-            <p className="serif text-[15px] text-ink whitespace-pre-line leading-snug">
+            <p className="serif text-[15px] text-ink whitespace-pre-line leading-[1.5]">
               {m.text}
             </p>
-            <p className="text-[10px] text-sepia/70 mt-0.5 text-right">{m.time}</p>
           </div>
         ))}
       </div>
 
-      <div className="fixed-bottom mt-8" />
-      <div className="sticky bottom-20 mt-6 flex items-center gap-2 bg-paper/95 backdrop-blur rounded-full border border-border px-4 py-2">
+      <div className="sticky bottom-20 mt-10 flex items-center gap-3 bg-paper border-t border-border pt-3 pb-1">
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
           placeholder="Write to Sisi…"
-          className="flex-1 bg-transparent outline-none serif italic text-sm placeholder:text-sepia/60 text-ink"
+          className="flex-1 bg-transparent outline-none serif text-[14px] placeholder:text-sepia/60 text-ink py-2"
         />
         <button
           onClick={send}
-          className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm"
+          disabled={!draft.trim()}
+          className="text-[11px] tracking-[0.22em] uppercase text-ink disabled:opacity-30"
           aria-label="Send"
-        ><DottedGlyph variant="star" size={18} /></button>
+        >
+          Send →
+        </button>
       </div>
     </PhoneFrame>
   );

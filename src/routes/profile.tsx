@@ -1,13 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, ChevronLeft } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
-import { DottedGlyph } from "@/components/DottedGlyph";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — Sisi" },
-      { name: "description", content: "Your Sisi account, subscription and settings." },
+      { title: "Account — Sisi" },
+      { name: "description", content: "Your account and settings." },
     ],
   }),
   component: Profile,
@@ -17,73 +15,46 @@ function Profile() {
   return (
     <PhoneFrame>
       <header className="pt-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-1 text-sepia serif italic text-sm">
-          <ChevronLeft className="h-4 w-4" strokeWidth={1.3} /> back
-        </Link>
-        <p className="small-caps" style={{ color: "var(--color-burgundy)" }}>your account</p>
+        <Link to="/" className="text-[11px] tracking-[0.22em] uppercase text-ink">← Back</Link>
+        <p className="small-caps">Account</p>
         <span className="w-10" />
       </header>
 
-      {/* identity */}
-      <section className="mt-6 text-center">
-        <div
-          className="mx-auto h-[4.5rem] w-[4.5rem] rounded-full flex items-center justify-center serif text-[1.4rem]"
-          style={{
-            backgroundColor: "var(--color-burgundy)",
-            color: "var(--color-paper)",
-            boxShadow: "0 8px 20px -10px var(--color-burgundy)",
-          }}
-        >
+      <section className="mt-10 text-center">
+        <div className="mx-auto h-16 w-16 rounded-full border border-border flex items-center justify-center serif text-[1.4rem] text-ink">
           J
         </div>
-        <h1 className="mt-2.5 text-[1.4rem] leading-tight text-ink serif">
-          <em className="font-light">Jisoo</em>
-        </h1>
-        <p className="mt-0.5 text-[11px] text-sepia serif italic">
-          quietly manifesting since June 2026
+        <h1 className="mt-4 serif text-[1.6rem] leading-tight text-ink">Jisoo</h1>
+        <p className="mt-1 text-[11px] text-sepia tracking-wide">
+          quietly journaling since June 2026
         </p>
-        <div className="mt-2">
-          <span className="cartouche text-[10px]">jisoo@sisi.app</span>
-        </div>
+        <p className="mt-3 text-[11px] text-sepia">jisoo@sisi.app</p>
       </section>
 
-      {/* journey numbers */}
-      <section className="mt-6 grid grid-cols-3 gap-2">
-        <Stat label="moments" value="47" />
+      <div className="mt-10 ink-divider" />
+
+      <section className="mt-8 grid grid-cols-3 gap-0 divide-x divide-border">
+        <Stat label="entries" value="47" />
         <Stat label="signs" value="12" />
-        <Stat label="manifested" value="3" />
+        <Stat label="kept" value="3" />
       </section>
 
-      {/* subscription */}
-      <Section label="Your subscription">
-        <div
-          className="rounded-xl px-4 py-4 relative overflow-hidden"
-          style={{
-            backgroundColor: "var(--color-burgundy)",
-            color: "var(--color-paper)",
-          }}
-        >
-          <span className="absolute top-2.5 right-3 text-lg" style={{ color: "var(--color-mustard)" }}><DottedGlyph variant="star" size={18} /></span>
-          <p className="small-caps text-[10px]" style={{ color: "var(--color-mustard)", letterSpacing: "0.25em" }}>
-            sisi · celestial
+      <div className="mt-8 ink-divider" />
+
+      <Section label="Subscription">
+        <div className="py-5">
+          <p className="serif text-[15px] text-ink">Sisi · Yearly</p>
+          <p className="mt-1 text-[11px] text-sepia">
+            Renews September 14 · $4.99/month
           </p>
-          <p className="mt-1.5 text-[17px] serif italic">
-            unlimited manifestations
-          </p>
-          <p className="mt-0.5 text-[11px] serif opacity-80">
-            renews September 14 · $4.99/month
-          </p>
-          <button
-            className="mt-3 text-[10px] serif italic underline underline-offset-2 opacity-90"
-          >
-            manage subscription →
+          <button className="mt-3 text-[11px] tracking-[0.22em] uppercase text-ink">
+            Manage →
           </button>
         </div>
       </Section>
 
-      {/* settings */}
       <Section label="Settings">
-        <Row title="Daily ritual reminder" hint="9:00 AM" />
+        <Row title="Daily reminder" hint="9:00 AM" />
         <Row title="Voice & tone" hint="soft" />
         <Row title="Notifications" hint="gentle" />
         <Row title="Appearance" hint="paper" />
@@ -97,17 +68,14 @@ function Profile() {
         <Row title="About Sisi" />
       </Section>
 
-      <div className="mt-6 text-center">
-        <button className="text-[11px] serif italic text-sepia underline underline-offset-2">
-          sign out
+      <div className="mt-10 text-center">
+        <button className="text-[11px] tracking-[0.22em] uppercase text-sepia">
+          Sign out
         </button>
       </div>
 
-      <div className="mt-6 ornament-rule text-sm">
-        <span><DottedGlyph variant="fleuron" size={18} /></span>
-      </div>
-      <footer className="mt-2 mb-2 text-center serif italic text-[10px] text-sepia">
-        kept softly, between you and the universe.
+      <footer className="mt-10 mb-4 text-center text-[11px] text-sepia tracking-wide">
+        kept softly, between you and the page.
       </footer>
     </PhoneFrame>
   );
@@ -115,28 +83,28 @@ function Profile() {
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <section className="mt-5">
-      <h2 className="small-caps mb-1.5">{label}</h2>
-      <div className="space-y-1.5">{children}</div>
+    <section className="mt-8">
+      <p className="small-caps">{label}</p>
+      <div className="mt-2 divide-y divide-border border-t border-b border-border">{children}</div>
     </section>
   );
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="paper-card rounded-lg py-2.5 text-center">
-      <p className="serif text-[1.25rem] text-ink leading-none">{value}</p>
-      <p className="mt-0.5 small-caps text-[9px]">{label}</p>
+    <div className="py-2 text-center">
+      <p className="serif text-[1.5rem] text-ink leading-none">{value}</p>
+      <p className="mt-1 small-caps text-[9px]">{label}</p>
     </div>
   );
 }
 
 function Row({ title, hint }: { title: string; hint?: string }) {
   return (
-    <button className="w-full paper-card rounded-lg px-3.5 py-2.5 flex items-center gap-3 hover:opacity-90 transition text-left">
-      <span className="flex-1 text-[13px] serif text-ink">{title}</span>
-      {hint && <span className="text-[11px] serif italic text-sepia">{hint}</span>}
-      <ChevronRight className="h-3.5 w-3.5 text-sepia/60 shrink-0" strokeWidth={1.3} />
+    <button className="w-full py-3.5 flex items-center gap-3 text-left hover:opacity-60 transition">
+      <span className="flex-1 text-[14px] serif text-ink">{title}</span>
+      {hint && <span className="text-[12px] text-sepia">{hint}</span>}
+      <span className="text-sepia text-[12px]">→</span>
     </button>
   );
 }
