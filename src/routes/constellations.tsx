@@ -228,7 +228,7 @@ function Sky() {
                   textShadow: "0 0 5px oklch(0.92 0.04 85 / 0.7)",
                 }}
               >
-                ✦
+                <DottedGlyph variant="star" size={10} />
               </span>
             </button>
           ))}
@@ -248,14 +248,16 @@ function Sky() {
                 <span
                   className={isManifested ? "" : "breathe"}
                   style={{
-                    fontSize: `${band.size + (isManifested ? 4 : 0)}px`,
                     color: isManifested ? "var(--color-paper)" : "var(--color-mustard)",
-                    textShadow: isManifested
-                      ? "0 0 20px var(--color-paper), 0 0 40px oklch(0.88 0.09 85 / 0.7)"
-                      : `0 0 ${10 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow})`,
+                    filter: isManifested
+                      ? "drop-shadow(0 0 14px var(--color-paper)) drop-shadow(0 0 30px oklch(0.88 0.09 85 / 0.7))"
+                      : `drop-shadow(0 0 ${8 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow}))`,
                   }}
                 >
-                  {isManifested ? "❦" : "✦"}
+                  <DottedGlyph
+                    variant={isManifested ? "fleuron" : "star"}
+                    size={band.size + (isManifested ? 6 : 2)}
+                  />
                 </span>
                 <span
                   className="serif italic text-[10px] mt-1.5 px-2 py-0.5 rounded-full text-center leading-tight"
