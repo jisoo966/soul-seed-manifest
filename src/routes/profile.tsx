@@ -124,19 +124,19 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="paper-card rounded-lg py-3 text-center">
-      <p className="serif text-[1.4rem] text-ink leading-none">{value}</p>
-      <p className="mt-1 small-caps text-[9px]">{label}</p>
+    <div className="paper-card rounded-lg py-2.5 text-center">
+      <p className="serif text-[1.25rem] text-ink leading-none">{value}</p>
+      <p className="mt-0.5 small-caps text-[9px]">{label}</p>
     </div>
   );
 }
 
 function Row({ title, hint }: { title: string; hint?: string }) {
   return (
-    <button className="w-full paper-card rounded-lg px-4 py-3 flex items-center gap-3 hover:opacity-90 transition text-left">
-      <span className="flex-1 text-[14px] serif text-ink">{title}</span>
-      {hint && <span className="text-[12px] serif italic text-sepia">{hint}</span>}
-      <ChevronRight className="h-4 w-4 text-sepia/60 shrink-0" strokeWidth={1.3} />
+    <button className="w-full paper-card rounded-lg px-3.5 py-2.5 flex items-center gap-3 hover:opacity-90 transition text-left">
+      <span className="flex-1 text-[13px] serif text-ink">{title}</span>
+      {hint && <span className="text-[11px] serif italic text-sepia">{hint}</span>}
+      <ChevronRight className="h-3.5 w-3.5 text-sepia/60 shrink-0" strokeWidth={1.3} />
     </button>
   );
 }
