@@ -328,7 +328,7 @@ function Sky() {
               ["--ty" as any]: `${HORIZONS[suggested.horizon].y + 8}%`,
             }}
           >
-            ✦
+            <DottedGlyph variant="star" size={22} />
           </span>
         )}
         {(phase === "landed" || phase === "suggesting") && (
@@ -342,7 +342,7 @@ function Sky() {
               animation: "starTwinkle 1.6s ease-out 2",
             }}
           >
-            ✦
+            <DottedGlyph variant="star" size={22} />
           </span>
         )}
 
@@ -380,7 +380,7 @@ function Sky() {
                 border: "1px dashed var(--color-burgundy)",
               }}
             >
-              ❦  Mark as manifested
+              <span className="inline-flex items-center gap-2"><DottedGlyph variant="fleuron" size={16} />Mark as manifested</span>
             </button>
           )}
         </div>
@@ -397,7 +397,7 @@ function Sky() {
               animation: "descend 1.8s cubic-bezier(.4,.05,.2,1) forwards",
             }}
           >
-            ✦
+            <DottedGlyph variant="star" size={80} />
           </span>
         </div>
       )}
