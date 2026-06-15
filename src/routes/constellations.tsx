@@ -161,7 +161,7 @@ function Sky() {
 
   return (
     <PhoneFrame>
-      <header className="pt-4 flex items-center justify-between">
+      <header className="pt-3 flex items-center justify-between">
         {zoomed ? (
           <button onClick={() => setZoomed(null)} className="p-1">
             <ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} />
@@ -169,7 +169,7 @@ function Sky() {
         ) : (
           <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
         )}
-        <h1 className="text-lg serif text-ink">
+        <h1 className="text-[16px] serif text-ink">
           {active ? <em className="italic">your manifestation</em> : "Your sky"}
         </h1>
         <button className="p-1"><Plus className="h-5 w-5 text-ink" strokeWidth={1.4} /></button>
