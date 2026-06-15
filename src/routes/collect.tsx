@@ -95,29 +95,28 @@ function Collect() {
             search: { landing: "1", title, kind: kind ?? "Sign" },
           });
         }}
-        className="mt-6 w-full rounded-xl py-4 serif text-[16px] italic transition disabled:opacity-40"
+        className="mt-5 w-full rounded-xl py-3.5 serif text-[15px] italic transition disabled:opacity-40"
         style={{
           backgroundColor: "var(--color-burgundy)",
           color: "var(--color-paper)",
           boxShadow: canSubmit ? "0 6px 18px -10px var(--color-burgundy)" : "none",
         }}
       >
-        <span className="inline-flex items-center gap-2"><DottedGlyph variant="fleuron" size={18} />Press it into the book</span>
-
+        <span className="inline-flex items-center gap-2"><DottedGlyph variant="fleuron" size={16} />Press it into the book</span>
       </button>
 
-      <h2 className="small-caps mt-9 mb-3">Pressed earlier</h2>
-      <div className="space-y-3">
+      <h2 className="small-caps mt-7 mb-2">Pressed earlier</h2>
+      <div className="space-y-2">
         {recent.map((r) => (
-          <div key={r.title} className="paper-card rounded-lg px-4 py-3 flex items-center gap-3">
-            <div className="h-12 w-14 rounded bg-secondary flex items-center justify-center text-moss">
-              <DottedGlyph variant={r.glyph === "❦" ? "fleuron" : "star"} size={26} />
+          <div key={r.title} className="paper-card rounded-lg px-3.5 py-2.5 flex items-center gap-3">
+            <div className="h-10 w-12 rounded bg-secondary flex items-center justify-center text-moss">
+              <DottedGlyph variant={r.glyph === "❦" ? "fleuron" : "star"} size={22} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="serif text-[14px] text-ink leading-snug">{r.title}</p>
-              <p className="text-[11px] text-sepia mt-1 italic serif">{r.when}</p>
+              <p className="serif text-[13px] text-ink leading-snug">{r.title}</p>
+              <p className="text-[10px] text-sepia mt-0.5 italic serif">{r.when}</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-sepia/60" strokeWidth={1.3} />
+            <ChevronRight className="h-3.5 w-3.5 text-sepia/60" strokeWidth={1.3} />
           </div>
         ))}
       </div>

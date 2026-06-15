@@ -43,9 +43,9 @@ function Correspondence() {
 
   return (
     <PhoneFrame>
-      <header className="pt-4 flex items-center justify-between">
+      <header className="pt-3 flex items-center justify-between">
         <Link to="/" className="p-1"><ArrowLeft className="h-5 w-5 text-ink" strokeWidth={1.4} /></Link>
-        <h1 className="text-lg serif text-ink">Correspondence</h1>
+        <h1 className="text-[16px] serif text-ink">Correspondence</h1>
         <Mail className="h-5 w-5 text-ink" strokeWidth={1.4} />
       </header>
 
