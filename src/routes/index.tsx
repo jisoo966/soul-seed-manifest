@@ -205,13 +205,13 @@ function Home() {
               setRitualPeriod("year");
               setRitualOpen(false);
             }}
-            className="rounded-xl px-5 py-5 animate-scale-in"
+            className="rounded-xl px-4 py-4 animate-scale-in"
             style={{
               border: "1px solid var(--color-burgundy)",
               backgroundColor: "var(--color-paper)",
             }}
           >
-            <p className="small-caps mb-3" style={{ color: "var(--color-burgundy)" }}>
+            <p className="small-caps mb-2" style={{ color: "var(--color-burgundy)" }}>
               what are you calling in?
             </p>
             <input
@@ -219,17 +219,17 @@ function Home() {
               value={ritualTitle}
               onChange={(e) => setRitualTitle(e.target.value)}
               placeholder="this year, I will…"
-              className="w-full bg-transparent outline-none serif italic text-[18px] text-ink placeholder:text-sepia/60 border-b py-2"
+              className="w-full bg-transparent outline-none serif italic text-[17px] text-ink placeholder:text-sepia/60 border-b py-1.5"
               style={{ borderColor: "var(--color-burgundy)" }}
             />
-            <p className="small-caps mt-5 mb-2 text-sepia">by when</p>
+            <p className="small-caps mt-4 mb-1.5 text-sepia">by when</p>
             <div className="flex gap-2">
               {(["week", "month", "year"] as Period[]).map((p) => (
                 <button
                   key={p}
                   type="button"
                   onClick={() => setRitualPeriod(p)}
-                  className="flex-1 py-2 rounded-lg serif italic text-[13px] transition"
+                  className="flex-1 py-1.5 rounded-lg serif italic text-[12px] transition"
                   style={{
                     border: "1px solid var(--color-burgundy)",
                     backgroundColor: ritualPeriod === p ? "var(--color-burgundy)" : "transparent",
@@ -283,8 +283,8 @@ function Home() {
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <section className="mt-7">
-      <h2 className="small-caps mb-2">{label}</h2>
+    <section className="mt-5">
+      <h2 className="small-caps mb-1.5">{label}</h2>
       {children}
     </section>
   );
