@@ -43,8 +43,8 @@
   --color-burgundy: var(--burgundy);
   --color-mustard: var(--mustard);
   --color-sky: var(--sky);
-  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
-  --font-script: "Cormorant Garamond", "Pinyon Script", cursive;
+  --font-serif: "Sentient", ui-serif, Georgia, serif;
+  --font-script: "Sentient", ui-serif, Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
