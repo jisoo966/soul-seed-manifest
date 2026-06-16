@@ -182,7 +182,7 @@ function Sky() {
       </p>
 
       {/* the sky */}
-      <div className="celestial relative mt-3 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)" }}>
+      <div className="celestial dark relative mt-3 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)", backgroundColor: "oklch(0.1 0 0)" }}>
         {/* horizon bands — only on sky view */}
         {!active && (
           <>
