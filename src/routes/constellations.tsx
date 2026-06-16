@@ -182,7 +182,7 @@ function Sky() {
       </p>
 
       {/* the sky */}
-      <div className="celestial relative mt-3 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)" }}>
+      <div className="celestial dark relative mt-3 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)", backgroundColor: "oklch(0.1 0 0)" }}>
         {/* horizon bands — only on sky view */}
         {!active && (
           <>
@@ -565,7 +565,7 @@ function short(t: string) {
 // ---------- sticker shapes ----------
 function toneVar(t: Tone) {
   return ({
-    paper: "var(--color-paper)",
+    paper: "oklch(0.95 0.01 70)",
     moss: "oklch(0.86 0.05 145)",
     sky: "oklch(0.84 0.04 240)",
     mustard: "oklch(0.88 0.09 85)",
@@ -575,7 +575,7 @@ function toneVar(t: Tone) {
 
 function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
   const bg = toneVar(sign.tone);
-  const ink = "var(--color-ink)";
+  const ink = "oklch(0.18 0 0)";
   const t = mini ? "text-[8px] leading-tight" : "text-[15px] leading-snug";
   const pad = mini ? "px-1.5 py-1.5" : "px-3 py-3";
 
