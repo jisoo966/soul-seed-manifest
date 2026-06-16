@@ -575,7 +575,7 @@ function toneVar(t: Tone) {
 
 function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
   const bg = toneVar(sign.tone);
-  const ink = "var(--color-ink)";
+  const ink = "oklch(0.18 0 0)";
   const t = mini ? "text-[8px] leading-tight" : "text-[15px] leading-snug";
   const pad = mini ? "px-1.5 py-1.5" : "px-3 py-3";
 
