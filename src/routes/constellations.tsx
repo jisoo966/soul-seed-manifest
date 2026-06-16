@@ -565,7 +565,7 @@ function short(t: string) {
 // ---------- sticker shapes ----------
 function toneVar(t: Tone) {
   return ({
-    paper: "var(--color-paper)",
+    paper: "oklch(0.95 0.01 70)",
     moss: "oklch(0.86 0.05 145)",
     sky: "oklch(0.84 0.04 240)",
     mustard: "oklch(0.88 0.09 85)",

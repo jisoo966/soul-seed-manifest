@@ -10,9 +10,10 @@ const tabs = [
 
 export function PhoneFrame({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isDark = pathname === "/constellations";
 
   return (
-    <div className="min-h-screen w-full bg-background flex items-center justify-center py-6 px-3">
+    <div className={`min-h-screen w-full flex items-center justify-center py-6 px-3 ${isDark ? "dark bg-background" : "bg-background"}`}>
       <div
         className="relative w-full max-w-[420px] bg-paper rounded-[2rem] overflow-hidden flex flex-col border border-border"
         style={{
