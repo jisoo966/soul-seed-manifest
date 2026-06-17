@@ -77,7 +77,7 @@ function Sky() {
   const [open, setOpen] = useState<Sign | null>(null);
 
   const [manifestations, setManifestations] = useState<Manifestation[]>(seedManifestations);
-  const [floatingSigns] = useState<FloatingSign[]>(seedFloatingSigns);
+  const [floatingSigns, setFloatingSigns] = useState<FloatingSign[]>(seedFloatingSigns);
   const [adding, setAdding] = useState(false);
   const [draftTitle, setDraftTitle] = useState("");
   const [draftHorizon, setDraftHorizon] = useState<Horizon>("thisSeason");
