@@ -15,7 +15,7 @@ export const Route = createFileRoute("/constellations")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>): Search => ({
-    landing: s.landing === "1" ? "1" : undefined,
+    landing: s.landing === "1" || s.landing === 1 ? "1" : undefined,
     title: typeof s.title === "string" ? s.title : undefined,
     kind: typeof s.kind === "string" ? s.kind : undefined,
   }),
