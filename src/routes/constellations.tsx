@@ -568,19 +568,36 @@ function Sky() {
             <Sparkles className="h-3 w-3" strokeWidth={1.5} /> sisi noticed
           </p>
           {search.title && <p className="serif italic text-[14px] text-ink leading-snug">&ldquo;{search.title}&rdquo;</p>}
-          {suggested && (
-            <p className="mt-2 serif text-[13px] text-ink/85">
-              This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
-            </p>
+          {suggested ? (
+            <>
+              <p className="mt-2 serif text-[13px] text-ink/85">
+                This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
+              </p>
+              <div className="mt-3 flex gap-2">
+                <button onClick={() => dismissLanding(true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
+                  Attach to it
+                </button>
+                <button onClick={() => dismissLanding(false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
+                  Leave floating
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="mt-2 serif text-[13px] text-ink/85">
+                This sign is drifting in your sky. Name a wish and it will anchor here as a star.
+              </p>
+              <div className="mt-3 flex gap-2">
+                <button onClick={startNamingFromLanding} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
+                  Name a wish
+                </button>
+                <button onClick={() => dismissLanding(false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
+                  Leave floating
+                </button>
+              </div>
+            </>
           )}
-          <div className="mt-3 flex gap-2">
-            <button onClick={() => dismissLanding(false, true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
-              Attach to it
-            </button>
-            <button onClick={() => dismissLanding(true, false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
-              Leave floating
-            </button>
-          </div>
+
 
         </div>
       )}
