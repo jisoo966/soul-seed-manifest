@@ -95,7 +95,7 @@ function Sky() {
       drift: Math.random() * 3,
     };
   }
-  const initialLanding = initialLandingRef.current;
+  const initialLanding = initialLandingRef.current; if (typeof window !== "undefined") console.log("LANDING_DEBUG", JSON.stringify({search, initialLanding}));
 
   const [manifestations, setManifestations] = useState<Manifestation[]>(seedManifestations);
   const [floatingSigns, setFloatingSigns] = useState<FloatingSign[]>(() =>
