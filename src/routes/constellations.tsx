@@ -265,12 +265,13 @@ function Sky() {
   const tx = active ? 50 - active.x : 0;
   const ty = active ? 50 - HORIZONS[active.horizon].y : 0;
 
-  // target for the falling star animation
+  // target for the falling star animation — always the incoming floating sign
+  // so the star doesn't snap from the suggested manifestation to the sign's spot.
   const landed = landedFloatingId ? floatingSigns.find((f) => f.id === landedFloatingId) : null;
-  const target = suggested
-    ? { x: suggested.x, y: HORIZONS[suggested.horizon].y + 8 }
-    : landed
+  const target = landed
     ? { x: landed.x, y: landed.y }
+    : suggested
+    ? { x: suggested.x, y: HORIZONS[suggested.horizon].y + 8 }
     : null;
 
   // animation status for debug badge
