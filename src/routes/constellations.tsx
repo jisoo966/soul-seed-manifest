@@ -299,6 +299,16 @@ function Sky() {
 
       {/* the sky */}
       <div className="celestial dark relative mt-3 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)", backgroundColor: "oklch(0.1 0 0)" }}>
+        {/* debug badge */}
+        <div
+          className="absolute top-1 left-1 z-40 px-1.5 py-0.5 rounded text-[9px] font-mono leading-tight"
+          style={{ backgroundColor: "oklch(0.25 0 0 / 0.85)", color: "oklch(0.9 0 0)" }}
+        >
+          <div>landing: {String(search.landing ?? false)}</div>
+          <div>phase: {phase ?? "null"}</div>
+          <div>wish: {zoomed ?? "none"}</div>
+          <div>floatId: {landedFloatingId ?? "none"}</div>
+        </div>
         {/* horizon bands — only on sky view */}
         {!active && (
           <>
