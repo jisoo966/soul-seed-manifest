@@ -48,50 +48,11 @@ const HORIZONS: Record<Horizon, { label: string; y: number; size: number; glow: 
   thisMonth:  { label: "this month",   y: 84, size: 19, glow: 1.0 },
 };
 
-const manifestations: Manifestation[] = [
-  {
-    id: "studio",
-    title: "Land the role at the studio I've been watching",
-    horizon: "thisYear", startedDaysAgo: 38, totalDays: 220, x: 30,
-    signs: [
-      { id: "s1", kind: "Sync", title: "the senior reached out", note: "She replied to my email — within an hour.", date: "May 28", shape: "ticket", tone: "paper" },
-      { id: "s2", kind: "Sign", title: "their job page changed", note: "A new opening appeared, almost written for me.", date: "May 20", shape: "pennant", tone: "mustard" },
-      { id: "s3", kind: "Thought", title: "I belong in that room", note: "I felt it for a second, and I want to feel it again.", date: "May 12", shape: "torn", tone: "moss" },
-    ],
-  },
-  {
-    id: "body",
-    title: "Reach 65kg with strength, not punishment",
-    horizon: "thisMonth", startedDaysAgo: 18, totalDays: 30, x: 70,
-    signs: [
-      { id: "b1", kind: "Manifestation", title: "first 5km without stopping", note: "I didn't even mean to. The body just kept going.", date: "Jun 03", shape: "polaroid", tone: "paper" },
-      { id: "b2", kind: "Sign", title: "the mirror moment", note: "The shirt sat differently. Quietly different.", date: "May 30", shape: "ribbon", tone: "burgundy" },
-    ],
-  },
-  {
-    id: "draft",
-    title: "Finish the first draft",
-    horizon: "thisSeason", startedDaysAgo: 22, totalDays: 90, x: 32,
-    signs: [
-      { id: "d1", kind: "Dream", title: "the open door", note: "I dreamt the door was already open. I just had to walk.", date: "May 25", shape: "cloud", tone: "sky" },
-    ],
-  },
-  {
-    id: "home",
-    title: "Find a home that feels like mine",
-    horizon: "someday", startedDaysAgo: 0, totalDays: 0, x: 65,
-    signs: [],
-  },
-];
+const seedManifestations: Manifestation[] = [];
 
 // floating signs — unattached to any manifestation. drift in the upper sky.
 type FloatingSign = Sign & { x: number; y: number; drift: number };
-const floatingSigns: FloatingSign[] = [
-  { id: "f1", kind: "Sync", title: "the song on the radio", note: "The song I'd been thinking of. Twice in one day.", date: "Jun 04", shape: "ticket", tone: "paper", x: 18, y: 6, drift: 0 },
-  { id: "f2", kind: "Sign", title: "white feather", note: "Saw a white feather on my way to work.", date: "Jun 02", shape: "pennant", tone: "mustard", x: 52, y: 4, drift: 1.2 },
-  { id: "f3", kind: "Thought", title: "less rushing", note: "Less rushing. More noticing.", date: "May 30", shape: "torn", tone: "moss", x: 82, y: 8, drift: 2.4 },
-  { id: "f4", kind: "Sync", title: "11:11 again", note: "Looked up at 11:11. Smiled.", date: "May 27", shape: "ticket", tone: "paper", x: 90, y: 24, drift: 0.6 },
-];
+const seedFloatingSigns: FloatingSign[] = [];
 
 // ---------- spiral for zoomed signs ----------
 const GOLDEN_ANGLE = 137.5;
