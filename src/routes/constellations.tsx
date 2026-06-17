@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Plus, X, Sparkles } from "lucide-react";
+
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { DottedGlyph } from "@/components/DottedGlyph";
 
