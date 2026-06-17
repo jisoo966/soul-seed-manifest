@@ -700,9 +700,21 @@ function Sky() {
       )}
 
       {!phase && !active && manifestations.length > 0 && (
-        <p className="mt-3 text-center text-[11px] serif italic text-sepia">
-          tap a star to enter its story
-        </p>
+        <button
+          onClick={openAdd}
+          className="mt-3 mx-auto block text-center text-[11px] serif italic text-sepia border rounded-full px-4 py-1.5 transition-colors"
+          style={{ borderColor: "oklch(0.85 0.05 85 / 0.4)" }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "oklch(0.2 0.02 60 / 0.25)";
+            e.currentTarget.style.borderColor = "oklch(0.85 0.05 85 / 0.6)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderColor = "oklch(0.85 0.05 85 / 0.4)";
+          }}
+        >
+          make a wish
+        </button>
       )}
 
       {/* add wish modal */}
