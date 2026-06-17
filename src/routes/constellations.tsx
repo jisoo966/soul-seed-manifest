@@ -131,7 +131,7 @@ function Sky() {
   function dismissLanding(addAsFloating: boolean, attachToManifestation: boolean) {
     setPhase(null);
     navigate({ to: "/constellations", search: {}, replace: true });
-    if (attachToManifestation) setZoomed(suggested.id);
+    if (attachToManifestation && suggested) setZoomed(suggested.id);
     // (addAsFloating is the default behavior — sign stays in sky)
     void addAsFloating;
   }
@@ -163,7 +163,9 @@ function Sky() {
         <h1 className="text-[16px] serif text-ink">
           {active ? <em className="italic">your manifestation</em> : "Your sky"}
         </h1>
-        <button className="p-1"><Plus className="h-5 w-5 text-ink" strokeWidth={1.4} /></button>
+        <button onClick={() => setAdding(true)} className="p-1" aria-label="Add a wish">
+          <Plus className="h-5 w-5 text-ink" strokeWidth={1.4} />
+        </button>
       </header>
 
       <p className="small-caps text-center mt-3" style={{ color: "var(--color-burgundy)" }}>
