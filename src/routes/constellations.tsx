@@ -77,7 +77,7 @@ function Sky() {
   const [open, setOpen] = useState<Sign | null>(null);
 
   const [manifestations, setManifestations] = useState<Manifestation[]>(seedManifestations);
-  const [floatingSigns] = useState<FloatingSign[]>(seedFloatingSigns);
+  const [floatingSigns, setFloatingSigns] = useState<FloatingSign[]>(seedFloatingSigns);
   const [adding, setAdding] = useState(false);
   const [draftTitle, setDraftTitle] = useState("");
   const [draftHorizon, setDraftHorizon] = useState<Horizon>("thisSeason");
@@ -157,6 +157,31 @@ function Sky() {
   }
 
 
+  // Persist the incoming entry as a floating sign once, on landing
+  const landingHandledRef = useRef(false);
+  const [landedFloatingId, setLandedFloatingId] = useState<string | null>(null);
+  useEffect(() => {
+    if (search.landing !== "1" || !search.title || landingHandledRef.current) return;
+    landingHandledRef.current = true;
+    const id = `f-${Date.now()}`;
+    const shapes: Shape[] = ["polaroid", "torn", "cloud", "ribbon", "ticket", "pennant"];
+    const tones: Tone[] = ["paper", "moss", "sky", "mustard", "burgundy"];
+    const newSign: FloatingSign = {
+      id,
+      kind: search.kind ?? "Sign",
+      title: search.title,
+      note: search.title,
+      date: "today",
+      shape: shapes[Math.floor(Math.random() * shapes.length)],
+      tone: tones[Math.floor(Math.random() * tones.length)],
+      x: 25 + Math.round(Math.random() * 50),
+      y: 18 + Math.round(Math.random() * 14),
+      drift: Math.random() * 3,
+    };
+    setFloatingSigns((arr) => [...arr, newSign]);
+    setLandedFloatingId(id);
+  }, [search.landing, search.title, search.kind]);
+
   useEffect(() => {
     if (phase !== "falling") return;
     const t1 = setTimeout(() => setPhase("landed"), 1400);
@@ -170,13 +195,33 @@ function Sky() {
     return () => clearTimeout(t);
   }, [ritual]);
 
-  function dismissLanding(addAsFloating: boolean, attachToManifestation: boolean) {
+  function dismissLanding(attachToManifestation: boolean) {
     setPhase(null);
+    if (attachToManifestation && suggested && landedFloatingId) {
+      // move the floating sign into the suggested manifestation
+      const moving = floatingSigns.find((f) => f.id === landedFloatingId);
+      if (moving) {
+        const { x: _x, y: _y, drift: _d, ...asSign } = moving;
+        void _x; void _y; void _d;
+        setFloatingSigns((arr) => arr.filter((f) => f.id !== landedFloatingId));
+        setManifestations((arr) =>
+          arr.map((m) => (m.id === suggested.id ? { ...m, signs: [...m.signs, asSign] } : m))
+        );
+      }
+      setZoomed(suggested.id);
+    }
+    setLandedFloatingId(null);
     navigate({ to: "/constellations", search: {}, replace: true });
-    if (attachToManifestation && suggested) setZoomed(suggested.id);
-    // (addAsFloating is the default behavior — sign stays in sky)
-    void addAsFloating;
   }
+
+  function startNamingFromLanding() {
+    setPhase(null);
+    // pre-fill the wish modal with the entry text
+    if (search.title) setDraftTitle(search.title);
+    setAdding(true);
+    navigate({ to: "/constellations", search: {}, replace: true });
+  }
+
 
   function completeRitual() {
     if (active) {
@@ -366,36 +411,50 @@ function Sky() {
           )}
         </div>
 
-        {/* falling new star */}
-        {phase === "falling" && suggested && (
-          <span
-            className="absolute text-2xl pointer-events-none z-30"
-            style={{
-              left: "50%", top: "-8%",
-              color: "var(--color-mustard)",
-              textShadow: "0 0 14px oklch(0.88 0.09 85 / 0.9)",
-              animation: "starFall 1.4s cubic-bezier(.55,.05,.3,1) forwards",
-              ["--tx" as any]: `${suggested.x - 50}%`,
-              ["--ty" as any]: `${HORIZONS[suggested.horizon].y + 8}%`,
-            }}
-          >
-            <DottedGlyph variant="star" size={22} />
-          </span>
-        )}
-        {(phase === "landed" || phase === "suggesting") && suggested && (
-          <span
-            className="absolute text-xl pointer-events-none z-30"
-            style={{
-              left: `${suggested.x}%`, top: `${HORIZONS[suggested.horizon].y}%`,
-              transform: "translate(-50%,-50%)",
-              color: "var(--color-mustard)",
-              textShadow: "0 0 18px oklch(0.88 0.09 85 / 0.9)",
-              animation: "starTwinkle 1.6s ease-out 2",
-            }}
-          >
-            <DottedGlyph variant="star" size={22} />
-          </span>
-        )}
+        {/* falling new star — targets suggested manifestation, or the landed floating sign */}
+        {(() => {
+          const landed = landedFloatingId ? floatingSigns.find((f) => f.id === landedFloatingId) : null;
+          const target = suggested
+            ? { x: suggested.x, y: HORIZONS[suggested.horizon].y + 8 }
+            : landed
+            ? { x: landed.x, y: landed.y }
+            : null;
+          if (!target) return null;
+          return (
+            <>
+              {phase === "falling" && (
+                <span
+                  className="absolute text-2xl pointer-events-none z-30"
+                  style={{
+                    left: "50%", top: "-8%",
+                    color: "var(--color-mustard)",
+                    textShadow: "0 0 14px oklch(0.88 0.09 85 / 0.9)",
+                    animation: "starFall 1.4s cubic-bezier(.55,.05,.3,1) forwards",
+                    ["--tx" as any]: `${target.x - 50}%`,
+                    ["--ty" as any]: `${target.y}%`,
+                  }}
+                >
+                  <DottedGlyph variant="star" size={22} />
+                </span>
+              )}
+              {(phase === "landed" || phase === "suggesting") && (
+                <span
+                  className="absolute text-xl pointer-events-none z-30"
+                  style={{
+                    left: `${target.x}%`, top: `${target.y}%`,
+                    transform: "translate(-50%,-50%)",
+                    color: "var(--color-mustard)",
+                    textShadow: "0 0 18px oklch(0.88 0.09 85 / 0.9)",
+                    animation: "starTwinkle 1.6s ease-out 2",
+                  }}
+                >
+                  <DottedGlyph variant="star" size={22} />
+                </span>
+              )}
+            </>
+          );
+        })()}
+
 
         {/* EMPTY STATE — no manifestations yet */}
         {!active && manifestations.length === 0 && floatingSigns.length === 0 && phase === null && (
@@ -523,19 +582,36 @@ function Sky() {
             <Sparkles className="h-3 w-3" strokeWidth={1.5} /> sisi noticed
           </p>
           {search.title && <p className="serif italic text-[14px] text-ink leading-snug">&ldquo;{search.title}&rdquo;</p>}
-          {suggested && (
-            <p className="mt-2 serif text-[13px] text-ink/85">
-              This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
-            </p>
+          {suggested ? (
+            <>
+              <p className="mt-2 serif text-[13px] text-ink/85">
+                This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
+              </p>
+              <div className="mt-3 flex gap-2">
+                <button onClick={() => dismissLanding(true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
+                  Attach to it
+                </button>
+                <button onClick={() => dismissLanding(false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
+                  Leave floating
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="mt-2 serif text-[13px] text-ink/85">
+                This sign is drifting in your sky. Name a wish and it will anchor here as a star.
+              </p>
+              <div className="mt-3 flex gap-2">
+                <button onClick={startNamingFromLanding} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
+                  Name a wish
+                </button>
+                <button onClick={() => dismissLanding(false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
+                  Leave floating
+                </button>
+              </div>
+            </>
           )}
-          <div className="mt-3 flex gap-2">
-            <button onClick={() => dismissLanding(false, true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
-              Attach to it
-            </button>
-            <button onClick={() => dismissLanding(true, false)} className="px-3 py-2 rounded-lg serif italic text-[13px] text-ink border" style={{ borderColor: "var(--color-burgundy)" }}>
-              Leave floating
-            </button>
-          </div>
+
 
         </div>
       )}
