@@ -350,8 +350,48 @@ function Sky() {
                 </div>
               );
             })}
+            {/* curved earth + tiny dreamer — persistent on sky view */}
+            <svg
+              className="absolute left-0 right-0 bottom-0 pointer-events-none z-20"
+              viewBox="0 0 200 60"
+              preserveAspectRatio="none"
+              style={{ width: "100%", height: "22%" }}
+              aria-hidden
+            >
+              <defs>
+                <radialGradient id="earthGrad" cx="50%" cy="100%" r="80%">
+                  <stop offset="0%" stopColor="oklch(0.32 0.04 75)" />
+                  <stop offset="60%" stopColor="oklch(0.22 0.03 70)" />
+                  <stop offset="100%" stopColor="oklch(0.14 0.02 65)" />
+                </radialGradient>
+              </defs>
+              {/* hill silhouette */}
+              <path
+                d="M -10 60 L -10 36 Q 100 -2 210 36 L 210 60 Z"
+                fill="url(#earthGrad)"
+              />
+              {/* grass strokes */}
+              <g stroke="oklch(0.5 0.06 80 / 0.45)" strokeWidth="0.25" strokeLinecap="round">
+                {Array.from({ length: 70 }).map((_, i) => {
+                  const x = 4 + i * 2.7;
+                  const t = (x - 100) / 110;
+                  const y = 36 + t * t * 24 + 2;
+                  return <line key={i} x1={x} y1={y} x2={x + 0.2} y2={y + 1.6} />;
+                })}
+              </g>
+              {/* tiny dreamer lying on the curve, gazing up */}
+              <g transform="translate(100 30) rotate(-4)">
+                {/* body */}
+                <rect x="-5" y="-1" width="10" height="2" rx="1" fill="oklch(0.92 0.04 85)" />
+                {/* head */}
+                <circle cx="6.2" cy="0" r="1.2" fill="oklch(0.92 0.04 85)" />
+                {/* gaze line toward the sky */}
+                <line x1="6.2" y1="-0.6" x2="9" y2="-6" stroke="oklch(0.85 0.06 85 / 0.35)" strokeWidth="0.18" strokeDasharray="0.6 0.6" />
+              </g>
+            </svg>
           </>
         )}
+
 
         {/* camera */}
         <div
