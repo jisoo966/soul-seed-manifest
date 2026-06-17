@@ -190,7 +190,7 @@ function Sky() {
   );
   useEffect(() => {
     if (initialLanding) landingHandledRef.current = true;
-    if (search.landing !== "1" || !search.title || landingHandledRef.current) return;
+    if (!search.landing || !search.title || landingHandledRef.current) return;
     landingHandledRef.current = true;
     const id = `f-${Date.now()}`;
     const shapes: Shape[] = ["polaroid", "torn", "cloud", "ribbon", "ticket", "pennant"];
