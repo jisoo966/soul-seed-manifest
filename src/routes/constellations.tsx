@@ -181,6 +181,12 @@ function Sky() {
           : "near sky · this month  ·  far sky · someday"}
       </p>
 
+      {!active && (
+        <p className="mt-2 text-center serif italic text-[11px]" style={{ color: "oklch(0.85 0.05 85 / 0.75)" }}>
+          your wishes become stars · tap one to see its signs
+        </p>
+      )}
+
       {/* the sky */}
       <div className="celestial dark relative mt-3 rounded-2xl aspect-[3/4] overflow-hidden border" style={{ borderColor: "var(--color-burgundy)", backgroundColor: "oklch(0.1 0 0)" }}>
         {/* horizon bands — only on sky view */}
