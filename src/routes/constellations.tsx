@@ -478,12 +478,6 @@ function Sky() {
 
         {/* falling new star — targets suggested manifestation, or the landed floating sign */}
         {(() => {
-          const landed = landedFloatingId ? floatingSigns.find((f) => f.id === landedFloatingId) : null;
-          const target = suggested
-            ? { x: suggested.x, y: HORIZONS[suggested.horizon].y + 8 }
-            : landed
-            ? { x: landed.x, y: landed.y }
-            : null;
           if (!target) return null;
           return (
             <>
