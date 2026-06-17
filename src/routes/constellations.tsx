@@ -205,9 +205,10 @@ function Sky() {
         <h1 className="text-[16px] serif text-ink">
           {active ? <em className="italic">your manifestation</em> : "Your sky"}
         </h1>
-        <button onClick={() => setAdding(true)} className="p-1" aria-label="Add a wish">
+        <button ref={addBtnRef} onClick={openAdd} className="p-1" aria-label="Add a wish">
           <Plus className="h-5 w-5 text-ink" strokeWidth={1.4} />
         </button>
+
       </header>
 
       <p className="small-caps text-center mt-3" style={{ color: "var(--color-burgundy)" }}>
