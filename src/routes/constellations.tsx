@@ -265,6 +265,29 @@ function Sky() {
   const tx = active ? 50 - active.x : 0;
   const ty = active ? 50 - HORIZONS[active.horizon].y : 0;
 
+  // target for the falling star animation
+  const landed = landedFloatingId ? floatingSigns.find((f) => f.id === landedFloatingId) : null;
+  const target = suggested
+    ? { x: suggested.x, y: HORIZONS[suggested.horizon].y + 8 }
+    : landed
+    ? { x: landed.x, y: landed.y }
+    : null;
+
+  // animation status for debug badge
+  let animStatus = "";
+  if (phase === "falling" || phase === "landed" || phase === "suggesting") {
+    if (target) {
+      animStatus = `RUNNING: ${phase}`;
+    } else {
+      animStatus = `BLOCKED: phase=${phase} but no target`;
+    }
+  } else {
+    if (!search.landing) animStatus = "STOPPED: missing landing flag";
+    else if (!search.title) animStatus = "STOPPED: missing title";
+    else if (!target) animStatus = "STOPPED: no target (no manifestations, no landed sign)";
+    else animStatus = "STOPPED: phase is null";
+  }
+
 
   return (
     <PhoneFrame>
