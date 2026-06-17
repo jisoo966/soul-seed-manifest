@@ -13,32 +13,44 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
   const isDark = pathname === "/constellations";
 
   return (
-    <div className={`min-h-screen w-full flex items-center justify-center py-6 px-3 ${isDark ? "dark bg-background" : "bg-background"}`}>
+    <div
+      className={`min-h-dvh w-full flex items-stretch sm:items-center justify-center sm:py-6 sm:px-3 ${
+        isDark ? "dark bg-background" : "bg-background"
+      }`}
+    >
       <div
-        className="relative w-full max-w-[420px] bg-paper rounded-[2rem] overflow-hidden flex flex-col border border-border"
+        className="relative w-full sm:max-w-[420px] bg-paper sm:rounded-[2rem] overflow-hidden flex flex-col sm:border border-border"
         style={{
-          minHeight: "min(900px, 95vh)",
+          minHeight: "min(900px, 100dvh)",
         }}
       >
         {/* status bar */}
         <div className="flex items-center justify-between px-6 pt-4 pb-2 text-[11px] tracking-wide text-ink/60">
           <span>9:41</span>
-          <span>•••</span>
+          <span aria-hidden="true">•••</span>
         </div>
 
         {/* content scroll area */}
         <div className="flex-1 overflow-y-auto px-6 pb-24">{children}</div>
 
         {/* tab bar */}
-        <nav className={`absolute bottom-0 inset-x-0 px-6 py-3 flex justify-between border-t ${isDark ? "border-white/25 bg-[oklch(0.18_0_0)]" : "border-border bg-paper"}`}>
+        <nav
+          aria-label="Primary"
+          className={`absolute bottom-0 inset-x-0 px-6 py-3 flex justify-between border-t ${
+            isDark ? "border-white/30 bg-[oklch(0.18_0_0)]" : "border-border bg-paper"
+          }`}
+        >
           {tabs.map(({ to, label }) => {
             const active = pathname === to;
             return (
               <Link
                 key={to}
                 to={to}
-                className="py-1 transition-opacity text-[11px] tracking-[0.18em] uppercase"
-                style={{ opacity: active ? 1 : isDark ? 0.72 : 0.4, color: isDark ? "oklch(1 0 0)" : "var(--color-ink)" }}
+                className="py-1 transition-opacity text-[11px] tracking-[0.18em] uppercase min-h-[44px] flex items-center"
+                style={{
+                  opacity: active ? 1 : isDark ? 0.85 : 0.5,
+                  color: isDark ? "oklch(1 0 0)" : "var(--color-ink)",
+                }}
               >
                 {label}
               </Link>

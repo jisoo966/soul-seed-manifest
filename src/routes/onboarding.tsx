@@ -46,8 +46,15 @@ function Onboarding() {
   const last = i === steps.length - 1;
   const step = steps[i];
 
+  const finish = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("sisi:onboarded", "1");
+    }
+    navigate({ to: "/" });
+  };
+
   const next = () => {
-    if (last) navigate({ to: "/" });
+    if (last) finish();
     else setI((n) => n + 1);
   };
 
@@ -61,7 +68,7 @@ function Onboarding() {
         <div className="flex items-center justify-between px-6 pt-4 pb-2 text-[11px] tracking-wide text-ink/60">
           <span>9:41</span>
           <button
-            onClick={() => navigate({ to: "/" })}
+            onClick={finish}
             className="text-[11px] tracking-[0.2em] uppercase text-sepia hover:text-ink transition"
           >
             Skip

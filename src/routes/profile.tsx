@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 
 export const Route = createFileRoute("/profile")({
@@ -54,9 +55,8 @@ function Profile() {
       </Section>
 
       <Section label="Settings">
-        <Row title="Daily reminder" hint="9:00 AM" />
+        <ReminderRow />
         <Row title="Voice & tone" hint="soft" />
-        <Row title="Notifications" hint="gentle" />
         <Row title="Appearance" hint="paper" />
         <Row title="Language" hint="한국어" />
       </Section>
@@ -101,10 +101,83 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function Row({ title, hint }: { title: string; hint?: string }) {
   return (
-    <button className="w-full py-3.5 flex items-center gap-3 text-left hover:opacity-60 transition">
+    <button className="w-full py-3.5 flex items-center gap-3 text-left hover:opacity-60 transition min-h-[44px]">
       <span className="flex-1 text-[14px] serif text-ink">{title}</span>
       {hint && <span className="text-[12px] text-sepia">{hint}</span>}
-      <span className="text-sepia text-[12px]">→</span>
+      <span className="text-sepia text-[12px]" aria-hidden="true">→</span>
+    </button>
+  );
+}
+
+function ReminderRow() {
+  const [enabled, setEnabled] = useState(false);
+  const [status, setStatus] = useState<"idle" | "on" | "denied" | "unsupported">("idle");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = window.localStorage.getItem("sisi:reminder") === "1";
+    setEnabled(saved);
+    if (!("Notification" in window)) {
+      setStatus("unsupported");
+    } else if (saved && Notification.permission === "granted") {
+      setStatus("on");
+    } else if (Notification.permission === "denied") {
+      setStatus("denied");
+    }
+  }, []);
+
+  async function toggle() {
+    if (!("Notification" in window)) {
+      setStatus("unsupported");
+      return;
+    }
+    if (enabled) {
+      window.localStorage.removeItem("sisi:reminder");
+      setEnabled(false);
+      setStatus("idle");
+      return;
+    }
+    let perm = Notification.permission;
+    if (perm === "default") perm = await Notification.requestPermission();
+    if (perm !== "granted") {
+      setStatus("denied");
+      return;
+    }
+    window.localStorage.setItem("sisi:reminder", "1");
+    setEnabled(true);
+    setStatus("on");
+    new Notification("Sisi", { body: "I'll whisper around 9:00 AM. ✦" });
+  }
+
+  const hint =
+    status === "unsupported"
+      ? "not supported"
+      : status === "denied"
+      ? "blocked in browser"
+      : enabled
+      ? "9:00 AM · on"
+      : "off";
+
+  return (
+    <button
+      onClick={toggle}
+      aria-pressed={enabled}
+      className="w-full py-3.5 flex items-center gap-3 text-left hover:opacity-60 transition min-h-[44px]"
+    >
+      <span className="flex-1 text-[14px] serif text-ink">Daily reminder</span>
+      <span className="text-[12px] text-sepia">{hint}</span>
+      <span
+        className="ml-2 inline-block h-[18px] w-[32px] rounded-full border border-border relative transition-colors"
+        style={{ backgroundColor: enabled ? "var(--color-ink)" : "transparent" }}
+      >
+        <span
+          className="absolute top-[1px] h-[14px] w-[14px] rounded-full transition-all"
+          style={{
+            left: enabled ? "16px" : "1px",
+            backgroundColor: enabled ? "var(--color-paper)" : "var(--color-sepia, #8a7a6b)",
+          }}
+        />
+      </span>
     </button>
   );
 }
