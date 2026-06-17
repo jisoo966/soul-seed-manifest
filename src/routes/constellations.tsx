@@ -81,6 +81,14 @@ function Sky() {
   const [adding, setAdding] = useState(false);
   const [draftTitle, setDraftTitle] = useState("");
   const [draftHorizon, setDraftHorizon] = useState<Horizon>("thisSeason");
+  const [draftError, setDraftError] = useState<string | null>(null);
+  const [bornId, setBornId] = useState<string | null>(null);
+
+  const MAX_WISH = 80;
+  const starRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const addBtnRef = useRef<HTMLButtonElement | null>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [phase, setPhase] = useState<"falling" | "landed" | "suggesting" | null>(
     search.landing === "1" ? "falling" : null
@@ -92,9 +100,33 @@ function Sky() {
   // suggest first active manifestation (could be smarter)
   const suggested = manifestations[0];
 
+  function openAdd() {
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    setDraftError(null);
+    setAdding(true);
+  }
+
+  function closeAdd() {
+    setAdding(false);
+    setDraftError(null);
+    // restore focus to whatever opened the modal
+    requestAnimationFrame(() => {
+      (previousFocusRef.current ?? addBtnRef.current)?.focus();
+    });
+  }
+
   function addManifestation() {
     const t = draftTitle.trim();
-    if (!t) return;
+    if (!t) {
+      setDraftError("please name your wish first");
+      textareaRef.current?.focus();
+      return;
+    }
+    if (t.length > MAX_WISH) {
+      setDraftError(`keep it under ${MAX_WISH} characters`);
+      textareaRef.current?.focus();
+      return;
+    }
     const totalDays =
       draftHorizon === "thisMonth" ? 30 :
       draftHorizon === "thisSeason" ? 90 :
@@ -113,8 +145,17 @@ function Sky() {
       },
     ]);
     setDraftTitle("");
+    setDraftError(null);
     setAdding(false);
+    setBornId(id);
+    // move focus to the freshly-born star once it mounts
+    requestAnimationFrame(() => {
+      setTimeout(() => starRefs.current[id]?.focus(), 50);
+    });
+    // clear the birth animation flag after it plays
+    setTimeout(() => setBornId((cur) => (cur === id ? null : cur)), 1800);
   }
+
 
   useEffect(() => {
     if (phase !== "falling") return;
