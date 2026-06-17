@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Sisi — Minimal Journal
- * Pure paper white, near-black ink, hairline rules.
+ * Sisi — Baroque parchment journal
+ * Warm aged paper, sepia ink, burgundy + gold accents.
  */
 
 @theme inline {
@@ -37,69 +37,76 @@
   --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-sepia: var(--sepia);
+  --color-gold: var(--gold);
   --color-moss: var(--moss);
   --color-burgundy: var(--burgundy);
   --color-mustard: var(--mustard);
   --color-sky: var(--sky);
-  --font-serif: "Sentient", ui-serif, Georgia, serif;
-  --font-script: "Sentient", ui-serif, Georgia, serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-display: "Cinzel", "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-script: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-body: "EB Garamond", "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "IM Fell English", "EB Garamond", ui-serif, Georgia, serif;
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.995 0 0);
-  --paper: oklch(1 0 0);
-  --foreground: oklch(0.18 0 0);
-  --ink: oklch(0.18 0 0);
-  --sepia: oklch(0.55 0 0);
-  --moss: oklch(0.55 0 0);
-  --sky: oklch(0.55 0 0);
-  --burgundy: oklch(0.18 0 0);
-  --mustard: oklch(0.55 0 0);
+  --radius: 0.25rem;
+  --background: oklch(0.93 0.025 80);
+  --paper:      oklch(0.94 0.028 82);
+  --foreground: oklch(0.32 0.05 50);
+  --ink:        oklch(0.30 0.05 45);
+  --sepia:      oklch(0.55 0.07 60);
+  --gold:       oklch(0.62 0.10 75);
+  --burgundy:   oklch(0.38 0.12 25);
+  --mustard:    oklch(0.65 0.12 80);
+  --moss:       oklch(0.48 0.06 130);
+  --sky:        oklch(0.50 0.05 240);
 
-  --card: oklch(1 0 0);
+  --card: oklch(0.95 0.025 82);
   --card-foreground: var(--ink);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.95 0.025 82);
   --popover-foreground: var(--ink);
-  --primary: oklch(0.18 0 0);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.97 0 0);
+  --primary: var(--burgundy);
+  --primary-foreground: oklch(0.95 0.025 82);
+  --secondary: oklch(0.90 0.03 80);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.96 0 0);
+  --muted: oklch(0.90 0.025 80);
+  --muted-foreground: oklch(0.50 0.05 55);
+  --accent: oklch(0.88 0.04 78);
   --accent-foreground: var(--ink);
-  --destructive: oklch(0.50 0.15 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.92 0 0);
-  --input: oklch(0.92 0 0);
-  --ring: oklch(0.80 0 0);
+  --destructive: oklch(0.45 0.15 25);
+  --destructive-foreground: oklch(0.95 0.025 82);
+  --border: oklch(0.72 0.05 70);
+  --input: oklch(0.80 0.04 75);
+  --ring: oklch(0.62 0.08 70);
 }
 
 .dark {
-  --background: oklch(0.08 0 0);
-  --foreground: oklch(0.96 0 0);
-  --paper: oklch(0.12 0 0);
-  --ink: oklch(0.96 0 0);
-  --sepia: oklch(0.65 0 0);
-  --burgundy: oklch(0.82 0.08 25);
-  --mustard: oklch(0.9 0.12 85);
-  --moss: oklch(0.65 0.05 145);
-  --sky: oklch(0.75 0.05 240);
-  --card: oklch(0.14 0 0);
-  --card-foreground: oklch(0.96 0 0);
-  --primary: oklch(0.96 0 0);
-  --primary-foreground: oklch(0.08 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.96 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.22 0 0);
-  --accent-foreground: oklch(0.96 0 0);
-  --border: oklch(0.24 0 0);
-  --input: oklch(0.24 0 0);
-  --ring: oklch(0.50 0 0);
+  --background: oklch(0.42 0.015 245);
+  --paper:      oklch(0.45 0.018 245);
+  --foreground: oklch(0.92 0.02 80);
+  --ink:        oklch(0.92 0.02 80);
+  --sepia:      oklch(0.78 0.03 80);
+  --gold:       oklch(0.85 0.05 85);
+  --burgundy:   oklch(0.80 0.08 25);
+  --mustard:    oklch(0.88 0.09 85);
+  --moss:       oklch(0.78 0.05 145);
+  --sky:        oklch(0.82 0.05 240);
+  --card: oklch(0.46 0.018 245);
+  --card-foreground: oklch(0.92 0.02 80);
+  --popover: oklch(0.46 0.018 245);
+  --popover-foreground: oklch(0.92 0.02 80);
+  --primary: oklch(0.92 0.02 80);
+  --primary-foreground: oklch(0.30 0.015 245);
+  --secondary: oklch(0.48 0.018 245);
+  --secondary-foreground: oklch(0.92 0.02 80);
+  --muted: oklch(0.48 0.018 245);
+  --muted-foreground: oklch(0.78 0.025 245);
+  --accent: oklch(0.50 0.02 245);
+  --accent-foreground: oklch(0.92 0.02 80);
+  --border: oklch(0.65 0.03 70);
+  --input: oklch(0.55 0.02 245);
+  --ring: oklch(0.70 0.04 70);
 }
 
 @layer base {
@@ -107,55 +114,80 @@
   html, body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
-    font-weight: 300;
-    letter-spacing: 0;
+    font-family: var(--font-body);
+    font-weight: 400;
+    letter-spacing: 0.005em;
+  }
+  body {
+    background-image:
+      radial-gradient(at 20% 15%, oklch(0.88 0.06 70 / 0.40) 0px, transparent 55%),
+      radial-gradient(at 85% 85%, oklch(0.85 0.07 55 / 0.35) 0px, transparent 50%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.25  0 0 0 0 0.18  0 0 0 0 0.10  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-blend-mode: multiply, multiply, multiply;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(at 20% 15%, oklch(0.55 0.02 245 / 0.5) 0px, transparent 55%),
+      radial-gradient(at 85% 85%, oklch(0.35 0.02 245 / 0.5) 0px, transparent 50%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0.10 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
   h1, h2, h3, h4, .serif {
     font-family: var(--font-serif);
-    font-weight: 300;
-    letter-spacing: -0.015em;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
   .script {
-    font-family: var(--font-script);
+    font-family: var(--font-serif);
     font-style: italic;
-    font-weight: 300;
+    font-weight: 400;
   }
 }
 
 @layer components {
   .paper-card {
     background-color: var(--color-paper);
-    border: 1px solid var(--color-border);
-    box-shadow: none;
+    border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+    box-shadow:
+      0 1px 0 color-mix(in oklab, var(--color-ink) 8%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--color-gold) 12%, transparent);
+    border-radius: 0.25rem;
   }
   .torn-note {
     background-color: var(--color-paper);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
+    border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 0 color-mix(in oklab, var(--color-ink) 6%, transparent);
   }
   .ink-divider {
-    background-color: var(--color-border);
+    background: linear-gradient(to right, transparent, color-mix(in oklab, var(--color-burgundy) 45%, transparent), transparent);
     height: 1px;
   }
   .small-caps {
+    font-family: var(--font-display);
     text-transform: uppercase;
-    letter-spacing: 0.22em;
-    font-size: 0.625rem;
-    font-weight: 400;
-    color: var(--color-muted-foreground);
-    font-family: var(--font-sans);
+    letter-spacing: 0.32em;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: color-mix(in oklab, var(--color-burgundy) 70%, var(--color-ink));
   }
   .cartouche {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border: 1px solid var(--color-border);
-    color: var(--color-muted-foreground);
-    font-family: var(--font-sans);
-    font-size: 0.7rem;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid color-mix(in oklab, var(--color-burgundy) 40%, var(--color-border));
+    color: var(--color-burgundy);
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
     border-radius: 9999px;
-    background: transparent;
-    box-shadow: none;
+    background: color-mix(in oklab, var(--color-paper) 70%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-gold) 25%, transparent);
   }
   .celestial {
     background-color: var(--color-paper);
@@ -166,14 +198,14 @@
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    color: var(--color-muted-foreground);
+    color: color-mix(in oklab, var(--color-burgundy) 60%, var(--color-sepia));
   }
   .ornament-rule::before,
   .ornament-rule::after {
     content: "";
     flex: 1;
     height: 1px;
-    background: var(--color-border);
+    background: linear-gradient(to right, transparent, color-mix(in oklab, var(--color-burgundy) 50%, transparent), transparent);
   }
 }
 
