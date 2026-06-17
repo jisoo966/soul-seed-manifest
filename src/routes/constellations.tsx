@@ -549,30 +549,53 @@ function Sky() {
       {/* add wish modal */}
       {adding && (
         <div
-          onClick={() => setAdding(false)}
+          onClick={closeAdd}
           className="fixed inset-0 z-50 flex items-center justify-center px-6"
           style={{ backgroundColor: "oklch(0.15 0.02 60 / 0.85)", backdropFilter: "blur(4px)" }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="wish-modal-title"
         >
           <div
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") { e.preventDefault(); closeAdd(); }
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); addManifestation(); }
+            }}
             className="w-full max-w-[320px] rounded-xl p-5"
             style={{ backgroundColor: "var(--color-paper)", animation: "fade-in 0.25s ease-out" }}
           >
-            <p className="small-caps" style={{ color: "var(--color-burgundy)" }}>name a wish</p>
+            <p id="wish-modal-title" className="small-caps" style={{ color: "var(--color-burgundy)" }}>name a wish</p>
             <textarea
+              ref={textareaRef}
               autoFocus
               value={draftTitle}
-              onChange={(e) => setDraftTitle(e.target.value)}
+              onChange={(e) => {
+                const v = e.target.value.slice(0, MAX_WISH);
+                setDraftTitle(v);
+                if (draftError) setDraftError(null);
+              }}
               placeholder="I want to…"
               rows={2}
+              maxLength={MAX_WISH}
+              aria-invalid={!!draftError}
+              aria-describedby="wish-meta"
               className="mt-3 w-full bg-transparent outline-none serif italic text-[15px] text-ink placeholder:text-sepia/60 border-b border-border py-2 focus:border-ink resize-none"
+              style={draftError ? { borderColor: "var(--color-burgundy)" } : undefined}
             />
+            <div id="wish-meta" className="mt-1 flex items-center justify-between text-[10px] serif italic">
+              <span style={{ color: draftError ? "var(--color-burgundy)" : "transparent" }}>
+                {draftError ?? "."}
+              </span>
+              <span className="text-sepia tabular-nums">{draftTitle.trim().length}/{MAX_WISH}</span>
+            </div>
             <p className="small-caps mt-4" style={{ color: "var(--color-burgundy)" }}>by when?</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
               {(["thisMonth", "thisSeason", "thisYear", "someday"] as Horizon[]).map((h) => (
                 <button
                   key={h}
                   onClick={() => setDraftHorizon(h)}
+                  aria-pressed={draftHorizon === h}
                   className="py-2 rounded-md serif italic text-[12px] border transition"
                   style={{
                     borderColor: draftHorizon === h ? "var(--color-burgundy)" : "var(--color-border, #e5e0d8)",
@@ -586,7 +609,7 @@ function Sky() {
             </div>
             <div className="mt-5 flex gap-2 justify-end">
               <button
-                onClick={() => setAdding(false)}
+                onClick={closeAdd}
                 className="px-3 py-2 text-[11px] tracking-[0.2em] uppercase text-sepia"
               >
                 Cancel
@@ -603,6 +626,7 @@ function Sky() {
           </div>
         </div>
       )}
+
 
       {/* sign modal */}
       {open && (
