@@ -159,6 +159,17 @@ function Sky() {
       draftHorizon === "thisSeason" ? 90 :
       draftHorizon === "thisYear" ? 220 : 0;
     const id = `m-${Date.now()}`;
+    const shapes: Shape[] = ["polaroid", "torn", "cloud", "ribbon", "ticket", "pennant"];
+    const tones: Tone[] = ["paper", "moss", "sky", "mustard", "burgundy"];
+    const wishSign: Sign = {
+      id: `s-${Date.now()}`,
+      kind: "Wish",
+      title: t,
+      note: t,
+      date: "today",
+      shape: shapes[Math.floor(Math.random() * shapes.length)],
+      tone: tones[Math.floor(Math.random() * tones.length)],
+    };
     setManifestations((arr) => [
       ...arr,
       {
@@ -168,9 +179,18 @@ function Sky() {
         startedDaysAgo: 0,
         totalDays,
         x: 20 + Math.round(Math.random() * 60),
-        signs: [],
+        signs: [wishSign],
       },
     ]);
+    // also drop a floating sticker into the sky so it's visible immediately
+    const floating: FloatingSign = {
+      ...wishSign,
+      id: `f-${Date.now()}`,
+      x: 25 + Math.round(Math.random() * 50),
+      y: 18 + Math.round(Math.random() * 14),
+      drift: Math.random() * 3,
+    };
+    setFloatingSigns((arr) => [...arr, floating]);
     setDraftTitle("");
     setDraftError(null);
     setAdding(false);
