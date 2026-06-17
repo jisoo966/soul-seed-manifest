@@ -30,7 +30,7 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
         <div className="flex-1 overflow-y-auto px-6 pb-24">{children}</div>
 
         {/* tab bar */}
-        <nav className="absolute bottom-0 inset-x-0 px-6 py-3 flex justify-between border-t border-border bg-paper">
+        <nav className={`absolute bottom-0 inset-x-0 px-6 py-3 flex justify-between border-t ${isDark ? "border-white/20 bg-[oklch(0.18_0_0)]" : "border-border bg-paper"}`}>
           {tabs.map(({ to, label }) => {
             const active = pathname === to;
             return (
