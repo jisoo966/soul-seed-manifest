@@ -14,11 +14,14 @@ export const Route = createFileRoute("/constellations")({
       { name: "description", content: "Your manifestations in motion." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): Search => ({
-    landing: s.landing === "1" || s.landing === 1 ? "1" : undefined,
-    title: typeof s.title === "string" ? s.title : undefined,
-    kind: typeof s.kind === "string" ? s.kind : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): Search => {
+    if (typeof window !== "undefined") console.log("VALIDATE_SEARCH", JSON.stringify(s), typeof s.landing);
+    return {
+      landing: s.landing === "1" || s.landing === 1 ? "1" : undefined,
+      title: typeof s.title === "string" ? s.title : undefined,
+      kind: typeof s.kind === "string" ? s.kind : undefined,
+    };
+  },
   component: Sky,
 });
 
