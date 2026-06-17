@@ -280,18 +280,26 @@ function Sky() {
             const band = HORIZONS[m.horizon];
             const progress = m.totalDays > 0 ? Math.min(1, m.startedDaysAgo / m.totalDays) : 0;
             const isManifested = manifestedIds.has(m.id);
+            const isBorn = bornId === m.id;
             return (
               <button
                 key={m.id}
+                ref={(el) => { starRefs.current[m.id] = el; }}
                 onClick={() => setZoomed(m.id)}
-                className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
-                style={{ left: `${m.x}%`, top: `${band.y}%`, width: "44%" }}
+                className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 rounded"
+                style={{
+                  left: `${m.x}%`, top: `${band.y}%`, width: "44%",
+                  animation: isBorn ? "starBirth 1.6s cubic-bezier(.2,.9,.3,1.2) both" : undefined,
+                }}
+                aria-label={`${m.title} — ${HORIZONS[m.horizon].label}`}
               >
                 <span
                   className={isManifested ? "" : "breathe"}
                   style={{
                     color: isManifested ? "var(--color-paper)" : "var(--color-mustard)",
-                    filter: isManifested
+                    filter: isBorn
+                      ? "drop-shadow(0 0 22px var(--color-mustard)) drop-shadow(0 0 44px oklch(0.88 0.09 85 / 0.95))"
+                      : isManifested
                       ? "drop-shadow(0 0 14px var(--color-paper)) drop-shadow(0 0 30px oklch(0.88 0.09 85 / 0.7))"
                       : `drop-shadow(0 0 ${8 * band.glow}px oklch(0.88 0.09 85 / ${0.5 + 0.3 * band.glow}))`,
                   }}
@@ -317,6 +325,7 @@ function Sky() {
               </button>
             );
           })}
+
 
 
           {/* cluster view: spiral of signs for this manifestation */}
