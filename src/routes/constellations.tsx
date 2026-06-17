@@ -48,50 +48,11 @@ const HORIZONS: Record<Horizon, { label: string; y: number; size: number; glow: 
   thisMonth:  { label: "this month",   y: 84, size: 19, glow: 1.0 },
 };
 
-const manifestations: Manifestation[] = [
-  {
-    id: "studio",
-    title: "Land the role at the studio I've been watching",
-    horizon: "thisYear", startedDaysAgo: 38, totalDays: 220, x: 30,
-    signs: [
-      { id: "s1", kind: "Sync", title: "the senior reached out", note: "She replied to my email — within an hour.", date: "May 28", shape: "ticket", tone: "paper" },
-      { id: "s2", kind: "Sign", title: "their job page changed", note: "A new opening appeared, almost written for me.", date: "May 20", shape: "pennant", tone: "mustard" },
-      { id: "s3", kind: "Thought", title: "I belong in that room", note: "I felt it for a second, and I want to feel it again.", date: "May 12", shape: "torn", tone: "moss" },
-    ],
-  },
-  {
-    id: "body",
-    title: "Reach 65kg with strength, not punishment",
-    horizon: "thisMonth", startedDaysAgo: 18, totalDays: 30, x: 70,
-    signs: [
-      { id: "b1", kind: "Manifestation", title: "first 5km without stopping", note: "I didn't even mean to. The body just kept going.", date: "Jun 03", shape: "polaroid", tone: "paper" },
-      { id: "b2", kind: "Sign", title: "the mirror moment", note: "The shirt sat differently. Quietly different.", date: "May 30", shape: "ribbon", tone: "burgundy" },
-    ],
-  },
-  {
-    id: "draft",
-    title: "Finish the first draft",
-    horizon: "thisSeason", startedDaysAgo: 22, totalDays: 90, x: 32,
-    signs: [
-      { id: "d1", kind: "Dream", title: "the open door", note: "I dreamt the door was already open. I just had to walk.", date: "May 25", shape: "cloud", tone: "sky" },
-    ],
-  },
-  {
-    id: "home",
-    title: "Find a home that feels like mine",
-    horizon: "someday", startedDaysAgo: 0, totalDays: 0, x: 65,
-    signs: [],
-  },
-];
+const seedManifestations: Manifestation[] = [];
 
 // floating signs — unattached to any manifestation. drift in the upper sky.
 type FloatingSign = Sign & { x: number; y: number; drift: number };
-const floatingSigns: FloatingSign[] = [
-  { id: "f1", kind: "Sync", title: "the song on the radio", note: "The song I'd been thinking of. Twice in one day.", date: "Jun 04", shape: "ticket", tone: "paper", x: 18, y: 6, drift: 0 },
-  { id: "f2", kind: "Sign", title: "white feather", note: "Saw a white feather on my way to work.", date: "Jun 02", shape: "pennant", tone: "mustard", x: 52, y: 4, drift: 1.2 },
-  { id: "f3", kind: "Thought", title: "less rushing", note: "Less rushing. More noticing.", date: "May 30", shape: "torn", tone: "moss", x: 82, y: 8, drift: 2.4 },
-  { id: "f4", kind: "Sync", title: "11:11 again", note: "Looked up at 11:11. Smiled.", date: "May 27", shape: "ticket", tone: "paper", x: 90, y: 24, drift: 0.6 },
-];
+const seedFloatingSigns: FloatingSign[] = [];
 
 // ---------- spiral for zoomed signs ----------
 const GOLDEN_ANGLE = 137.5;
@@ -114,6 +75,12 @@ function Sky() {
   const [zoomed, setZoomed] = useState<string | null>(null);
   const [open, setOpen] = useState<Sign | null>(null);
 
+  const [manifestations, setManifestations] = useState<Manifestation[]>(seedManifestations);
+  const [floatingSigns] = useState<FloatingSign[]>(seedFloatingSigns);
+  const [adding, setAdding] = useState(false);
+  const [draftTitle, setDraftTitle] = useState("");
+  const [draftHorizon, setDraftHorizon] = useState<Horizon>("thisSeason");
+
   const [phase, setPhase] = useState<"falling" | "landed" | "suggesting" | null>(
     search.landing === "1" ? "falling" : null
   );
@@ -123,6 +90,30 @@ function Sky() {
 
   // suggest first active manifestation (could be smarter)
   const suggested = manifestations[0];
+
+  function addManifestation() {
+    const t = draftTitle.trim();
+    if (!t) return;
+    const totalDays =
+      draftHorizon === "thisMonth" ? 30 :
+      draftHorizon === "thisSeason" ? 90 :
+      draftHorizon === "thisYear" ? 220 : 0;
+    const id = `m-${Date.now()}`;
+    setManifestations((arr) => [
+      ...arr,
+      {
+        id,
+        title: t,
+        horizon: draftHorizon,
+        startedDaysAgo: 0,
+        totalDays,
+        x: 20 + Math.round(Math.random() * 60),
+        signs: [],
+      },
+    ]);
+    setDraftTitle("");
+    setAdding(false);
+  }
 
   useEffect(() => {
     if (phase !== "falling") return;
@@ -140,7 +131,7 @@ function Sky() {
   function dismissLanding(addAsFloating: boolean, attachToManifestation: boolean) {
     setPhase(null);
     navigate({ to: "/constellations", search: {}, replace: true });
-    if (attachToManifestation) setZoomed(suggested.id);
+    if (attachToManifestation && suggested) setZoomed(suggested.id);
     // (addAsFloating is the default behavior — sign stays in sky)
     void addAsFloating;
   }
@@ -172,7 +163,9 @@ function Sky() {
         <h1 className="text-[16px] serif text-ink">
           {active ? <em className="italic">your manifestation</em> : "Your sky"}
         </h1>
-        <button className="p-1"><Plus className="h-5 w-5 text-ink" strokeWidth={1.4} /></button>
+        <button onClick={() => setAdding(true)} className="p-1" aria-label="Add a wish">
+          <Plus className="h-5 w-5 text-ink" strokeWidth={1.4} />
+        </button>
       </header>
 
       <p className="small-caps text-center mt-3" style={{ color: "var(--color-burgundy)" }}>
@@ -322,7 +315,7 @@ function Sky() {
         </div>
 
         {/* falling new star */}
-        {phase === "falling" && (
+        {phase === "falling" && suggested && (
           <span
             className="absolute text-2xl pointer-events-none z-30"
             style={{
@@ -337,7 +330,7 @@ function Sky() {
             <DottedGlyph variant="star" size={22} />
           </span>
         )}
-        {(phase === "landed" || phase === "suggesting") && (
+        {(phase === "landed" || phase === "suggesting") && suggested && (
           <span
             className="absolute text-xl pointer-events-none z-30"
             style={{
@@ -350,6 +343,33 @@ function Sky() {
           >
             <DottedGlyph variant="star" size={22} />
           </span>
+        )}
+
+        {/* EMPTY STATE — no manifestations yet */}
+        {!active && manifestations.length === 0 && floatingSigns.length === 0 && phase === null && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center pointer-events-none">
+            <span style={{ color: "oklch(0.88 0.09 85 / 0.8)" }}>
+              <DottedGlyph variant="star" size={26} />
+            </span>
+            <p className="mt-4 serif italic text-[15px] leading-snug" style={{ color: "var(--color-paper)" }}>
+              your sky is empty.
+            </p>
+            <p className="mt-2 serif text-[12px] leading-relaxed" style={{ color: "oklch(0.85 0.05 85 / 0.7)" }}>
+              name a wish — it becomes a star.<br />
+              over time, signs gather around it.
+            </p>
+            <button
+              onClick={() => setAdding(true)}
+              className="pointer-events-auto mt-5 px-4 py-2 rounded-full serif italic text-[12px] border"
+              style={{
+                color: "var(--color-paper)",
+                borderColor: "oklch(0.88 0.09 85 / 0.5)",
+                backgroundColor: "oklch(0.2 0.02 60 / 0.4)",
+              }}
+            >
+              + name your first wish
+            </button>
+          </div>
         )}
 
         {active && (
@@ -450,9 +470,11 @@ function Sky() {
             <Sparkles className="h-3 w-3" strokeWidth={1.5} /> sisi noticed
           </p>
           {search.title && <p className="serif italic text-[14px] text-ink leading-snug">&ldquo;{search.title}&rdquo;</p>}
-          <p className="mt-2 serif text-[13px] text-ink/85">
-            This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
-          </p>
+          {suggested && (
+            <p className="mt-2 serif text-[13px] text-ink/85">
+              This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
+            </p>
+          )}
           <div className="mt-3 flex gap-2">
             <button onClick={() => dismissLanding(false, true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
               Attach to it
@@ -465,10 +487,68 @@ function Sky() {
         </div>
       )}
 
-      {!phase && !active && (
+      {!phase && !active && manifestations.length > 0 && (
         <p className="mt-3 text-center text-[11px] serif italic text-sepia">
           tap a star to enter its story
         </p>
+      )}
+
+      {/* add wish modal */}
+      {adding && (
+        <div
+          onClick={() => setAdding(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center px-6"
+          style={{ backgroundColor: "oklch(0.15 0.02 60 / 0.85)", backdropFilter: "blur(4px)" }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[320px] rounded-xl p-5"
+            style={{ backgroundColor: "var(--color-paper)", animation: "fade-in 0.25s ease-out" }}
+          >
+            <p className="small-caps" style={{ color: "var(--color-burgundy)" }}>name a wish</p>
+            <textarea
+              autoFocus
+              value={draftTitle}
+              onChange={(e) => setDraftTitle(e.target.value)}
+              placeholder="I want to…"
+              rows={2}
+              className="mt-3 w-full bg-transparent outline-none serif italic text-[15px] text-ink placeholder:text-sepia/60 border-b border-border py-2 focus:border-ink resize-none"
+            />
+            <p className="small-caps mt-4" style={{ color: "var(--color-burgundy)" }}>by when?</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {(["thisMonth", "thisSeason", "thisYear", "someday"] as Horizon[]).map((h) => (
+                <button
+                  key={h}
+                  onClick={() => setDraftHorizon(h)}
+                  className="py-2 rounded-md serif italic text-[12px] border transition"
+                  style={{
+                    borderColor: draftHorizon === h ? "var(--color-burgundy)" : "var(--color-border, #e5e0d8)",
+                    backgroundColor: draftHorizon === h ? "var(--color-burgundy)" : "transparent",
+                    color: draftHorizon === h ? "var(--color-paper)" : "var(--color-ink)",
+                  }}
+                >
+                  {HORIZONS[h].label}
+                </button>
+              ))}
+            </div>
+            <div className="mt-5 flex gap-2 justify-end">
+              <button
+                onClick={() => setAdding(false)}
+                className="px-3 py-2 text-[11px] tracking-[0.2em] uppercase text-sepia"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={addManifestation}
+                disabled={!draftTitle.trim()}
+                className="px-4 py-2 rounded-md serif italic text-[13px] disabled:opacity-30"
+                style={{ backgroundColor: "var(--color-ink)", color: "var(--color-paper)" }}
+              >
+                Place in sky →
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* sign modal */}
