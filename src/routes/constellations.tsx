@@ -75,6 +75,12 @@ function Sky() {
   const [zoomed, setZoomed] = useState<string | null>(null);
   const [open, setOpen] = useState<Sign | null>(null);
 
+  const [manifestations, setManifestations] = useState<Manifestation[]>(seedManifestations);
+  const [floatingSigns] = useState<FloatingSign[]>(seedFloatingSigns);
+  const [adding, setAdding] = useState(false);
+  const [draftTitle, setDraftTitle] = useState("");
+  const [draftHorizon, setDraftHorizon] = useState<Horizon>("thisSeason");
+
   const [phase, setPhase] = useState<"falling" | "landed" | "suggesting" | null>(
     search.landing === "1" ? "falling" : null
   );
@@ -84,6 +90,30 @@ function Sky() {
 
   // suggest first active manifestation (could be smarter)
   const suggested = manifestations[0];
+
+  function addManifestation() {
+    const t = draftTitle.trim();
+    if (!t) return;
+    const totalDays =
+      draftHorizon === "thisMonth" ? 30 :
+      draftHorizon === "thisSeason" ? 90 :
+      draftHorizon === "thisYear" ? 220 : 0;
+    const id = `m-${Date.now()}`;
+    setManifestations((arr) => [
+      ...arr,
+      {
+        id,
+        title: t,
+        horizon: draftHorizon,
+        startedDaysAgo: 0,
+        totalDays,
+        x: 20 + Math.round(Math.random() * 60),
+        signs: [],
+      },
+    ]);
+    setDraftTitle("");
+    setAdding(false);
+  }
 
   useEffect(() => {
     if (phase !== "falling") return;
