@@ -411,7 +411,8 @@ function Sky() {
               over time, signs gather around it.
             </p>
             <button
-              onClick={() => setAdding(true)}
+              onClick={openAdd}
+
               className="pointer-events-auto mt-5 px-4 py-2 rounded-full serif italic text-[12px] border"
               style={{
                 color: "var(--color-paper)",
