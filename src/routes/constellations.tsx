@@ -157,6 +157,31 @@ function Sky() {
   }
 
 
+  // Persist the incoming entry as a floating sign once, on landing
+  const landingHandledRef = useRef(false);
+  const [landedFloatingId, setLandedFloatingId] = useState<string | null>(null);
+  useEffect(() => {
+    if (search.landing !== "1" || !search.title || landingHandledRef.current) return;
+    landingHandledRef.current = true;
+    const id = `f-${Date.now()}`;
+    const shapes: Shape[] = ["polaroid", "torn", "cloud", "ribbon", "ticket", "pennant"];
+    const tones: Tone[] = ["paper", "moss", "sky", "mustard", "burgundy"];
+    const newSign: FloatingSign = {
+      id,
+      kind: search.kind ?? "Sign",
+      title: search.title,
+      note: search.title,
+      date: "today",
+      shape: shapes[Math.floor(Math.random() * shapes.length)],
+      tone: tones[Math.floor(Math.random() * tones.length)],
+      x: 25 + Math.round(Math.random() * 50),
+      y: 18 + Math.round(Math.random() * 14),
+      drift: Math.random() * 3,
+    };
+    setFloatingSigns((arr) => [...arr, newSign]);
+    setLandedFloatingId(id);
+  }, [search.landing, search.title, search.kind]);
+
   useEffect(() => {
     if (phase !== "falling") return;
     const t1 = setTimeout(() => setPhase("landed"), 1400);
@@ -170,13 +195,33 @@ function Sky() {
     return () => clearTimeout(t);
   }, [ritual]);
 
-  function dismissLanding(addAsFloating: boolean, attachToManifestation: boolean) {
+  function dismissLanding(attachToManifestation: boolean) {
     setPhase(null);
+    if (attachToManifestation && suggested && landedFloatingId) {
+      // move the floating sign into the suggested manifestation
+      const moving = floatingSigns.find((f) => f.id === landedFloatingId);
+      if (moving) {
+        const { x: _x, y: _y, drift: _d, ...asSign } = moving;
+        void _x; void _y; void _d;
+        setFloatingSigns((arr) => arr.filter((f) => f.id !== landedFloatingId));
+        setManifestations((arr) =>
+          arr.map((m) => (m.id === suggested.id ? { ...m, signs: [...m.signs, asSign] } : m))
+        );
+      }
+      setZoomed(suggested.id);
+    }
+    setLandedFloatingId(null);
     navigate({ to: "/constellations", search: {}, replace: true });
-    if (attachToManifestation && suggested) setZoomed(suggested.id);
-    // (addAsFloating is the default behavior — sign stays in sky)
-    void addAsFloating;
   }
+
+  function startNamingFromLanding() {
+    setPhase(null);
+    // pre-fill the wish modal with the entry text
+    if (search.title) setDraftTitle(search.title);
+    setAdding(true);
+    navigate({ to: "/constellations", search: {}, replace: true });
+  }
+
 
   function completeRitual() {
     if (active) {
