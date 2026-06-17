@@ -4,7 +4,7 @@ import { ArrowLeft, Plus, X, Sparkles } from "lucide-react";
 
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { DottedGlyph } from "@/components/DottedGlyph";
-import dreamerLight from "@/assets/dreamer-light.png";
+
 
 type Search = { landing?: boolean; title?: string; kind?: string };
 
@@ -351,14 +351,6 @@ function Sky() {
                 </div>
               );
             })}
-            {/* curved earth + tiny dreamer — inky b&w illustration */}
-            <img
-              src={dreamerLight}
-              alt=""
-              className="absolute left-0 right-0 bottom-0 pointer-events-none z-20"
-              style={{ width: "100%", height: "32%", objectFit: "cover", objectPosition: "bottom" }}
-              aria-hidden
-            />
 
           </>
         )}
