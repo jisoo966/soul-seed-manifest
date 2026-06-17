@@ -917,24 +917,25 @@ function handInk(_t: Tone) {
 
 function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
   const bg = toneVar(sign.tone);
-  const ink = "var(--color-burgundy)";
-  const t = mini ? "text-[7px] leading-[1.15]" : "text-[14px] leading-snug";
-  const pad = mini ? "px-3 py-3" : "px-6 py-6";
+  const ink = handInk(sign.tone);
+  const t = mini ? "text-[10px] leading-[1.1]" : "text-[18px] leading-snug";
+  const pad = mini ? "px-3 py-2" : "px-5 py-4";
 
   const shapeStyle: React.CSSProperties = (() => {
     switch (sign.shape) {
       case "cloud":
-        return { borderRadius: "48% 52% 46% 54% / 58% 50% 50% 42%" };
+        return { borderRadius: "42% 58% 55% 45% / 55% 45% 55% 45%" };
       case "pennant":
-        return { clipPath: "polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%)" };
+        return { borderRadius: "2px 2px 2px 2px", clipPath: "polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%)" };
       case "ticket":
-        return { borderTop: "1px dashed var(--color-burgundy)", borderBottom: "1px dashed var(--color-burgundy)" };
+        return { borderRadius: "4px", borderTop: "1.5px dashed oklch(0.35 0.03 60 / 0.35)", borderBottom: "1.5px dashed oklch(0.35 0.03 60 / 0.35)" };
       case "torn":
-        return { clipPath: "polygon(2% 4%, 18% 0, 38% 5%, 60% 1%, 82% 6%, 98% 2%, 100% 22%, 96% 48%, 100% 72%, 98% 96%, 78% 100%, 52% 96%, 28% 100%, 6% 98%, 0 78%, 4% 52%, 0 28%)" };
+        return { borderRadius: "2px 18px 4px 22px / 18px 4px 22px 2px" };
       case "ribbon":
+        return { borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%" };
       case "polaroid":
       default:
-        return {};
+        return { borderRadius: "6px 18px 10px 14px / 14px 10px 18px 6px" };
     }
   })();
 
@@ -943,19 +944,21 @@ function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
       className={`relative ${pad}`}
       style={{
         backgroundColor: bg,
+        border: "1.5px solid oklch(0.35 0.03 60 / 0.15)",
         boxShadow: mini
-          ? "0 2px 4px oklch(0 0 0 / 0.25)"
-          : "0 6px 18px oklch(0 0 0 / 0.35), inset 0 0 30px oklch(0.78 0.05 60 / 0.15)",
+          ? "2px 2px 0 oklch(0 0 0 / 0.08)"
+          : "3px 4px 0 oklch(0 0 0 / 0.1), 0 2px 8px oklch(0 0 0 / 0.06)",
+        fontFamily: "var(--font-hand)",
         ...shapeStyle,
       }}
     >
-      <OrnateFrame mini={mini} />
       <p
-        className={`relative serif italic text-center ${t}`}
+        className={`relative text-center ${t}`}
         style={{
           color: ink,
-          letterSpacing: mini ? "0.02em" : "0.04em",
-          padding: mini ? "8px 6px" : "18px 14px",
+          letterSpacing: "0.01em",
+          fontWeight: 500,
+          padding: mini ? "4px 2px" : "8px 6px",
         }}
       >
         {sign.title}
