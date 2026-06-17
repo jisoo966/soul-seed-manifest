@@ -182,8 +182,11 @@ function Sky() {
 
   // Persist the incoming entry as a floating sign once, on landing
   const landingHandledRef = useRef(false);
-  const [landedFloatingId, setLandedFloatingId] = useState<string | null>(null);
+  const [landedFloatingId, setLandedFloatingId] = useState<string | null>(
+    initialLanding?.id ?? null
+  );
   useEffect(() => {
+    if (initialLanding) landingHandledRef.current = true;
     if (search.landing !== "1" || !search.title || landingHandledRef.current) return;
     landingHandledRef.current = true;
     const id = `f-${Date.now()}`;
@@ -203,7 +206,7 @@ function Sky() {
     };
     setFloatingSigns((arr) => [...arr, newSign]);
     setLandedFloatingId(id);
-  }, [search.landing, search.title, search.kind]);
+  }, [search.landing, search.title, search.kind, initialLanding]);
 
   useEffect(() => {
     if (phase !== "falling") return;
