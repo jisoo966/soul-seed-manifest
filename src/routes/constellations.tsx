@@ -656,8 +656,8 @@ function Sky() {
               maxLength={MAX_WISH}
               aria-invalid={!!draftError}
               aria-describedby="wish-meta"
-              className="mt-3 w-full bg-transparent outline-none serif italic text-[15px] text-ink placeholder:text-sepia/60 border-b border-border py-2 focus:border-ink resize-none"
-              style={draftError ? { borderColor: "var(--color-burgundy)" } : undefined}
+              className="mt-3 w-full bg-transparent outline-none serif italic text-[15px] placeholder:text-sepia/60 border-b border-border py-2 focus:border-ink resize-none"
+              style={{ color: "oklch(0 0 0)", ...(draftError ? { borderColor: "var(--color-burgundy)" } : {}) }}
             />
             <div id="wish-meta" className="mt-1 flex items-center justify-between text-[10px] serif italic">
               <span style={{ color: draftError ? "var(--color-burgundy)" : "transparent" }}>
