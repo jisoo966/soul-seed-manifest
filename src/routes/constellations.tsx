@@ -5,7 +5,7 @@ import { ArrowLeft, Plus, X, Sparkles } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { DottedGlyph } from "@/components/DottedGlyph";
 
-type Search = { landing?: "1"; title?: string; kind?: string };
+type Search = { landing?: boolean; title?: string; kind?: string };
 
 export const Route = createFileRoute("/constellations")({
   head: () => ({
@@ -14,11 +14,14 @@ export const Route = createFileRoute("/constellations")({
       { name: "description", content: "Your manifestations in motion." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): Search => ({
-    landing: s.landing === "1" ? "1" : undefined,
-    title: typeof s.title === "string" ? s.title : undefined,
-    kind: typeof s.kind === "string" ? s.kind : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): Search => {
+    const landingTruthy = s.landing === true || s.landing === "true" || s.landing === 1 || s.landing === "1";
+    return {
+      landing: landingTruthy ? true : undefined,
+      title: typeof s.title === "string" ? s.title : undefined,
+      kind: typeof s.kind === "string" ? s.kind : undefined,
+    };
+  },
   component: Sky,
 });
 
@@ -79,7 +82,7 @@ function Sky() {
   // Build the incoming entry as a floating sign synchronously so the falling
   // star has a target on the very first render.
   const initialLandingRef = useRef<FloatingSign | null>(null);
-  if (initialLandingRef.current === null && search.landing === "1" && search.title) {
+  if (initialLandingRef.current === null && search.landing && search.title) {
     const shapes: Shape[] = ["polaroid", "torn", "cloud", "ribbon", "ticket", "pennant"];
     const tones: Tone[] = ["paper", "moss", "sky", "mustard", "burgundy"];
     initialLandingRef.current = {
@@ -187,7 +190,7 @@ function Sky() {
   );
   useEffect(() => {
     if (initialLanding) landingHandledRef.current = true;
-    if (search.landing !== "1" || !search.title || landingHandledRef.current) return;
+    if (!search.landing || !search.title || landingHandledRef.current) return;
     landingHandledRef.current = true;
     const id = `f-${Date.now()}`;
     const shapes: Shape[] = ["polaroid", "torn", "cloud", "ribbon", "ticket", "pennant"];

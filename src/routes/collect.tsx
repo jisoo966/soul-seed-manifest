@@ -77,7 +77,7 @@ function Collect() {
           setText("");
           navigate({
             to: "/constellations",
-            search: { landing: "1", title, kind: kind ?? "Sign" },
+            search: { landing: true, title, kind: kind ?? "Sign" },
           });
         }}
         className="mt-10 w-full py-4 border border-ink text-ink serif text-[14px] tracking-[0.05em] rounded-md transition disabled:opacity-30 hover:bg-ink hover:text-paper disabled:hover:bg-transparent disabled:hover:text-ink"
