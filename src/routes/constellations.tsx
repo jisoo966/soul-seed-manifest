@@ -885,41 +885,97 @@ function short(t: string) {
 }
 
 // ---------- sticker shapes ----------
-function toneVar(t: Tone) {
-  return ({
-    paper: "oklch(0.95 0.01 70)",
-    moss: "oklch(0.86 0.05 145)",
-    sky: "oklch(0.84 0.04 240)",
-    mustard: "oklch(0.88 0.09 85)",
-    burgundy: "oklch(0.78 0.08 25)",
-  } as const)[t];
+// Vintage embroidered-patch aesthetic: cream paper, burgundy ornate frame,
+// serif italic text. Inspired by old textile patches / letterpress stamps.
+function toneVar(_t: Tone) {
+  return "oklch(0.95 0.02 80)";
+}
+
+function OrnateFrame({ mini }: { mini?: boolean }) {
+  const stroke = "var(--color-burgundy)";
+  const sw = mini ? 0.7 : 1.1;
+  return (
+    <svg
+      viewBox="0 0 200 140"
+      preserveAspectRatio="none"
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      aria-hidden
+    >
+      <path
+        d="M10,20 Q10,8 22,8 Q30,2 40,8 Q50,2 60,8 Q70,2 80,8 Q90,2 100,8 Q110,2 120,8 Q130,2 140,8 Q150,2 160,8 Q170,2 178,8 Q190,8 190,20 Q198,30 190,40 Q198,50 190,60 Q198,70 190,80 Q198,90 190,100 Q198,112 190,120 Q190,132 178,132 Q170,138 160,132 Q150,138 140,132 Q130,138 120,132 Q110,138 100,132 Q90,138 80,132 Q70,138 60,132 Q50,138 40,132 Q30,138 22,132 Q10,132 10,120 Q2,110 10,100 Q2,90 10,80 Q2,70 10,60 Q2,50 10,40 Q2,30 10,20 Z"
+        fill="none"
+        stroke={stroke}
+        strokeWidth={sw}
+        opacity="0.85"
+      />
+      <rect x="26" y="32" width="148" height="76" fill="none" stroke={stroke} strokeWidth={sw * 0.9} opacity="0.9" />
+      {[
+        { x: 26, y: 32, r: 0 },
+        { x: 174, y: 32, r: 90 },
+        { x: 174, y: 108, r: 180 },
+        { x: 26, y: 108, r: 270 },
+      ].map((c, i) => (
+        <g key={i} transform={`translate(${c.x} ${c.y}) rotate(${c.r})`} stroke={stroke} strokeWidth={sw * 0.8} fill="none" opacity="0.9">
+          <path d="M0,0 q6,-6 14,-4 q-4,2 -6,8" />
+          <path d="M0,0 q-6,6 -4,14 q2,-4 8,-6" />
+          <circle cx="-2" cy="-2" r="1.2" fill={stroke} stroke="none" />
+        </g>
+      ))}
+      <g stroke={stroke} strokeWidth={sw * 0.7} fill="none" opacity="0.75">
+        <path d="M100,8 q-8,8 -14,4 M100,8 q8,8 14,4 M100,4 v8" />
+        <path d="M100,132 q-8,-8 -14,-4 M100,132 q8,-8 14,-4 M100,128 v8" />
+        <path d="M14,70 q-6,-8 -4,-14 M14,70 q-6,8 -4,14" />
+        <path d="M186,70 q6,-8 4,-14 M186,70 q6,8 4,14" />
+      </g>
+    </svg>
+  );
 }
 
 function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
   const bg = toneVar(sign.tone);
-  const ink = "oklch(0.18 0 0)";
-  const t = mini ? "text-[8px] leading-tight" : "text-[15px] leading-snug";
-  const pad = mini ? "px-1.5 py-1.5" : "px-3 py-3";
+  const ink = "var(--color-burgundy)";
+  const t = mini ? "text-[7px] leading-[1.15]" : "text-[14px] leading-snug";
+  const pad = mini ? "px-3 py-3" : "px-6 py-6";
 
-  switch (sign.shape) {
-    case "polaroid":
-      return (
-        <div className="paper-card rounded-sm p-1 pb-2" style={{ backgroundColor: bg }}>
-          <div className="aspect-[5/4] rounded-sm flex items-center justify-center" style={{ backgroundColor: "oklch(0.88 0.03 70)" }}>
-            <span className={mini ? "text-xs" : "text-2xl"} style={{ color: "var(--color-moss)" }}><DottedGlyph variant="fleuron" size={22} /></span>
-          </div>
-          <p className={`mt-0.5 italic serif text-center ${t}`} style={{ color: ink }}>{sign.title}</p>
-        </div>
-      );
-    case "torn":
-      return <div className={`torn-note serif text-center ${pad}`} style={{ backgroundColor: bg }}><p className={`italic ${t}`} style={{ color: ink }}>{sign.title}</p></div>;
-    case "cloud":
-      return <div className={`serif text-center ${pad}`} style={{ backgroundColor: bg, borderRadius: "50% 45% 55% 50% / 60% 55% 50% 50%", border: "1px solid oklch(0.55 0.03 70 / 0.4)" }}><p className={`italic ${t}`} style={{ color: ink }}>{sign.title}</p></div>;
-    case "ribbon":
-      return <div className={`relative serif ${pad}`} style={{ backgroundColor: bg }}><span className="absolute left-0 top-0 h-full" style={{ width: mini ? "3px" : "8px", backgroundColor: "var(--color-burgundy)" }} /><p className={`italic ${t} pl-1`} style={{ color: ink }}>{sign.title}</p></div>;
-    case "ticket":
-      return <div className={`serif text-center ${pad}`} style={{ backgroundColor: bg, borderTop: "1px dashed var(--color-burgundy)", borderBottom: "1px dashed var(--color-burgundy)" }}><p className={`italic ${t}`} style={{ color: ink }}>{sign.title}</p></div>;
-    case "pennant":
-      return <div className={`serif text-center ${pad}`} style={{ backgroundColor: bg, clipPath: "polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%, 8% 50%)" }}><p className={`italic ${t}`} style={{ color: ink }}>{sign.title}</p></div>;
-  }
+  const shapeStyle: React.CSSProperties = (() => {
+    switch (sign.shape) {
+      case "cloud":
+        return { borderRadius: "48% 52% 46% 54% / 58% 50% 50% 42%" };
+      case "pennant":
+        return { clipPath: "polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%)" };
+      case "ticket":
+        return { borderTop: "1px dashed var(--color-burgundy)", borderBottom: "1px dashed var(--color-burgundy)" };
+      case "torn":
+        return { clipPath: "polygon(2% 4%, 18% 0, 38% 5%, 60% 1%, 82% 6%, 98% 2%, 100% 22%, 96% 48%, 100% 72%, 98% 96%, 78% 100%, 52% 96%, 28% 100%, 6% 98%, 0 78%, 4% 52%, 0 28%)" };
+      case "ribbon":
+      case "polaroid":
+      default:
+        return {};
+    }
+  })();
+
+  return (
+    <div
+      className={`relative ${pad}`}
+      style={{
+        backgroundColor: bg,
+        boxShadow: mini
+          ? "0 2px 4px oklch(0 0 0 / 0.25)"
+          : "0 6px 18px oklch(0 0 0 / 0.35), inset 0 0 30px oklch(0.78 0.05 60 / 0.15)",
+        ...shapeStyle,
+      }}
+    >
+      <OrnateFrame mini={mini} />
+      <p
+        className={`relative serif italic text-center ${t}`}
+        style={{
+          color: ink,
+          letterSpacing: mini ? "0.02em" : "0.04em",
+          padding: mini ? "8px 6px" : "18px 14px",
+        }}
+      >
+        {sign.title}
+      </p>
+    </div>
+  );
 }
