@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 
 type Period = "week" | "month" | "year";
@@ -18,8 +18,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const navigate = useNavigate();
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [quick, setQuick] = useState("");
+
+  // First-time visitors → onboarding (once per browser)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!window.localStorage.getItem("sisi:onboarded")) {
+      navigate({ to: "/onboarding", replace: true });
+    }
+  }, [navigate]);
 
   const addWish = (title: string) => {
     const t = title.trim();

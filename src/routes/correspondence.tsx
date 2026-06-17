@@ -44,7 +44,12 @@ function Correspondence() {
         <span className="w-10" />
       </header>
 
-      <p className="mt-8 text-center small-caps">Today</p>
+      <p className="mt-6 text-center serif italic text-[12px] text-sepia leading-relaxed px-6">
+        Sisi listens to your entries and writes back —<br />
+        gentle echoes of your own words, never advice.
+      </p>
+
+      <p className="mt-6 text-center small-caps">Today</p>
 
       <div className="mt-6 space-y-6">
         {msgs.map((m, i) => (
