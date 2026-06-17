@@ -411,36 +411,50 @@ function Sky() {
           )}
         </div>
 
-        {/* falling new star */}
-        {phase === "falling" && suggested && (
-          <span
-            className="absolute text-2xl pointer-events-none z-30"
-            style={{
-              left: "50%", top: "-8%",
-              color: "var(--color-mustard)",
-              textShadow: "0 0 14px oklch(0.88 0.09 85 / 0.9)",
-              animation: "starFall 1.4s cubic-bezier(.55,.05,.3,1) forwards",
-              ["--tx" as any]: `${suggested.x - 50}%`,
-              ["--ty" as any]: `${HORIZONS[suggested.horizon].y + 8}%`,
-            }}
-          >
-            <DottedGlyph variant="star" size={22} />
-          </span>
-        )}
-        {(phase === "landed" || phase === "suggesting") && suggested && (
-          <span
-            className="absolute text-xl pointer-events-none z-30"
-            style={{
-              left: `${suggested.x}%`, top: `${HORIZONS[suggested.horizon].y}%`,
-              transform: "translate(-50%,-50%)",
-              color: "var(--color-mustard)",
-              textShadow: "0 0 18px oklch(0.88 0.09 85 / 0.9)",
-              animation: "starTwinkle 1.6s ease-out 2",
-            }}
-          >
-            <DottedGlyph variant="star" size={22} />
-          </span>
-        )}
+        {/* falling new star — targets suggested manifestation, or the landed floating sign */}
+        {(() => {
+          const landed = landedFloatingId ? floatingSigns.find((f) => f.id === landedFloatingId) : null;
+          const target = suggested
+            ? { x: suggested.x, y: HORIZONS[suggested.horizon].y + 8 }
+            : landed
+            ? { x: landed.x, y: landed.y }
+            : null;
+          if (!target) return null;
+          return (
+            <>
+              {phase === "falling" && (
+                <span
+                  className="absolute text-2xl pointer-events-none z-30"
+                  style={{
+                    left: "50%", top: "-8%",
+                    color: "var(--color-mustard)",
+                    textShadow: "0 0 14px oklch(0.88 0.09 85 / 0.9)",
+                    animation: "starFall 1.4s cubic-bezier(.55,.05,.3,1) forwards",
+                    ["--tx" as any]: `${target.x - 50}%`,
+                    ["--ty" as any]: `${target.y}%`,
+                  }}
+                >
+                  <DottedGlyph variant="star" size={22} />
+                </span>
+              )}
+              {(phase === "landed" || phase === "suggesting") && (
+                <span
+                  className="absolute text-xl pointer-events-none z-30"
+                  style={{
+                    left: `${target.x}%`, top: `${target.y}%`,
+                    transform: "translate(-50%,-50%)",
+                    color: "var(--color-mustard)",
+                    textShadow: "0 0 18px oklch(0.88 0.09 85 / 0.9)",
+                    animation: "starTwinkle 1.6s ease-out 2",
+                  }}
+                >
+                  <DottedGlyph variant="star" size={22} />
+                </span>
+              )}
+            </>
+          );
+        })()}
+
 
         {/* EMPTY STATE — no manifestations yet */}
         {!active && manifestations.length === 0 && floatingSigns.length === 0 && phase === null && (
