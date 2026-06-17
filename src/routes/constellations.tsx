@@ -315,7 +315,7 @@ function Sky() {
         </div>
 
         {/* falling new star */}
-        {phase === "falling" && (
+        {phase === "falling" && suggested && (
           <span
             className="absolute text-2xl pointer-events-none z-30"
             style={{
@@ -330,7 +330,7 @@ function Sky() {
             <DottedGlyph variant="star" size={22} />
           </span>
         )}
-        {(phase === "landed" || phase === "suggesting") && (
+        {(phase === "landed" || phase === "suggesting") && suggested && (
           <span
             className="absolute text-xl pointer-events-none z-30"
             style={{
@@ -343,6 +343,33 @@ function Sky() {
           >
             <DottedGlyph variant="star" size={22} />
           </span>
+        )}
+
+        {/* EMPTY STATE — no manifestations yet */}
+        {!active && manifestations.length === 0 && floatingSigns.length === 0 && phase === null && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center pointer-events-none">
+            <span style={{ color: "oklch(0.88 0.09 85 / 0.8)" }}>
+              <DottedGlyph variant="star" size={26} />
+            </span>
+            <p className="mt-4 serif italic text-[15px] leading-snug" style={{ color: "var(--color-paper)" }}>
+              your sky is empty.
+            </p>
+            <p className="mt-2 serif text-[12px] leading-relaxed" style={{ color: "oklch(0.85 0.05 85 / 0.7)" }}>
+              name a wish — it becomes a star.<br />
+              over time, signs gather around it.
+            </p>
+            <button
+              onClick={() => setAdding(true)}
+              className="pointer-events-auto mt-5 px-4 py-2 rounded-full serif italic text-[12px] border"
+              style={{
+                color: "var(--color-paper)",
+                borderColor: "oklch(0.88 0.09 85 / 0.5)",
+                backgroundColor: "oklch(0.2 0.02 60 / 0.4)",
+              }}
+            >
+              + name your first wish
+            </button>
+          </div>
         )}
 
         {active && (
