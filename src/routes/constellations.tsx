@@ -897,72 +897,45 @@ function short(t: string) {
 }
 
 // ---------- sticker shapes ----------
-// Vintage embroidered-patch aesthetic: cream paper, burgundy ornate frame,
-// serif italic text. Inspired by old textile patches / letterpress stamps.
-function toneVar(_t: Tone) {
-  return "oklch(0.95 0.02 80)";
+// Scrapbook hand-drawn sticker aesthetic: pastel solids, wobbly borders,
+// handwritten script. Inspired by cute diary / journal stickers.
+const PASTELS: Record<Tone, string> = {
+  paper:  "oklch(0.96 0.03 85)",   // warm cream
+  moss:   "oklch(0.93 0.04 145)",  // soft mint
+  sky:    "oklch(0.93 0.04 240)",  // baby blue
+  mustard: "oklch(0.95 0.05 85)",  // pale yellow
+  burgundy: "oklch(0.93 0.04 340)", // dusty pink
+};
+
+function toneVar(t: Tone) {
+  return PASTELS[t];
 }
 
-function OrnateFrame({ mini }: { mini?: boolean }) {
-  const stroke = "var(--color-burgundy)";
-  const sw = mini ? 0.7 : 1.1;
-  return (
-    <svg
-      viewBox="0 0 200 140"
-      preserveAspectRatio="none"
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      aria-hidden
-    >
-      <path
-        d="M10,20 Q10,8 22,8 Q30,2 40,8 Q50,2 60,8 Q70,2 80,8 Q90,2 100,8 Q110,2 120,8 Q130,2 140,8 Q150,2 160,8 Q170,2 178,8 Q190,8 190,20 Q198,30 190,40 Q198,50 190,60 Q198,70 190,80 Q198,90 190,100 Q198,112 190,120 Q190,132 178,132 Q170,138 160,132 Q150,138 140,132 Q130,138 120,132 Q110,138 100,132 Q90,138 80,132 Q70,138 60,132 Q50,138 40,132 Q30,138 22,132 Q10,132 10,120 Q2,110 10,100 Q2,90 10,80 Q2,70 10,60 Q2,50 10,40 Q2,30 10,20 Z"
-        fill="none"
-        stroke={stroke}
-        strokeWidth={sw}
-        opacity="0.85"
-      />
-      <rect x="26" y="32" width="148" height="76" fill="none" stroke={stroke} strokeWidth={sw * 0.9} opacity="0.9" />
-      {[
-        { x: 26, y: 32, r: 0 },
-        { x: 174, y: 32, r: 90 },
-        { x: 174, y: 108, r: 180 },
-        { x: 26, y: 108, r: 270 },
-      ].map((c, i) => (
-        <g key={i} transform={`translate(${c.x} ${c.y}) rotate(${c.r})`} stroke={stroke} strokeWidth={sw * 0.8} fill="none" opacity="0.9">
-          <path d="M0,0 q6,-6 14,-4 q-4,2 -6,8" />
-          <path d="M0,0 q-6,6 -4,14 q2,-4 8,-6" />
-          <circle cx="-2" cy="-2" r="1.2" fill={stroke} stroke="none" />
-        </g>
-      ))}
-      <g stroke={stroke} strokeWidth={sw * 0.7} fill="none" opacity="0.75">
-        <path d="M100,8 q-8,8 -14,4 M100,8 q8,8 14,4 M100,4 v8" />
-        <path d="M100,132 q-8,-8 -14,-4 M100,132 q8,-8 14,-4 M100,128 v8" />
-        <path d="M14,70 q-6,-8 -4,-14 M14,70 q-6,8 -4,14" />
-        <path d="M186,70 q6,-8 4,-14 M186,70 q6,8 4,14" />
-      </g>
-    </svg>
-  );
+function handInk(_t: Tone) {
+  return "oklch(0.35 0.03 60)"; // warm dark brown-grey
 }
 
 function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
   const bg = toneVar(sign.tone);
-  const ink = "var(--color-burgundy)";
-  const t = mini ? "text-[7px] leading-[1.15]" : "text-[14px] leading-snug";
-  const pad = mini ? "px-3 py-3" : "px-6 py-6";
+  const ink = handInk(sign.tone);
+  const t = mini ? "text-[10px] leading-[1.1]" : "text-[18px] leading-snug";
+  const pad = mini ? "px-3 py-2" : "px-5 py-4";
 
   const shapeStyle: React.CSSProperties = (() => {
     switch (sign.shape) {
       case "cloud":
-        return { borderRadius: "48% 52% 46% 54% / 58% 50% 50% 42%" };
+        return { borderRadius: "42% 58% 55% 45% / 55% 45% 55% 45%" };
       case "pennant":
-        return { clipPath: "polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%)" };
+        return { borderRadius: "2px 2px 2px 2px", clipPath: "polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%)" };
       case "ticket":
-        return { borderTop: "1px dashed var(--color-burgundy)", borderBottom: "1px dashed var(--color-burgundy)" };
+        return { borderRadius: "4px", borderTop: "1.5px dashed oklch(0.35 0.03 60 / 0.35)", borderBottom: "1.5px dashed oklch(0.35 0.03 60 / 0.35)" };
       case "torn":
-        return { clipPath: "polygon(2% 4%, 18% 0, 38% 5%, 60% 1%, 82% 6%, 98% 2%, 100% 22%, 96% 48%, 100% 72%, 98% 96%, 78% 100%, 52% 96%, 28% 100%, 6% 98%, 0 78%, 4% 52%, 0 28%)" };
+        return { borderRadius: "2px 18px 4px 22px / 18px 4px 22px 2px" };
       case "ribbon":
+        return { borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%" };
       case "polaroid":
       default:
-        return {};
+        return { borderRadius: "6px 18px 10px 14px / 14px 10px 18px 6px" };
     }
   })();
 
@@ -971,19 +944,21 @@ function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
       className={`relative ${pad}`}
       style={{
         backgroundColor: bg,
+        border: "1.5px solid oklch(0.35 0.03 60 / 0.15)",
         boxShadow: mini
-          ? "0 2px 4px oklch(0 0 0 / 0.25)"
-          : "0 6px 18px oklch(0 0 0 / 0.35), inset 0 0 30px oklch(0.78 0.05 60 / 0.15)",
+          ? "2px 2px 0 oklch(0 0 0 / 0.08)"
+          : "3px 4px 0 oklch(0 0 0 / 0.1), 0 2px 8px oklch(0 0 0 / 0.06)",
+        fontFamily: "var(--font-hand)",
         ...shapeStyle,
       }}
     >
-      <OrnateFrame mini={mini} />
       <p
-        className={`relative serif italic text-center ${t}`}
+        className={`relative text-center ${t}`}
         style={{
           color: ink,
-          letterSpacing: mini ? "0.02em" : "0.04em",
-          padding: mini ? "8px 6px" : "18px 14px",
+          letterSpacing: "0.01em",
+          fontWeight: 500,
+          padding: mini ? "4px 2px" : "8px 6px",
         }}
       >
         {sign.title}

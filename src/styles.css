@@ -43,6 +43,7 @@
   --color-sky: var(--sky);
   --font-serif: "Sentient", ui-serif, Georgia, serif;
   --font-script: "Sentient", ui-serif, Georgia, serif;
+  --font-hand: "Caveat", "Comic Sans MS", "Chalkboard SE", cursive;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
