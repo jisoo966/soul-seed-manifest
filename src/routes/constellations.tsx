@@ -897,50 +897,22 @@ function short(t: string) {
 }
 
 // ---------- sticker shapes ----------
-// Vintage embroidered-patch aesthetic: cream paper, burgundy ornate frame,
-// serif italic text. Inspired by old textile patches / letterpress stamps.
-function toneVar(_t: Tone) {
-  return "oklch(0.95 0.02 80)";
+// Scrapbook hand-drawn sticker aesthetic: pastel solids, wobbly borders,
+// handwritten script. Inspired by cute diary / journal stickers.
+const PASTELS: Record<Tone, string> = {
+  paper:  "oklch(0.96 0.03 85)",   // warm cream
+  moss:   "oklch(0.93 0.04 145)",  // soft mint
+  sky:    "oklch(0.93 0.04 240)",  // baby blue
+  mustard: "oklch(0.95 0.05 85)",  // pale yellow
+  burgundy: "oklch(0.93 0.04 340)", // dusty pink
+};
+
+function toneVar(t: Tone) {
+  return PASTELS[t];
 }
 
-function OrnateFrame({ mini }: { mini?: boolean }) {
-  const stroke = "var(--color-burgundy)";
-  const sw = mini ? 0.7 : 1.1;
-  return (
-    <svg
-      viewBox="0 0 200 140"
-      preserveAspectRatio="none"
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      aria-hidden
-    >
-      <path
-        d="M10,20 Q10,8 22,8 Q30,2 40,8 Q50,2 60,8 Q70,2 80,8 Q90,2 100,8 Q110,2 120,8 Q130,2 140,8 Q150,2 160,8 Q170,2 178,8 Q190,8 190,20 Q198,30 190,40 Q198,50 190,60 Q198,70 190,80 Q198,90 190,100 Q198,112 190,120 Q190,132 178,132 Q170,138 160,132 Q150,138 140,132 Q130,138 120,132 Q110,138 100,132 Q90,138 80,132 Q70,138 60,132 Q50,138 40,132 Q30,138 22,132 Q10,132 10,120 Q2,110 10,100 Q2,90 10,80 Q2,70 10,60 Q2,50 10,40 Q2,30 10,20 Z"
-        fill="none"
-        stroke={stroke}
-        strokeWidth={sw}
-        opacity="0.85"
-      />
-      <rect x="26" y="32" width="148" height="76" fill="none" stroke={stroke} strokeWidth={sw * 0.9} opacity="0.9" />
-      {[
-        { x: 26, y: 32, r: 0 },
-        { x: 174, y: 32, r: 90 },
-        { x: 174, y: 108, r: 180 },
-        { x: 26, y: 108, r: 270 },
-      ].map((c, i) => (
-        <g key={i} transform={`translate(${c.x} ${c.y}) rotate(${c.r})`} stroke={stroke} strokeWidth={sw * 0.8} fill="none" opacity="0.9">
-          <path d="M0,0 q6,-6 14,-4 q-4,2 -6,8" />
-          <path d="M0,0 q-6,6 -4,14 q2,-4 8,-6" />
-          <circle cx="-2" cy="-2" r="1.2" fill={stroke} stroke="none" />
-        </g>
-      ))}
-      <g stroke={stroke} strokeWidth={sw * 0.7} fill="none" opacity="0.75">
-        <path d="M100,8 q-8,8 -14,4 M100,8 q8,8 14,4 M100,4 v8" />
-        <path d="M100,132 q-8,-8 -14,-4 M100,132 q8,-8 14,-4 M100,128 v8" />
-        <path d="M14,70 q-6,-8 -4,-14 M14,70 q-6,8 -4,14" />
-        <path d="M186,70 q6,-8 4,-14 M186,70 q6,8 4,14" />
-      </g>
-    </svg>
-  );
+function handInk(_t: Tone) {
+  return "oklch(0.35 0.03 60)"; // warm dark brown-grey
 }
 
 function Sticker({ sign, mini = false }: { sign: Sign; mini?: boolean }) {
