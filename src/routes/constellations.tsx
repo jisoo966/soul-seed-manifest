@@ -350,45 +350,66 @@ function Sky() {
                 </div>
               );
             })}
-            {/* curved earth + tiny dreamer — persistent on sky view */}
+            {/* curved earth + tiny dreamer — inky b&w, Troche-style */}
             <svg
               className="absolute left-0 right-0 bottom-0 pointer-events-none z-20"
               viewBox="0 0 200 60"
               preserveAspectRatio="none"
-              style={{ width: "100%", height: "22%" }}
+              style={{ width: "100%", height: "24%" }}
               aria-hidden
             >
               <defs>
-                <radialGradient id="earthGrad" cx="50%" cy="100%" r="80%">
-                  <stop offset="0%" stopColor="oklch(0.32 0.04 75)" />
-                  <stop offset="60%" stopColor="oklch(0.22 0.03 70)" />
-                  <stop offset="100%" stopColor="oklch(0.14 0.02 65)" />
-                </radialGradient>
+                <filter id="paperGrain" x="0" y="0" width="100%" height="100%">
+                  <feTurbulence type="fractalNoise" baseFrequency="1.8" numOctaves="2" seed="7" />
+                  <feColorMatrix values="0 0 0 0 0.92  0 0 0 0 0.92  0 0 0 0 0.9  0 0 0 0.35 0" />
+                  <feComposite in2="SourceGraphic" operator="in" />
+                </filter>
+                <clipPath id="hillClip">
+                  <path d="M -10 60 L -10 38 Q 100 0 210 38 L 210 60 Z" />
+                </clipPath>
               </defs>
-              {/* hill silhouette */}
+
+              {/* hill base — off-white paper */}
               <path
-                d="M -10 60 L -10 36 Q 100 -2 210 36 L 210 60 Z"
-                fill="url(#earthGrad)"
+                d="M -10 60 L -10 38 Q 100 0 210 38 L 210 60 Z"
+                fill="#ededea"
               />
-              {/* grass strokes */}
-              <g stroke="oklch(0.5 0.06 80 / 0.45)" strokeWidth="0.25" strokeLinecap="round">
-                {Array.from({ length: 70 }).map((_, i) => {
-                  const x = 4 + i * 2.7;
+              {/* paper grain on hill */}
+              <g clipPath="url(#hillClip)">
+                <rect x="-10" y="0" width="220" height="60" fill="#000" filter="url(#paperGrain)" opacity="0.55" />
+              </g>
+
+              {/* dense vertical pencil hatching like the reference */}
+              <g clipPath="url(#hillClip)" stroke="#1a1a1a" strokeWidth="0.18" strokeLinecap="round" opacity="0.85">
+                {Array.from({ length: 320 }).map((_, i) => {
+                  const x = -8 + (i * 216) / 320 + ((i * 13) % 7) * 0.08;
                   const t = (x - 100) / 110;
-                  const y = 36 + t * t * 24 + 2;
-                  return <line key={i} x1={x} y1={y} x2={x + 0.2} y2={y + 1.6} />;
+                  const top = 38 + t * t * 22 + 1.2 + ((i * 7) % 5) * 0.25;
+                  const len = 1.4 + ((i * 11) % 9) * 0.35;
+                  return <line key={i} x1={x} y1={top} x2={x + 0.05} y2={top + len} />;
                 })}
               </g>
-              {/* tiny dreamer lying on the curve, gazing up */}
-              <g transform="translate(100 30) rotate(-4)">
+
+              {/* horizon ink edge */}
+              <path
+                d="M -10 38 Q 100 0 210 38"
+                fill="none"
+                stroke="#0b0b0b"
+                strokeWidth="0.35"
+                opacity="0.55"
+              />
+
+              {/* tiny dreamer lying on the curve */}
+              <g transform="translate(100 30.5) rotate(-3)">
                 {/* body */}
-                <rect x="-5" y="-1" width="10" height="2" rx="1" fill="oklch(0.92 0.04 85)" />
+                <rect x="-5.2" y="-0.9" width="10.4" height="1.9" rx="0.9" fill="#f4f3ef" stroke="#111" strokeWidth="0.12" />
                 {/* head */}
-                <circle cx="6.2" cy="0" r="1.2" fill="oklch(0.92 0.04 85)" />
-                {/* gaze line toward the sky */}
-                <line x1="6.2" y1="-0.6" x2="9" y2="-6" stroke="oklch(0.85 0.06 85 / 0.35)" strokeWidth="0.18" strokeDasharray="0.6 0.6" />
+                <circle cx="6.4" cy="0.05" r="1.25" fill="#f4f3ef" stroke="#111" strokeWidth="0.12" />
+                {/* little arrow-feet hint like the reference */}
+                <path d="M -5.4 0 l -1 -0.7 M -5.4 0 l -1 0.7" stroke="#111" strokeWidth="0.14" fill="none" strokeLinecap="round" />
               </g>
             </svg>
+
           </>
         )}
 
