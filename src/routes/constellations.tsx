@@ -4,6 +4,7 @@ import { ArrowLeft, Plus, X, Sparkles } from "lucide-react";
 
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { DottedGlyph } from "@/components/DottedGlyph";
+import dreamerLight from "@/assets/dreamer-light.png";
 
 type Search = { landing?: boolean; title?: string; kind?: string };
 
