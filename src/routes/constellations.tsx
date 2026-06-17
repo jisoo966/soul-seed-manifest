@@ -470,9 +470,11 @@ function Sky() {
             <Sparkles className="h-3 w-3" strokeWidth={1.5} /> sisi noticed
           </p>
           {search.title && <p className="serif italic text-[14px] text-ink leading-snug">&ldquo;{search.title}&rdquo;</p>}
-          <p className="mt-2 serif text-[13px] text-ink/85">
-            This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
-          </p>
+          {suggested && (
+            <p className="mt-2 serif text-[13px] text-ink/85">
+              This sign is now floating in your sky. It might belong with <em className="italic" style={{ color: "var(--color-burgundy)" }}>{short(suggested.title)}</em>.
+            </p>
+          )}
           <div className="mt-3 flex gap-2">
             <button onClick={() => dismissLanding(false, true)} className="flex-1 py-2 rounded-lg serif italic text-[13px]" style={{ backgroundColor: "var(--color-burgundy)", color: "var(--color-paper)" }}>
               Attach to it
@@ -485,10 +487,68 @@ function Sky() {
         </div>
       )}
 
-      {!phase && !active && (
+      {!phase && !active && manifestations.length > 0 && (
         <p className="mt-3 text-center text-[11px] serif italic text-sepia">
           tap a star to enter its story
         </p>
+      )}
+
+      {/* add wish modal */}
+      {adding && (
+        <div
+          onClick={() => setAdding(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center px-6"
+          style={{ backgroundColor: "oklch(0.15 0.02 60 / 0.85)", backdropFilter: "blur(4px)" }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[320px] rounded-xl p-5"
+            style={{ backgroundColor: "var(--color-paper)", animation: "fade-in 0.25s ease-out" }}
+          >
+            <p className="small-caps" style={{ color: "var(--color-burgundy)" }}>name a wish</p>
+            <textarea
+              autoFocus
+              value={draftTitle}
+              onChange={(e) => setDraftTitle(e.target.value)}
+              placeholder="I want to…"
+              rows={2}
+              className="mt-3 w-full bg-transparent outline-none serif italic text-[15px] text-ink placeholder:text-sepia/60 border-b border-border py-2 focus:border-ink resize-none"
+            />
+            <p className="small-caps mt-4" style={{ color: "var(--color-burgundy)" }}>by when?</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {(["thisMonth", "thisSeason", "thisYear", "someday"] as Horizon[]).map((h) => (
+                <button
+                  key={h}
+                  onClick={() => setDraftHorizon(h)}
+                  className="py-2 rounded-md serif italic text-[12px] border transition"
+                  style={{
+                    borderColor: draftHorizon === h ? "var(--color-burgundy)" : "var(--color-border, #e5e0d8)",
+                    backgroundColor: draftHorizon === h ? "var(--color-burgundy)" : "transparent",
+                    color: draftHorizon === h ? "var(--color-paper)" : "var(--color-ink)",
+                  }}
+                >
+                  {HORIZONS[h].label}
+                </button>
+              ))}
+            </div>
+            <div className="mt-5 flex gap-2 justify-end">
+              <button
+                onClick={() => setAdding(false)}
+                className="px-3 py-2 text-[11px] tracking-[0.2em] uppercase text-sepia"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={addManifestation}
+                disabled={!draftTitle.trim()}
+                className="px-4 py-2 rounded-md serif italic text-[13px] disabled:opacity-30"
+                style={{ backgroundColor: "var(--color-ink)", color: "var(--color-paper)" }}
+              >
+                Place in sky →
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* sign modal */}
