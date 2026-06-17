@@ -5,7 +5,7 @@ import { ArrowLeft, Plus, X, Sparkles } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { DottedGlyph } from "@/components/DottedGlyph";
 
-type Search = { landing?: "1"; title?: string; kind?: string };
+type Search = { landing?: boolean; title?: string; kind?: string };
 
 export const Route = createFileRoute("/constellations")({
   head: () => ({
@@ -15,9 +15,9 @@ export const Route = createFileRoute("/constellations")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>): Search => {
-    if (typeof window !== "undefined") console.log("VALIDATE_SEARCH", JSON.stringify(s), typeof s.landing);
+    const landingTruthy = s.landing === true || s.landing === "true" || s.landing === 1 || s.landing === "1";
     return {
-      landing: s.landing === "1" || s.landing === 1 ? "1" : undefined,
+      landing: landingTruthy ? true : undefined,
       title: typeof s.title === "string" ? s.title : undefined,
       kind: typeof s.kind === "string" ? s.kind : undefined,
     };
