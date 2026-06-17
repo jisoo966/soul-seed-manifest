@@ -82,7 +82,7 @@ function Sky() {
   // Build the incoming entry as a floating sign synchronously so the falling
   // star has a target on the very first render.
   const initialLandingRef = useRef<FloatingSign | null>(null);
-  if (initialLandingRef.current === null && search.landing === "1" && search.title) {
+  if (initialLandingRef.current === null && search.landing && search.title) {
     const shapes: Shape[] = ["polaroid", "torn", "cloud", "ribbon", "ticket", "pennant"];
     const tones: Tone[] = ["paper", "moss", "sky", "mustard", "burgundy"];
     initialLandingRef.current = {
