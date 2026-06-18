@@ -5,91 +5,96 @@ import { PhoneFrame } from "@/components/PhoneFrame";
 export const Route = createFileRoute("/collect")({
   head: () => ({
     meta: [
-      { title: "Collect — Sísí" },
-      { name: "description", content: "Plant something today." },
+      { title: "Write — Sisi" },
+      { name: "description", content: "Today's entry." },
     ],
   }),
   component: Collect,
 });
 
-const ENTRY_TYPES = [
-  { id: "sign",          label: "a sign" },
-  { id: "synchronicity", label: "a synchronicity" },
-  { id: "wish",          label: "a wish" },
-  { id: "dream",         label: "a dream" },
-  { id: "thought",       label: "a thought" },
-  { id: "memory",        label: "a memory" },
+const kinds = ["Sign", "Sync", "Wish", "Dream", "Thought", "Memory"];
+
+const recent = [
+  { title: "Saw a white feather on my way to work.", when: "Today, 8:42 AM" },
+  { title: "The interview went better than I expected.", when: "Yesterday, 3:11 PM" },
 ];
 
 function Collect() {
   const navigate = useNavigate();
-  const [entry, setEntry] = useState("");
-  const [type, setType] = useState<string | null>(null);
-
-  function handlePlant() {
-    const trimmed = entry.trim();
-    if (!trimmed) return;
-    if (typeof window !== "undefined") {
-      const entries = JSON.parse(window.localStorage.getItem("sisi:entries") || "[]");
-      entries.unshift({ id: Date.now(), text: trimmed, type, createdAt: new Date().toISOString() });
-      window.localStorage.setItem("sisi:entries", JSON.stringify(entries));
-    }
-    navigate({
-      to: "/constellations",
-      search: { landing: true, title: trimmed.slice(0, 60), kind: type ?? "thought" },
-    });
-  }
+  const [text, setText] = useState("");
+  const [kind, setKind] = useState<string | null>("Sign");
+  const canSubmit = text.trim().length > 0 && kind;
 
   return (
     <PhoneFrame>
-      <div className="px-2 py-8 min-h-screen flex flex-col">
-        <Link to="/" className="text-xs small-caps mb-8 block" style={{ color: "var(--color-muted-foreground)" }}>
-          ‹ home
+      <header className="pt-6 flex items-center justify-between">
+        <Link to="/" className="text-[11px] tracking-[0.22em] uppercase text-ink">
+          ← Back
         </Link>
+        <p className="small-caps">New entry</p>
+        <span className="w-10" />
+      </header>
 
-        <h1 className="text-2xl serif italic text-ink mb-2">
-          what's on your mind today?
-        </h1>
-
+      <div className="mt-8">
+        <p className="small-caps mb-3">Write</p>
         <textarea
-          value={entry}
-          onChange={(e) => setEntry(e.target.value)}
-          rows={8}
-          className="bg-transparent border-b text-base serif text-ink py-4 mb-8 resize-none focus:outline-none w-full"
-          style={{ borderColor: "var(--color-border)" }}
-          placeholder="write a line, or a paragraph. whatever fits."
-          autoFocus
+          value={text}
+          onChange={(e) => setText(e.target.value.slice(0, 280))}
+          placeholder="A white feather on the sidewalk. The song you wished for, on the radio…"
+          rows={6}
+          className="w-full bg-transparent outline-none serif text-[15px] text-ink placeholder:text-sepia/50 leading-relaxed resize-none border-b border-border focus:border-ink transition-colors pb-2"
         />
+        <p className="mt-2 text-right text-[10px] text-sepia tracking-wide">{text.length}/280</p>
+      </div>
 
-        {/* Optional type tags */}
-        <p className="small-caps text-[10px] mb-3" style={{ color: "var(--color-muted-foreground)" }}>
-          optionally, mark this as:
-        </p>
-        <div className="grid grid-cols-3 gap-2 mb-12">
-          {ENTRY_TYPES.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setType(t.id === type ? null : t.id)}
-              className="text-sm serif italic py-2 px-3 border transition-colors"
-              style={{
-                borderColor: type === t.id ? "var(--color-gold)" : "rgba(31,42,68,0.2)",
-                color: type === t.id ? "var(--color-oxblood)" : "var(--color-ink)",
-                opacity: type === t.id ? 1 : 0.6,
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
+      <div className="mt-8">
+        <p className="small-caps mb-3">Kind</p>
+        <div className="flex flex-wrap gap-2">
+          {kinds.map((label) => {
+            const active = kind === label;
+            return (
+              <button
+                key={label}
+                onClick={() => setKind(label)}
+                className="px-3 py-1.5 rounded-full border serif text-[12px] transition"
+                style={{
+                  borderColor: active ? "var(--color-ink)" : "var(--color-border)",
+                  backgroundColor: active ? "var(--color-ink)" : "transparent",
+                  color: active ? "var(--color-paper)" : "var(--color-ink)",
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
+      </div>
 
-        <button
-          onClick={handlePlant}
-          disabled={!entry.trim()}
-          className="text-lg serif italic disabled:opacity-30 transition-opacity self-end mt-auto"
-          style={{ color: "var(--color-oxblood)" }}
-        >
-          plant ✦
-        </button>
+      <button
+        disabled={!canSubmit}
+        onClick={() => {
+          const title = text.trim().slice(0, 60);
+          setText("");
+          navigate({
+            to: "/constellations",
+            search: { landing: true, title, kind: kind ?? "Sign" },
+          });
+        }}
+        className="mt-10 w-full py-4 border border-ink text-ink serif text-[14px] tracking-[0.05em] rounded-md transition disabled:opacity-30 hover:bg-ink hover:text-paper disabled:hover:bg-transparent disabled:hover:text-ink"
+      >
+        Save entry
+      </button>
+
+      <div className="mt-12 ink-divider" />
+
+      <p className="small-caps mt-8 mb-4">Earlier</p>
+      <div className="space-y-5">
+        {recent.map((r) => (
+          <div key={r.title}>
+            <p className="serif text-[14px] text-ink leading-snug">{r.title}</p>
+            <p className="text-[10px] text-sepia mt-1 tracking-wide">{r.when}</p>
+          </div>
+        ))}
       </div>
     </PhoneFrame>
   );

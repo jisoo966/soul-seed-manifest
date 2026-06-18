@@ -8,15 +8,15 @@ const tabs = [
   { to: "/constellations", label: "Patterns" },
 ] as const;
 
-export function PhoneFrame({ children, className }: { children: ReactNode; className?: string }) {
+export function PhoneFrame({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isNight = pathname === "/constellations";
+  const isDark = pathname === "/constellations";
 
   return (
     <div
       className={`min-h-dvh w-full flex items-stretch sm:items-center justify-center sm:py-6 sm:px-3 ${
-        isNight ? "night bg-background" : "bg-background"
-      } ${className ?? ""}`}
+        isDark ? "dark bg-background" : "bg-background"
+      }`}
     >
       <div
         className="relative w-full sm:max-w-[420px] bg-paper sm:rounded-[2rem] overflow-hidden flex flex-col sm:border border-border"
@@ -37,7 +37,7 @@ export function PhoneFrame({ children, className }: { children: ReactNode; class
         <nav
           aria-label="Primary"
           className={`absolute bottom-0 inset-x-0 px-6 py-3 flex justify-between border-t ${
-            isNight ? "border-white/10 bg-[#0B0F1F]" : "border-border bg-paper"
+            isDark ? "border-white/30 bg-[oklch(0.18_0_0)]" : "border-border bg-paper"
           }`}
         >
           {tabs.map(({ to, label }) => {
@@ -48,8 +48,8 @@ export function PhoneFrame({ children, className }: { children: ReactNode; class
                 to={to}
                 className="py-1 transition-opacity text-[11px] tracking-[0.18em] uppercase min-h-[44px] flex items-center"
                 style={{
-                  opacity: active ? 1 : isNight ? 0.6 : 0.5,
-                  color: isNight ? "var(--color-night-text)" : "var(--color-ink)",
+                  opacity: active ? 1 : isDark ? 0.85 : 0.5,
+                  color: isDark ? "oklch(1 0 0)" : "var(--color-ink)",
                 }}
               >
                 {label}
