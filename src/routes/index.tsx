@@ -41,56 +41,18 @@ function Home() {
     setWishes((w) => [{ id: String(Date.now()), title: t, period: "year" }, ...w]);
   };
 
-  const saveName = (value: string) => {
-    const trimmed = value.trim();
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("sisi:name", trimmed);
-    }
-    setName(trimmed);
-    setEditingName(false);
-  };
-
   return (
     <PhoneFrame>
       <header className="pt-6 relative">
-        <p className="small-caps text-center">Monday / June 15 / 2026</p>
+        <p className="small-caps">Monday / June 15 / 2026</p>
 
-        <div className="mt-6 text-center">
-          {editingName ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                saveName(name);
-              }}
-              className="inline-flex items-center gap-2"
-            >
-              <input
-                autoFocus
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                onBlur={() => saveName(name)}
-                placeholder="Your name"
-                className="bg-transparent outline-none serif text-[2.5rem] leading-[1.1] text-ink placeholder:text-sepia/40 text-center border-b border-border focus:border-ink transition-colors w-[200px]"
-              />
-            </form>
-          ) : (
-            <button
-              onClick={() => setEditingName(true)}
-              className="block w-full text-center"
-            >
-              <h1 className="serif text-[2.5rem] leading-[1.1] text-ink">
-                hello
-                {name ? (
-                  <>, <span className="text-sepia">{name}</span></>
-                ) : null}
-              </h1>
-              {!name && (
-                <p className="mt-1 text-[11px] text-sepia tracking-wide">
-                  tap to add your name
-                </p>
-              )}
-            </button>
-          )}
+        <div className="mt-6">
+          <h1 className="serif text-[2.5rem] leading-[1.1] text-ink">
+            hello
+            {name ? (
+              <>, <span className="text-sepia">{name}</span></>
+            ) : null}
+          </h1>
         </div>
 
         <Link
@@ -101,6 +63,7 @@ function Home() {
           {name ? name.charAt(0).toUpperCase() : "J"}
         </Link>
       </header>
+
 
       <div className="mt-8 ink-divider" />
 
