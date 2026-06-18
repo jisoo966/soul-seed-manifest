@@ -83,22 +83,49 @@ function Onboarding() {
 
         {/* content */}
         <div className="flex-1 flex flex-col px-8 pt-12 pb-10">
-          <p className="small-caps">{step.caps}</p>
-
-          <h1 className="mt-6 serif text-[2.25rem] leading-[1.1] text-ink whitespace-pre-line">
-            {step.title}
-          </h1>
-
-          <div className="mt-8 ink-divider" />
-
-          <p className="mt-8 serif text-[1.05rem] leading-[1.5] text-ink/80">
-            {step.body}
-          </p>
+          {nameStep ? (
+            <>
+              <p className="small-caps">One last thing</p>
+              <h1 className="mt-6 serif text-[2.25rem] leading-[1.1] text-ink">
+                How should I{"\n"}call you?
+              </h1>
+              <div className="mt-8 ink-divider" />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  finish();
+                }}
+                className="mt-8"
+              >
+                <input
+                  autoFocus
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  className="w-full bg-transparent outline-none serif text-[1.5rem] text-ink placeholder:text-sepia/40 border-b border-border py-2 focus:border-ink transition-colors"
+                />
+                <p className="mt-3 text-[11px] text-sepia tracking-wide">
+                  You can change this later.
+                </p>
+              </form>
+            </>
+          ) : (
+            <>
+              <p className="small-caps">{step.caps}</p>
+              <h1 className="mt-6 serif text-[2.25rem] leading-[1.1] text-ink whitespace-pre-line">
+                {step.title}
+              </h1>
+              <div className="mt-8 ink-divider" />
+              <p className="mt-8 serif text-[1.05rem] leading-[1.5] text-ink/80">
+                {step.body}
+              </p>
+            </>
+          )}
 
           <div className="mt-auto pt-12">
             {/* progress dots */}
             <div className="flex items-center gap-2 mb-8">
-              {steps.map((_, idx) => (
+              {[...steps, { caps: "name" }].map((_, idx) => (
                 <span
                   key={idx}
                   className="h-[2px] flex-1 transition-opacity"
@@ -112,12 +139,13 @@ function Onboarding() {
 
             <button
               onClick={next}
-              className="w-full block text-center py-4 border border-ink text-ink serif text-[14px] tracking-[0.05em] hover:bg-ink hover:text-paper transition rounded-md"
+              disabled={nameStep && !name.trim()}
+              className="w-full block text-center py-4 border border-ink text-ink serif text-[14px] tracking-[0.05em] hover:bg-ink hover:text-paper transition rounded-md disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-ink"
             >
-              {last ? "Begin" : "Continue"}
+              {nameStep ? "Begin" : last ? "Almost there" : "Continue"}
             </button>
 
-            {!last && (
+            {!nameStep && (
               <button
                 onClick={() => setI((n) => Math.max(0, n - 1))}
                 disabled={i === 0}
@@ -127,7 +155,7 @@ function Onboarding() {
               </button>
             )}
 
-            {last && (
+            {nameStep && (
               <p className="mt-6 text-center text-[11px] text-sepia tracking-wide">
                 little by little, day by day.
               </p>
@@ -138,3 +166,4 @@ function Onboarding() {
     </div>
   );
 }
+
