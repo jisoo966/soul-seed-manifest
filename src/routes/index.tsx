@@ -52,7 +52,7 @@ function Home() {
 
   return (
     <PhoneFrame>
-      <header className="pt-6">
+      <header className="pt-6 relative">
         <p className="small-caps text-center">Monday / June 15 / 2026</p>
 
         <div className="mt-6 text-center">
