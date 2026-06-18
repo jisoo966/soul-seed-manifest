@@ -2,168 +2,124 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 
-type Period = "week" | "month" | "year";
-type Wish = { id: string; title: string; period: Period };
+type Entry = { id: number; text: string; type: string | null; createdAt: string };
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sisi — a quiet daily journal" },
-      { name: "description", content: "One small entry a day. A quiet daily journal." },
-      { property: "og:title", content: "Sisi — a quiet daily journal" },
-      { property: "og:description", content: "One small entry a day." },
+      { title: "Sísí — a quiet emotional archive" },
+      { name: "description", content: "Plant your wishes, signs, dreams — sísí keeps them." },
+      { property: "og:title", content: "Sísí" },
+      { property: "og:description", content: "Plant your wishes, signs, dreams — sísí keeps them." },
     ],
   }),
   component: Home,
 });
 
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "good morning";
+  if (h < 18) return "good afternoon";
+  return "good evening";
+}
+
+function formatDatePill(d: Date) {
+  return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }).toLowerCase();
+}
+
+function Module({ label, body, italic = false }: { label: string; body: string; italic?: boolean }) {
+  return (
+    <div className="mb-6">
+      <p className="small-caps text-[10px] mb-2" style={{ color: "var(--color-muted-foreground)" }}>
+        — {label} —
+      </p>
+      <p className={`text-base serif text-ink leading-relaxed ${italic ? "italic" : ""}`}>
+        {body}
+      </p>
+    </div>
+  );
+}
+
 function Home() {
   const navigate = useNavigate();
-  const [wishes, setWishes] = useState<Wish[]>([]);
-  const [quick, setQuick] = useState("");
-  const [name, setName] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return window.localStorage.getItem("sisi:name") || "";
-  });
+  const [name, setName] = useState("");
+  const [yesterdayHighlight, setYesterdayHighlight] = useState("");
 
-
-  // First-time visitors → onboarding (once per browser)
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!window.localStorage.getItem("sisi:onboarded")) {
       navigate({ to: "/onboarding", replace: true });
+      return;
     }
+    setName(window.localStorage.getItem("sisi:name") || "");
+
+    const entries: Entry[] = JSON.parse(window.localStorage.getItem("sisi:entries") || "[]");
+    if (entries.length > 0) setYesterdayHighlight(entries[0].text);
   }, [navigate]);
 
-  const addWish = (title: string) => {
-    const t = title.trim();
-    if (!t) return;
-    setWishes((w) => [{ id: String(Date.now()), title: t, period: "year" }, ...w]);
-  };
+  const today = new Date();
 
   return (
     <PhoneFrame>
-      <header className="pt-6 relative">
-        <p className="small-caps">Monday / June 15 / 2026</p>
+      {/* Date pill */}
+      <div className="pt-6">
+        <span className="cartouche text-xs serif italic" style={{ color: "var(--color-ink)", opacity: 0.7 }}>
+          {formatDatePill(today)}
+        </span>
+      </div>
 
-        <div className="mt-6">
-          <h1 className="serif text-[2.5rem] leading-[1.1] text-ink">
-            hello
-            {name ? (
-              <>, <span className="text-sepia">{name}</span></>
-            ) : null}
-          </h1>
-        </div>
+      {/* Greeting */}
+      <h1 className="text-3xl serif italic text-ink mt-4 mb-8">
+        {greeting()}{name ? `, ${name}.` : "."}
+      </h1>
 
-        <Link
-          to="/profile"
-          aria-label="Profile"
-          className="absolute top-6 right-6 h-9 w-9 rounded-full border border-border flex items-center justify-center serif text-[13px] text-ink hover:bg-muted transition"
-        >
-          {name ? name.charAt(0).toUpperCase() : "J"}
-        </Link>
-      </header>
-
-
-      <div className="mt-8 ink-divider" />
-
-      {/* Today's prompt */}
-      <section className="mt-8">
-        <p className="small-caps mb-3">Today's prompt</p>
-        <p className="serif text-[1.35rem] leading-[1.35] text-ink">
-          What is one thing that stayed with you from yesterday?
+      {/* THE CARD — something stayed with me */}
+      <div className="paper-card relative mb-10 px-6 py-8">
+        <p className="small-caps text-[10px] text-center mb-2" style={{ color: "var(--color-olive)" }}>
+          — something stayed with me —
         </p>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            addWish(quick);
-            setQuick("");
-          }}
-          className="mt-6"
+        <div className="ornament-rule mb-4" />
+        <blockquote className="text-lg serif italic text-ink text-center leading-snug">
+          "{yesterdayHighlight || "what did you notice yesterday?"}"
+        </blockquote>
+        <p className="text-xs serif italic text-center mt-4" style={{ color: "var(--color-muted-foreground)" }}>
+          — from yesterday
+        </p>
+        <Link
+          to="/correspondence"
+          className="block text-xs small-caps text-right mt-2"
+          style={{ color: "var(--color-gold)" }}
         >
-          <input
-            value={quick}
-            onChange={(e) => setQuick(e.target.value)}
-            placeholder="Write a single line…"
-            className="w-full bg-transparent outline-none serif text-[15px] text-ink placeholder:text-sepia/60 border-b border-border py-2 focus:border-ink transition-colors"
-          />
-          <div className="mt-3 flex justify-end">
-            <button
-              type="submit"
-              disabled={!quick.trim()}
-              className="text-[11px] tracking-[0.22em] uppercase text-ink disabled:opacity-30 transition"
-            >
-              Save →
-            </button>
-          </div>
-        </form>
+          revisit ›
+        </Link>
+      </div>
 
-        {wishes.length > 0 && (
-          <ul className="mt-2 space-y-2">
-            {wishes.slice(0, 3).map((w) => (
-              <li key={w.id} className="flex items-baseline gap-3 text-[14px] serif text-ink">
-                <span className="text-sepia text-[10px]">—</span>
-                <span className="flex-1 truncate">{w.title}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {/* 3 modules */}
+      <Module
+        label="TODAY'S MESSAGE"
+        body='"some things arrive slowly."'
+        italic
+      />
+      <Module
+        label="QUIET REMINDER"
+        body="you haven't mentioned your painting recently. how is it?"
+        italic
+      />
+      <Module
+        label="RECENT PATTERN"
+        body="you've been thinking about relationship a lot lately."
+        italic
+      />
 
-      <div className="mt-10 ink-divider" />
-
-      {/* Primary action */}
+      {/* Bottom CTA */}
+      <div className="ink-divider mt-12 mb-6" />
       <Link
         to="/collect"
-        className="mt-8 block text-center py-4 border border-ink text-ink serif text-[14px] tracking-[0.05em] hover:bg-ink hover:text-paper transition rounded-md"
+        className="block text-center text-lg serif italic py-4"
+        style={{ color: "var(--color-oxblood)" }}
       >
-        Write today's entry
+        ✦  plant something today
       </Link>
-
-      {/* Yesterday */}
-      <section className="mt-10">
-        <p className="small-caps mb-3">Yesterday</p>
-        <blockquote className="serif text-[1.1rem] leading-[1.45] text-ink">
-          "You said you wanted to feel chosen."
-        </blockquote>
-        <p className="mt-2 text-[11px] text-sepia">June 14, 2026</p>
-      </section>
-
-      <div className="mt-8 ink-divider" />
-
-      {/* Today's message */}
-      <Link to="/collect" className="mt-8 block group">
-        <p className="small-caps mb-3">A message arrived</p>
-        <p className="serif text-[1.1rem] leading-[1.45] text-ink group-hover:opacity-70 transition">
-          "Some things arrive slowly."
-        </p>
-      </Link>
-
-      <div className="mt-8 ink-divider" />
-
-      <Link to="/correspondence" className="mt-8 block group">
-        <p className="small-caps mb-3">Quiet reminder</p>
-        <p className="serif text-[1.05rem] leading-[1.45] text-ink group-hover:opacity-70 transition">
-          You haven't mentioned your painting recently. How is it?
-        </p>
-      </Link>
-
-      <div className="mt-8 ink-divider" />
-
-      <Link to="/constellations" className="mt-8 block group">
-        <p className="small-caps mb-3">Recent pattern</p>
-        <p className="serif text-[1.05rem] leading-[1.45] text-ink group-hover:opacity-70 transition">
-          You've been thinking about <em>relationship</em> a lot lately.
-          <span className="text-sepia text-[12px] ml-2 not-italic">4 entries</span>
-        </p>
-      </Link>
-
-      <footer className="mt-16 mb-4 text-center">
-        <p className="text-[11px] text-sepia tracking-wide">
-          little by little, day by day.
-        </p>
-      </footer>
     </PhoneFrame>
   );
 }
