@@ -44,20 +44,25 @@ const steps: Step[] = [
 function Onboarding() {
   const navigate = useNavigate();
   const [i, setI] = useState(0);
+  const [name, setName] = useState("");
+  const nameStep = i === steps.length;
   const last = i === steps.length - 1;
   const step = steps[i];
 
   const finish = () => {
     if (typeof window !== "undefined") {
+      const trimmed = name.trim();
+      if (trimmed) window.localStorage.setItem("sisi:name", trimmed);
       window.localStorage.setItem("sisi:onboarded", "1");
     }
     navigate({ to: "/" });
   };
 
   const next = () => {
-    if (last) finish();
+    if (nameStep) finish();
     else setI((n) => n + 1);
   };
+
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center py-6 px-3 bg-background">
