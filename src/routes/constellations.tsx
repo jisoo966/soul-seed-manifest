@@ -312,7 +312,7 @@ function Sky() {
 
 
   return (
-    <PhoneFrame>
+    <PhoneFrame className="night">
       <header className="pt-3 flex items-center justify-between">
         {zoomed ? (
           <button onClick={() => setZoomed(null)} className="p-1">
