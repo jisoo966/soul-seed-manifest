@@ -21,6 +21,11 @@ function Home() {
   const navigate = useNavigate();
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [quick, setQuick] = useState("");
+  const [name, setName] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return window.localStorage.getItem("sisi:name") || "";
+  });
+  const [editingName, setEditingName] = useState(false);
 
   // First-time visitors → onboarding (once per browser)
   useEffect(() => {
@@ -36,22 +41,64 @@ function Home() {
     setWishes((w) => [{ id: String(Date.now()), title: t, period: "year" }, ...w]);
   };
 
+  const saveName = (value: string) => {
+    const trimmed = value.trim();
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("sisi:name", trimmed);
+    }
+    setName(trimmed);
+    setEditingName(false);
+  };
+
   return (
     <PhoneFrame>
-      <header className="pt-6 flex items-start justify-between">
-        <div>
-          <p className="small-caps">Monday</p>
-          <h1 className="mt-2 serif text-[2.25rem] leading-[1] text-ink">
-            June 15
-          </h1>
-          <p className="mt-1 text-[12px] text-sepia">2026</p>
+      <header className="pt-6">
+        <p className="small-caps text-center">Monday / June 15 / 2026</p>
+
+        <div className="mt-6 text-center">
+          {editingName ? (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                saveName(name);
+              }}
+              className="inline-flex items-center gap-2"
+            >
+              <input
+                autoFocus
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={() => saveName(name)}
+                placeholder="Your name"
+                className="bg-transparent outline-none serif text-[2.5rem] leading-[1.1] text-ink placeholder:text-sepia/40 text-center border-b border-border focus:border-ink transition-colors w-[200px]"
+              />
+            </form>
+          ) : (
+            <button
+              onClick={() => setEditingName(true)}
+              className="block w-full text-center"
+            >
+              <h1 className="serif text-[2.5rem] leading-[1.1] text-ink">
+                hello
+                {name ? (
+                  <>, <span className="text-sepia">{name}</span></>
+                ) : null}
+              </h1>
+              {!name && (
+                <p className="mt-1 text-[11px] text-sepia tracking-wide">
+                  tap to add your name
+                </p>
+              )}
+            </button>
+          )}
         </div>
+
         <Link
           to="/profile"
           aria-label="Profile"
-          className="h-9 w-9 rounded-full border border-border flex items-center justify-center serif text-[13px] text-ink hover:bg-muted transition"
+          className="absolute top-6 right-6 h-9 w-9 rounded-full border border-border flex items-center justify-center serif text-[13px] text-ink hover:bg-muted transition"
         >
-          J
+          {name ? name.charAt(0).toUpperCase() : "J"}
         </Link>
       </header>
 
