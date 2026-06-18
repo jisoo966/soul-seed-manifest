@@ -25,7 +25,7 @@ function Home() {
     if (typeof window === "undefined") return "";
     return window.localStorage.getItem("sisi:name") || "";
   });
-  const [editingName, setEditingName] = useState(false);
+
 
   // First-time visitors → onboarding (once per browser)
   useEffect(() => {
