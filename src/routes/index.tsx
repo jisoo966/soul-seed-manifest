@@ -43,45 +43,47 @@ function Journey() {
         <h1 className="serif text-[1.7rem] leading-tight text-ink">
           {greeting()}{name ? `, ${name}` : ""}
         </h1>
-        <p className="mt-2 serif text-[1.05rem] text-sepia leading-snug">
+        <p className="mt-2 serif text-[1.05rem] text-ink/55 leading-snug">
           Shall we take<br />another step today?
         </p>
       </header>
 
-      <div className="px-6 mt-5">
+      <div className="px-5 mt-5 relative">
         <FoxScene name="home" className="aspect-[4/5]" />
-      </div>
 
-      <div className="px-6 mt-5">
-        <Link
-          to="/capture"
-          className="block paper-card rounded-[1.25rem] p-4 pr-16 relative hover:border-primary/40 transition"
-        >
-          <p className="text-[10px] tracking-[0.2em] uppercase text-sepia">Today you felt</p>
-          <p className="mt-1 serif text-[1.05rem] text-ink">
+        {/* glass card overlapping the hero */}
+        <div className="absolute left-8 right-8 bottom-6 glass-card rounded-[1.6rem] p-5 pr-20">
+          <p className="text-[10px] tracking-[0.2em] uppercase text-ink/55">Today you felt</p>
+          <p className="mt-1 serif text-[1.05rem] text-ink leading-snug">
             {feeling || "tap to capture this moment"}
           </p>
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+          <Link
+            to="/capture"
+            aria-label="Capture"
+            className="absolute right-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full pill-lavender grid place-items-center shadow"
+          >
             <Plus size={18} strokeWidth={1.8} />
-          </span>
-        </Link>
+          </Link>
+        </div>
       </div>
 
-      <div className="px-6 mt-8">
-        <p className="small-caps mb-3">A message arrived</p>
+      <div className="px-5 mt-6">
+        <p className="px-1 text-[10px] tracking-[0.22em] uppercase text-ink/55 mb-3">
+          A message arrived
+        </p>
         <Link
           to="/messages"
-          className="block rounded-[1.25rem] border border-border bg-muted/40 p-4 hover:bg-muted transition"
+          className="block glass-card rounded-[1.4rem] p-5"
         >
-          <p className="serif text-[1rem] text-ink leading-relaxed">
-            "Memories don't always fade. They just change where they live."
+          <p className="serif text-[1.05rem] text-ink leading-relaxed">
+            "Memories don't always fade.<br />They just change where they live."
           </p>
-          <p className="mt-2 text-[11px] text-sepia">from your fox · today</p>
+          <p className="mt-3 text-[11px] text-ink/55">from your fox · today</p>
         </Link>
       </div>
 
-      <footer className="mt-10 mb-2 text-center px-6">
-        <p className="text-[11px] text-sepia tracking-wide">
+      <footer className="mt-8 mb-4 text-center px-6">
+        <p className="text-[11px] text-ink/45 tracking-wide">
           every step becomes part of you.
         </p>
       </footer>
