@@ -9,16 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as StarsRouteImport } from './routes/stars'
+import { Route as PostcardsRouteImport } from './routes/postcards'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as CorrespondenceRouteImport } from './routes/correspondence'
-import { Route as ConstellationsRouteImport } from './routes/constellations'
-import { Route as CollectRouteImport } from './routes/collect'
+import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as CaptureRouteImport } from './routes/capture'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StarsIdRouteImport } from './routes/stars.$id'
+import { Route as PostcardsIdRouteImport } from './routes/postcards.$id'
 
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const StarsRoute = StarsRouteImport.update({
+  id: '/stars',
+  path: '/stars',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostcardsRoute = PostcardsRouteImport.update({
+  id: '/postcards',
+  path: '/postcards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -26,19 +33,14 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CorrespondenceRoute = CorrespondenceRouteImport.update({
-  id: '/correspondence',
-  path: '/correspondence',
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConstellationsRoute = ConstellationsRouteImport.update({
-  id: '/constellations',
-  path: '/constellations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CollectRoute = CollectRouteImport.update({
-  id: '/collect',
-  path: '/collect',
+const CaptureRoute = CaptureRouteImport.update({
+  id: '/capture',
+  path: '/capture',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -46,75 +48,104 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StarsIdRoute = StarsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => StarsRoute,
+} as any)
+const PostcardsIdRoute = PostcardsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PostcardsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/collect': typeof CollectRoute
-  '/constellations': typeof ConstellationsRoute
-  '/correspondence': typeof CorrespondenceRoute
+  '/capture': typeof CaptureRoute
+  '/messages': typeof MessagesRoute
   '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
+  '/postcards': typeof PostcardsRouteWithChildren
+  '/stars': typeof StarsRouteWithChildren
+  '/postcards/$id': typeof PostcardsIdRoute
+  '/stars/$id': typeof StarsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/collect': typeof CollectRoute
-  '/constellations': typeof ConstellationsRoute
-  '/correspondence': typeof CorrespondenceRoute
+  '/capture': typeof CaptureRoute
+  '/messages': typeof MessagesRoute
   '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
+  '/postcards': typeof PostcardsRouteWithChildren
+  '/stars': typeof StarsRouteWithChildren
+  '/postcards/$id': typeof PostcardsIdRoute
+  '/stars/$id': typeof StarsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/collect': typeof CollectRoute
-  '/constellations': typeof ConstellationsRoute
-  '/correspondence': typeof CorrespondenceRoute
+  '/capture': typeof CaptureRoute
+  '/messages': typeof MessagesRoute
   '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
+  '/postcards': typeof PostcardsRouteWithChildren
+  '/stars': typeof StarsRouteWithChildren
+  '/postcards/$id': typeof PostcardsIdRoute
+  '/stars/$id': typeof StarsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/collect'
-    | '/constellations'
-    | '/correspondence'
+    | '/capture'
+    | '/messages'
     | '/onboarding'
-    | '/profile'
+    | '/postcards'
+    | '/stars'
+    | '/postcards/$id'
+    | '/stars/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/collect'
-    | '/constellations'
-    | '/correspondence'
+    | '/capture'
+    | '/messages'
     | '/onboarding'
-    | '/profile'
+    | '/postcards'
+    | '/stars'
+    | '/postcards/$id'
+    | '/stars/$id'
   id:
     | '__root__'
     | '/'
-    | '/collect'
-    | '/constellations'
-    | '/correspondence'
+    | '/capture'
+    | '/messages'
     | '/onboarding'
-    | '/profile'
+    | '/postcards'
+    | '/stars'
+    | '/postcards/$id'
+    | '/stars/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CollectRoute: typeof CollectRoute
-  ConstellationsRoute: typeof ConstellationsRoute
-  CorrespondenceRoute: typeof CorrespondenceRoute
+  CaptureRoute: typeof CaptureRoute
+  MessagesRoute: typeof MessagesRoute
   OnboardingRoute: typeof OnboardingRoute
-  ProfileRoute: typeof ProfileRoute
+  PostcardsRoute: typeof PostcardsRouteWithChildren
+  StarsRoute: typeof StarsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
+    '/stars': {
+      id: '/stars'
+      path: '/stars'
+      fullPath: '/stars'
+      preLoaderRoute: typeof StarsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/postcards': {
+      id: '/postcards'
+      path: '/postcards'
+      fullPath: '/postcards'
+      preLoaderRoute: typeof PostcardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -124,25 +155,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/correspondence': {
-      id: '/correspondence'
-      path: '/correspondence'
-      fullPath: '/correspondence'
-      preLoaderRoute: typeof CorrespondenceRouteImport
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/constellations': {
-      id: '/constellations'
-      path: '/constellations'
-      fullPath: '/constellations'
-      preLoaderRoute: typeof ConstellationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/collect': {
-      id: '/collect'
-      path: '/collect'
-      fullPath: '/collect'
-      preLoaderRoute: typeof CollectRouteImport
+    '/capture': {
+      id: '/capture'
+      path: '/capture'
+      fullPath: '/capture'
+      preLoaderRoute: typeof CaptureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -152,16 +176,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stars/$id': {
+      id: '/stars/$id'
+      path: '/$id'
+      fullPath: '/stars/$id'
+      preLoaderRoute: typeof StarsIdRouteImport
+      parentRoute: typeof StarsRoute
+    }
+    '/postcards/$id': {
+      id: '/postcards/$id'
+      path: '/$id'
+      fullPath: '/postcards/$id'
+      preLoaderRoute: typeof PostcardsIdRouteImport
+      parentRoute: typeof PostcardsRoute
+    }
   }
 }
 
+interface PostcardsRouteChildren {
+  PostcardsIdRoute: typeof PostcardsIdRoute
+}
+
+const PostcardsRouteChildren: PostcardsRouteChildren = {
+  PostcardsIdRoute: PostcardsIdRoute,
+}
+
+const PostcardsRouteWithChildren = PostcardsRoute._addFileChildren(
+  PostcardsRouteChildren,
+)
+
+interface StarsRouteChildren {
+  StarsIdRoute: typeof StarsIdRoute
+}
+
+const StarsRouteChildren: StarsRouteChildren = {
+  StarsIdRoute: StarsIdRoute,
+}
+
+const StarsRouteWithChildren = StarsRoute._addFileChildren(StarsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CollectRoute: CollectRoute,
-  ConstellationsRoute: ConstellationsRoute,
-  CorrespondenceRoute: CorrespondenceRoute,
+  CaptureRoute: CaptureRoute,
+  MessagesRoute: MessagesRoute,
   OnboardingRoute: OnboardingRoute,
-  ProfileRoute: ProfileRoute,
+  PostcardsRoute: PostcardsRouteWithChildren,
+  StarsRoute: StarsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
