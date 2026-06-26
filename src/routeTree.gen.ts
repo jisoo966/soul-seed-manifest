@@ -9,36 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as CorrespondenceRouteImport } from './routes/correspondence'
-import { Route as ConstellationsRouteImport } from './routes/constellations'
-import { Route as CollectRouteImport } from './routes/collect'
 import { Route as IndexRouteImport } from './routes/index'
 
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CorrespondenceRoute = CorrespondenceRouteImport.update({
-  id: '/correspondence',
-  path: '/correspondence',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConstellationsRoute = ConstellationsRouteImport.update({
-  id: '/constellations',
-  path: '/constellations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CollectRoute = CollectRouteImport.update({
-  id: '/collect',
-  path: '/collect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -49,100 +25,37 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/collect': typeof CollectRoute
-  '/constellations': typeof ConstellationsRoute
-  '/correspondence': typeof CorrespondenceRoute
   '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/collect': typeof CollectRoute
-  '/constellations': typeof ConstellationsRoute
-  '/correspondence': typeof CorrespondenceRoute
   '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/collect': typeof CollectRoute
-  '/constellations': typeof ConstellationsRoute
-  '/correspondence': typeof CorrespondenceRoute
   '/onboarding': typeof OnboardingRoute
-  '/profile': typeof ProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/collect'
-    | '/constellations'
-    | '/correspondence'
-    | '/onboarding'
-    | '/profile'
+  fullPaths: '/' | '/onboarding'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/collect'
-    | '/constellations'
-    | '/correspondence'
-    | '/onboarding'
-    | '/profile'
-  id:
-    | '__root__'
-    | '/'
-    | '/collect'
-    | '/constellations'
-    | '/correspondence'
-    | '/onboarding'
-    | '/profile'
+  to: '/' | '/onboarding'
+  id: '__root__' | '/' | '/onboarding'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CollectRoute: typeof CollectRoute
-  ConstellationsRoute: typeof ConstellationsRoute
-  CorrespondenceRoute: typeof CorrespondenceRoute
   OnboardingRoute: typeof OnboardingRoute
-  ProfileRoute: typeof ProfileRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/correspondence': {
-      id: '/correspondence'
-      path: '/correspondence'
-      fullPath: '/correspondence'
-      preLoaderRoute: typeof CorrespondenceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/constellations': {
-      id: '/constellations'
-      path: '/constellations'
-      fullPath: '/constellations'
-      preLoaderRoute: typeof ConstellationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/collect': {
-      id: '/collect'
-      path: '/collect'
-      fullPath: '/collect'
-      preLoaderRoute: typeof CollectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -157,11 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CollectRoute: CollectRoute,
-  ConstellationsRoute: ConstellationsRoute,
-  CorrespondenceRoute: CorrespondenceRoute,
   OnboardingRoute: OnboardingRoute,
-  ProfileRoute: ProfileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,169 +1,159 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-
+import { Home, Heart, Brush, Sparkles, Sun, Star } from "lucide-react";
+import { FoxScene } from "@/components/FoxScene";
 
 export const Route = createFileRoute("/onboarding")({
-  head: () => ({
-    meta: [
-      { title: "Welcome — Sisi" },
-      { name: "description", content: "A quiet beginning." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Welcome — sisi" }] }),
   component: Onboarding,
 });
 
-type Step = {
-  caps: string;
-  title: string;
-  body: string;
-};
+type StepKey = "splash" | "hoping" | "confirm" | "name";
 
-const steps: Step[] = [
-  {
-    caps: "Welcome",
-    title: "A quieter\nkind of journal.",
-    body: "One small entry a day. No streaks, no notifications shouting at you.",
-  },
-  {
-    caps: "One line a day",
-    title: "Begin with\na single line.",
-    body: "A prompt arrives each morning. Answer in a sentence, or a paragraph. Whatever fits.",
-  },
-  {
-    caps: "Letters back",
-    title: "Receive quiet\nletters from\nyourself.",
-    body: "Sisi gathers your words and sends gentle reflections — never advice, only echoes.",
-  },
-  {
-    caps: "Patterns",
-    title: "Notice what\nstays with you.",
-    body: "Over time, recurring themes surface softly. Yours alone to read.",
-  },
+const hopes = [
+  { key: "home", label: "To feel at home", Icon: Home },
+  { key: "trust", label: "To trust myself", Icon: Heart },
+  { key: "create", label: "To create more", Icon: Brush },
+  { key: "love", label: "To feel loved", Icon: Sparkles },
+  { key: "else", label: "Something else", Icon: Sun },
 ];
 
 function Onboarding() {
   const navigate = useNavigate();
-  const [i, setI] = useState(0);
+  const [step, setStep] = useState<StepKey>("splash");
+  const [hope, setHope] = useState<string>("");
   const [name, setName] = useState("");
-  const nameStep = i === steps.length;
-  const last = i === steps.length - 1;
-  const step = steps[i];
 
   const finish = () => {
     if (typeof window !== "undefined") {
-      const trimmed = name.trim();
-      if (trimmed) window.localStorage.setItem("sisi:name", trimmed);
+      if (name.trim()) window.localStorage.setItem("sisi:name", name.trim());
+      const selected = hopes.find((h) => h.key === hope)?.label;
+      if (selected) window.localStorage.setItem("sisi:primaryStar", selected);
       window.localStorage.setItem("sisi:onboarded", "1");
     }
     navigate({ to: "/" });
   };
 
-  const next = () => {
-    if (nameStep) finish();
-    else setI((n) => n + 1);
-  };
-
-
   return (
-    <div className="min-h-screen w-full flex items-center justify-center py-6 px-3 bg-background">
+    <div className="min-h-dvh w-full flex items-stretch sm:items-center justify-center sm:py-6 sm:px-3 bg-background">
       <div
-        className="relative w-full max-w-[420px] bg-paper rounded-[2rem] overflow-hidden flex flex-col border border-border"
-        style={{ minHeight: "min(900px, 95vh)" }}
+        className="relative w-full sm:max-w-[420px] bg-paper sm:rounded-[2rem] overflow-hidden flex flex-col sm:border border-border"
+        style={{ minHeight: "min(900px, 100dvh)" }}
       >
-        {/* status bar */}
         <div className="flex items-center justify-between px-6 pt-4 pb-2 text-[11px] tracking-wide text-ink/60">
           <span>9:41</span>
-          <button
-            onClick={finish}
-            className="text-[11px] tracking-[0.2em] uppercase text-sepia hover:text-ink transition"
-          >
+          <button onClick={finish} className="text-sepia uppercase tracking-[0.2em] text-[11px]">
             Skip
           </button>
         </div>
 
-        {/* content */}
-        <div className="flex-1 flex flex-col px-8 pt-12 pb-10">
-          {nameStep ? (
-            <>
+        <div className="flex-1 flex flex-col px-8 pt-8 pb-10">
+          {step === "splash" && (
+            <div className="flex-1 flex flex-col items-center justify-center text-center">
+              <p className="serif italic text-primary text-[1.5rem] tracking-[0.4em]">s i s i</p>
+              <div className="mt-10 w-44">
+                <FoxScene name="splash" className="aspect-square" />
+              </div>
+              <p className="mt-10 serif text-[0.95rem] text-sepia leading-relaxed">
+                a journey<br />with your<br />inner companion
+              </p>
+            </div>
+          )}
+
+          {step === "hoping" && (
+            <div className="flex-1 flex flex-col">
+              <div className="rounded-2xl bg-accent px-4 py-3 self-start max-w-[78%]">
+                <p className="serif text-[1rem] text-ink leading-snug">
+                  Before we start,<br />what are you hoping for?
+                </p>
+              </div>
+              <div className="mt-6 w-32 self-center">
+                <FoxScene name="splash" className="aspect-square" />
+              </div>
+              <ul className="mt-6 space-y-2">
+                {hopes.map(({ key, label, Icon }) => (
+                  <li key={key}>
+                    <button
+                      onClick={() => setHope(key)}
+                      className={`w-full flex items-center gap-3 rounded-full border px-4 py-3 transition text-left ${
+                        hope === key ? "border-primary bg-accent" : "border-border bg-paper"
+                      }`}
+                    >
+                      <Icon size={16} className={hope === key ? "text-primary" : "text-sepia"} />
+                      <span className="serif text-[0.95rem] text-ink flex-1">{label}</span>
+                      <Star
+                        size={14}
+                        className={hope === key ? "text-mustard" : "text-border"}
+                        fill={hope === key ? "currentColor" : "none"}
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {step === "confirm" && (
+            <div className="flex-1 flex flex-col items-center justify-center text-center">
+              <div className="rounded-2xl bg-accent px-4 py-3 max-w-[78%]">
+                <p className="serif text-[1rem] text-ink">Let's follow that one.</p>
+              </div>
+              <div className="mt-8 w-44">
+                <FoxScene name="splash" className="aspect-square">
+                  <Star
+                    size={20}
+                    className="absolute top-6 right-8 text-mustard"
+                    fill="currentColor"
+                  />
+                </FoxScene>
+              </div>
+              <p className="mt-6 serif text-[1.05rem] text-ink">
+                {hopes.find((h) => h.key === hope)?.label}
+              </p>
+            </div>
+          )}
+
+          {step === "name" && (
+            <div className="flex-1 flex flex-col">
               <p className="small-caps">One last thing</p>
-              <h1 className="mt-6 serif text-[2.25rem] leading-[1.1] text-ink">
-                How should I{"\n"}call you?
+              <h1 className="mt-6 serif text-[1.9rem] leading-[1.15] text-ink">
+                How should I<br />call you?
               </h1>
-              <div className="mt-8 ink-divider" />
               <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  finish();
-                }}
-                className="mt-8"
+                onSubmit={(e) => { e.preventDefault(); finish(); }}
+                className="mt-10"
               >
                 <input
                   autoFocus
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name"
-                  className="w-full bg-transparent outline-none serif text-[1.5rem] text-ink placeholder:text-sepia/40 border-b border-border py-2 focus:border-ink transition-colors"
+                  className="w-full bg-transparent outline-none serif text-[1.4rem] text-ink placeholder:text-sepia/40 border-b border-border py-2 focus:border-primary transition-colors"
                 />
-                <p className="mt-3 text-[11px] text-sepia tracking-wide">
-                  You can change this later.
-                </p>
+                <p className="mt-3 text-[11px] text-sepia">You can change this later.</p>
               </form>
-            </>
-          ) : (
-            <>
-              <p className="small-caps">{step.caps}</p>
-              <h1 className="mt-6 serif text-[2.25rem] leading-[1.1] text-ink whitespace-pre-line">
-                {step.title}
-              </h1>
-              <div className="mt-8 ink-divider" />
-              <p className="mt-8 serif text-[1.05rem] leading-[1.5] text-ink/80">
-                {step.body}
-              </p>
-            </>
+            </div>
           )}
 
-          <div className="mt-auto pt-12">
-            {/* progress dots */}
-            <div className="flex items-center gap-2 mb-8">
-              {[...steps, { caps: "name" }].map((_, idx) => (
-                <span
-                  key={idx}
-                  className="h-[2px] flex-1 transition-opacity"
-                  style={{
-                    background: "var(--color-ink)",
-                    opacity: idx === i ? 1 : 0.15,
-                  }}
-                />
-              ))}
-            </div>
-
+          <div className="mt-auto pt-8">
             <button
-              onClick={next}
-              disabled={nameStep && !name.trim()}
-              className="w-full block text-center py-4 border border-ink text-ink serif text-[14px] tracking-[0.05em] hover:bg-ink hover:text-paper transition rounded-md disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-ink"
+              onClick={() => {
+                if (step === "splash") setStep("hoping");
+                else if (step === "hoping") { if (hope) setStep("confirm"); }
+                else if (step === "confirm") setStep("name");
+                else finish();
+              }}
+              disabled={(step === "hoping" && !hope) || (step === "name" && !name.trim())}
+              className="w-full block text-center py-4 rounded-full bg-primary text-primary-foreground serif text-[14px] tracking-[0.05em] hover:opacity-90 transition disabled:opacity-30"
             >
-              {nameStep ? "Begin" : last ? "Almost there" : "Continue"}
+              {step === "splash" && "Begin"}
+              {step === "hoping" && "Continue"}
+              {step === "confirm" && "Start our journey"}
+              {step === "name" && "Enter"}
             </button>
-
-            {!nameStep && (
-              <button
-                onClick={() => setI((n) => Math.max(0, n - 1))}
-                disabled={i === 0}
-                className="mt-4 w-full text-[11px] tracking-[0.22em] uppercase text-sepia hover:text-ink disabled:opacity-30 transition"
-              >
-                ← Back
-              </button>
-            )}
-
-            {nameStep && (
-              <p className="mt-6 text-center text-[11px] text-sepia tracking-wide">
-                little by little, day by day.
-              </p>
-            )}
           </div>
         </div>
       </div>
     </div>
   );
 }
-
