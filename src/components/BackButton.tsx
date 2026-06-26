@@ -9,9 +9,9 @@ export function BackButton(props: Props) {
     <Link
       {...props}
       aria-label={props.label || "Back"}
-      className="h-11 w-11 rounded-full grid place-items-center glass-card"
+      className="grid h-[4.1rem] w-[4.1rem] place-items-center rounded-full border border-white/70 bg-paper/22 backdrop-blur-md shadow-[0_18px_40px_rgba(77,93,170,0.08)]"
     >
-      <ArrowLeft size={18} strokeWidth={1.8} className="text-ink" />
+      <ArrowLeft size={27} strokeWidth={1.8} className="text-ink" />
     </Link>
   );
 }
