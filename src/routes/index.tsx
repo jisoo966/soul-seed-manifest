@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { Bell, Camera, Image as ImageIcon, Mail, Star } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { PhoneFrame } from "@/components/PhoneFrame";
-import { FoxScene } from "@/components/FoxScene";
+import homeMock from "@/assets/mock-home.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -16,16 +16,24 @@ export const Route = createFileRoute("/")({
 
 function greeting() {
   const h = new Date().getHours();
-  if (h < 5) return "Late evening";
+  if (h < 5) return "Good evening";
   if (h < 12) return "Good morning";
   if (h < 18) return "Good afternoon";
   return "Good evening";
 }
 
+function formatToday() {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date());
+}
+
 function Journey() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [feeling, setFeeling] = useState("");
+  const [name, setName] = useState("Jisoo");
+  const [today, setToday] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -33,60 +41,94 @@ function Journey() {
       navigate({ to: "/onboarding", replace: true });
       return;
     }
-    setName(window.localStorage.getItem("sisi:name") || "");
-    setFeeling(window.localStorage.getItem("sisi:todayFeeling") || "");
+    setName(window.localStorage.getItem("sisi:name") || "Jisoo");
+    setToday(formatToday());
   }, [navigate]);
+
+  const bgStyle = useMemo(
+    () => ({
+      backgroundImage: `url(${homeMock.url})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }),
+    [],
+  );
 
   return (
     <PhoneFrame>
-      <header className="px-6 pt-4">
-        <h1 className="serif text-[1.7rem] leading-tight text-ink">
-          {greeting()}{name ? `, ${name}` : ""}
-        </h1>
-        <p className="mt-2 serif text-[1.05rem] text-ink/55 leading-snug">
-          Shall we take<br />another step today?
-        </p>
-      </header>
+      <div className="relative min-h-[820px] overflow-hidden" style={bgStyle}>
+        <div className="px-8 pt-10 pb-28">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="serif text-[1.05rem] text-ink">{today}</p>
+              <h1 className="mt-6 serif text-[4rem] leading-[0.9] text-ink">
+                {greeting()},
+                <br />
+                {name}
+              </h1>
+            </div>
+            <button
+              type="button"
+              aria-label="Notifications"
+              className="mt-1 text-ink"
+            >
+              <Bell size={26} strokeWidth={1.8} />
+            </button>
+          </div>
 
-      <div className="px-5 mt-5 relative">
-        <FoxScene name="home" className="aspect-[4/5]" />
-
-        {/* glass card overlapping the hero */}
-        <div className="absolute left-8 right-8 bottom-6 glass-card rounded-[1.6rem] p-5 pr-20">
-          <p className="text-[10px] tracking-[0.2em] uppercase text-ink/55">Today you felt</p>
-          <p className="mt-1 serif text-[1.05rem] text-ink leading-snug">
-            {feeling || "tap to capture this moment"}
-          </p>
-          <Link
-            to="/capture"
-            aria-label="Capture"
-            className="absolute right-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full pill-lavender grid place-items-center shadow"
-          >
-            <Plus size={18} strokeWidth={1.8} />
-          </Link>
+          <div className="mt-10 flex justify-center">
+            <div className="h-14 w-14 rounded-full bg-paper/75 backdrop-blur-[2px] shadow-[0_0_30px_rgba(255,244,188,0.65)] grid place-items-center">
+              <Star className="h-8 w-8 fill-[rgba(255,219,97,0.9)] text-white stroke-[1.5]" />
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className="px-5 mt-6">
-        <p className="px-1 text-[10px] tracking-[0.22em] uppercase text-ink/55 mb-3">
-          A message arrived
-        </p>
         <Link
-          to="/messages"
-          className="block glass-card rounded-[1.4rem] p-5"
+          to="/capture"
+          aria-label="Capture a moment"
+          className="absolute right-8 bottom-42 h-[74px] w-[74px] rounded-full border border-white/65 bg-paper/45 backdrop-blur-md grid place-items-center shadow-[0_24px_50px_rgba(68,86,167,0.18)]"
         >
-          <p className="serif text-[1.05rem] text-ink leading-relaxed">
-            "Memories don't always fade.<br />They just change where they live."
-          </p>
-          <p className="mt-3 text-[11px] text-ink/55">from your fox · today</p>
+          <Camera size={28} strokeWidth={1.8} className="text-ink" />
         </Link>
-      </div>
 
-      <footer className="mt-8 mb-4 text-center px-6">
-        <p className="text-[11px] text-ink/45 tracking-wide">
-          every step becomes part of you.
-        </p>
-      </footer>
+        <nav className="absolute left-8 right-8 bottom-7 rounded-[2rem] border border-white/80 bg-paper/55 backdrop-blur-xl shadow-[0_24px_60px_rgba(80,100,170,0.18)] px-8 py-5">
+          <ul className="flex items-center justify-between text-ink">
+            <li>
+              <Link to="/" aria-label="Home" className="grid place-items-center">
+                <HomeTab active icon={<div className="h-[54px] w-[54px] rounded-[1.2rem] bg-paper grid place-items-center shadow-[0_8px_18px_rgba(0,0,0,0.06)]"><HomeIcon /></div>} />
+              </Link>
+            </li>
+            <li>
+              <Link to="/postcards" aria-label="Postcards" className="grid place-items-center">
+                <ImageIcon size={28} strokeWidth={1.8} />
+              </Link>
+            </li>
+            <li>
+              <Link to="/messages" aria-label="Messages" className="grid place-items-center">
+                <Mail size={28} strokeWidth={1.8} />
+              </Link>
+            </li>
+            <li>
+              <Link to="/stars" aria-label="Stars" className="grid place-items-center">
+                <Star size={28} strokeWidth={1.8} />
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </PhoneFrame>
+  );
+}
+
+function HomeTab({ icon }: { active?: boolean; icon: React.ReactNode }) {
+  return <>{icon}</>;
+}
+
+function HomeIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M3.5 10.5L12 4L20.5 10.5V20H3.5V10.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M9.5 20V13.5H14.5V20" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+    </svg>
   );
 }
