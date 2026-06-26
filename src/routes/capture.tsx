@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { X, Camera } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { FoxScene } from "@/components/FoxScene";
+import { BackButton } from "@/components/BackButton";
 
 export const Route = createFileRoute("/capture")({
   head: () => ({ meta: [{ title: "Capture — sisi" }] }),
@@ -11,7 +11,6 @@ export const Route = createFileRoute("/capture")({
 
 function Capture() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<"stopped" | "write">("stopped");
   const [note, setNote] = useState("");
 
   const save = () => {
@@ -23,46 +22,47 @@ function Capture() {
 
   return (
     <PhoneFrame hideTabs>
-      <header className="px-6 pt-4 flex items-center justify-between">
-        <button onClick={() => navigate({ to: "/" })} aria-label="Close" className="text-ink">
-          <X size={20} />
-        </button>
-        {step === "write" && (
-          <button onClick={save} className="text-primary text-[13px] tracking-wide">Save</button>
-        )}
-      </header>
-
-      {step === "stopped" ? (
-        <div className="px-6 mt-6">
-          <h1 className="serif text-[1.5rem] text-ink leading-snug">
-            The fox stopped.<br />Shall we keep this moment?
-          </h1>
-          <div className="mt-6">
-            <FoxScene name="stopped" className="aspect-[4/5]" />
-          </div>
-          <button
-            onClick={() => setStep("write")}
-            className="mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-full bg-primary text-primary-foreground"
-          >
-            <Camera size={16} /> capture
-          </button>
+      <div className="relative h-full min-h-[820px]">
+        <div className="absolute inset-0">
+          <FoxScene name="stopped" rounded={false} className="h-full" />
         </div>
-      ) : (
-        <div className="px-6 mt-6">
-          <div className="rounded-[1.25rem] bg-paper border border-border p-3">
-            <FoxScene name="meadow" className="aspect-[4/3]" />
-            <p className="mt-4 text-[11px] text-sepia">Today, I felt…</p>
+        <div
+          className="absolute inset-x-0 bottom-0 h-[55%] pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--mustard) 85%, transparent) 100%)",
+          }}
+        />
+
+        <div className="absolute top-3 left-5 z-10">
+          <BackButton to="/" />
+        </div>
+
+        {/* glass write card */}
+        <div className="absolute left-5 right-5 bottom-28 z-10">
+          <div className="glass-card rounded-[2.2rem] p-7">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-ink/45">
+              Worth holding on to
+            </p>
             <textarea
               autoFocus
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="write a single line"
-              className="w-full mt-1 bg-transparent serif text-[1.1rem] text-ink outline-none resize-none placeholder:text-sepia/50 border-b border-border pb-2"
-              rows={2}
+              placeholder="I want to remember…"
+              rows={4}
+              className="w-full mt-3 bg-transparent serif text-[1.2rem] leading-snug text-ink outline-none resize-none placeholder:text-ink/35"
             />
           </div>
         </div>
-      )}
+
+        {/* Done */}
+        <button
+          onClick={save}
+          className="absolute right-5 bottom-10 z-10 h-[52px] min-w-[88px] px-6 rounded-full pill-lavender grid place-items-center shadow-md serif text-[15px]"
+        >
+          Done
+        </button>
+      </div>
     </PhoneFrame>
   );
 }
