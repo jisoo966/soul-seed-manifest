@@ -229,3 +229,31 @@
   100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
+
+@layer components {
+  .glass-card {
+    background: color-mix(in oklab, white 60%, transparent);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    border: 1.5px solid color-mix(in oklab, white 80%, transparent);
+    box-shadow: 0 10px 40px -20px color-mix(in oklab, black 25%, transparent);
+  }
+  .pill-lavender {
+    background: linear-gradient(180deg,
+      color-mix(in oklab, var(--lavender) 90%, transparent),
+      color-mix(in oklab, var(--lavender) 60%, transparent));
+    border: 1.5px solid var(--lavender-strong);
+    color: oklch(0.2 0.01 270);
+  }
+  .pill-glass {
+    background: color-mix(in oklab, white 70%, transparent);
+    border: 1.5px solid color-mix(in oklab, var(--sky) 60%, transparent);
+    color: var(--sky);
+  }
+  .golden-fade {
+    background: linear-gradient(180deg,
+      transparent 0%,
+      color-mix(in oklab, var(--mustard) 0%, transparent) 0%,
+      color-mix(in oklab, var(--mustard) 90%, transparent) 100%);
+  }
+}
