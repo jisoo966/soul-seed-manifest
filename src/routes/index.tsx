@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Bell, Camera, Image as ImageIcon, Mail, Star } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import homeMock from "@/assets/mock-home.png.asset.json";
 
@@ -77,8 +77,8 @@ function Journey() {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <div className="h-14 w-14 rounded-full bg-paper/75 backdrop-blur-[2px] shadow-[0_0_30px_rgba(255,244,188,0.65)] grid place-items-center">
-              <Star className="h-8 w-8 fill-[rgba(255,219,97,0.9)] text-white stroke-[1.5]" />
+            <div className="grid h-14 w-14 place-items-center rounded-full bg-paper/75 backdrop-blur-[2px] shadow-[0_0_30px_rgba(255,244,188,0.65)]">
+              <Star size={32} className="text-white fill-[rgba(255,219,97,0.9)]" strokeWidth={1.5} />
             </div>
           </div>
         </div>
@@ -86,16 +86,16 @@ function Journey() {
         <Link
           to="/capture"
           aria-label="Capture a moment"
-          className="absolute right-8 bottom-42 h-[74px] w-[74px] rounded-full border border-white/65 bg-paper/45 backdrop-blur-md grid place-items-center shadow-[0_24px_50px_rgba(68,86,167,0.18)]"
+          className="absolute right-8 bottom-42 grid h-[74px] w-[74px] place-items-center rounded-full border border-white/65 bg-paper/45 backdrop-blur-md shadow-[0_24px_50px_rgba(68,86,167,0.18)]"
         >
           <Camera size={28} strokeWidth={1.8} className="text-ink" />
         </Link>
 
-        <nav className="absolute left-8 right-8 bottom-7 rounded-[2rem] border border-white/80 bg-paper/55 backdrop-blur-xl shadow-[0_24px_60px_rgba(80,100,170,0.18)] px-8 py-5">
+        <nav className="absolute left-8 right-8 bottom-7 rounded-[2rem] border border-white/80 bg-paper/55 px-8 py-5 backdrop-blur-xl shadow-[0_24px_60px_rgba(80,100,170,0.18)]">
           <ul className="flex items-center justify-between text-ink">
             <li>
               <Link to="/" aria-label="Home" className="grid place-items-center">
-                <HomeTab active icon={<div className="h-[54px] w-[54px] rounded-[1.2rem] bg-paper grid place-items-center shadow-[0_8px_18px_rgba(0,0,0,0.06)]"><HomeIcon /></div>} />
+                <HomeTab icon={<div className="grid h-[54px] w-[54px] place-items-center rounded-[1.2rem] bg-paper shadow-[0_8px_18px_rgba(0,0,0,0.06)]"><HomeIcon /></div>} />
               </Link>
             </li>
             <li>
@@ -120,7 +120,7 @@ function Journey() {
   );
 }
 
-function HomeTab({ icon }: { active?: boolean; icon: React.ReactNode }) {
+function HomeTab({ icon }: { icon: ReactNode }) {
   return <>{icon}</>;
 }
 
@@ -132,3 +132,4 @@ function HomeIcon() {
     </svg>
   );
 }
+
